@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>API Performance Report — May 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+:root {
+  --bg: #f7f6f2;
+  --surface: #ffffff;
+  --surface2: #f0ede6;
+  --border: rgba(0,0,0,0.08);
+  --border-strong: rgba(0,0,0,0.14);
+  --text: #1a1917;
+  --text-2: #5c5a55;
+  --text-3: #9a9790;
+  --green: #1a7a52;
+  --green-bg: #e8f5ee;
+  --green-mid: #2ea873;
+  --red: #b83232;
+  --red-bg: #fdeaea;
+  --amber: #8a5c0c;
+  --amber-bg: #fdf3e0;
+  --blue: #1a4f8a;
+  --blue-bg: #e8f0fa;
+  --mono: 'DM Mono', monospace;
+  --sans: 'DM Sans', sans-serif;
+  --serif: 'Playfair Display', serif;
+}
+
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);font-family:var(--sans);color:var(--text);font-size:14px;line-height:1.6;-webkit-font-smoothing:antialiased}
+
+/* PAGE LAYOUT */
+.page{max-width:860px;margin:0 auto;padding:48px 32px 80px}
+
+/* HEADER */
+.report-header{border-bottom:1px solid var(--border-strong);padding-bottom:32px;margin-bottom:40px}
+.report-eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.12em;color:var(--text-3);text-transform:uppercase;margin-bottom:16px}
+.report-title{font-family:var(--serif);font-size:38px;line-height:1.15;color:var(--text);margin-bottom:10px}
+.report-meta{display:flex;gap:24px;flex-wrap:wrap;margin-top:20px}
+.meta-item{display:flex;align-items:center;gap:7px;font-size:12px;color:var(--text-2)}
+.meta-dot{width:6px;height:6px;border-radius:50%;background:var(--green-mid);flex-shrink:0}
+.meta-dot.amber{background:#d4930c}
+.meta-dot.blue{background:#2a6fc4}
+
+/* EXECUTIVE SUMMARY */
+.exec-box{background:var(--text);color:#fff;border-radius:12px;padding:28px 32px;margin-bottom:40px}
+.exec-label{font-family:var(--mono);font-size:10px;letter-spacing:.12em;color:rgba(255,255,255,.45);text-transform:uppercase;margin-bottom:12px}
+.exec-text{font-size:15px;line-height:1.75;color:rgba(255,255,255,.88);font-weight:300}
+.exec-text strong{color:#fff;font-weight:500}
+
+/* SECTION TITLES */
+.section{margin-bottom:40px}
+.section-header{display:flex;align-items:baseline;gap:12px;margin-bottom:20px}
+.section-num{font-family:var(--mono);font-size:11px;color:var(--text-3)}
+.section-title{font-size:13px;font-weight:500;letter-spacing:.04em;text-transform:uppercase;color:var(--text-2)}
+.section-rule{flex:1;height:1px;background:var(--border)}
+
+/* KPI GRID */
+.kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:40px}
+.kpi-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:18px 20px}
+.kpi-label{font-family:var(--mono);font-size:10px;letter-spacing:.08em;color:var(--text-3);text-transform:uppercase;margin-bottom:8px}
+.kpi-value{font-size:26px;font-weight:500;color:var(--text);line-height:1;margin-bottom:4px}
+.kpi-sub{font-size:11px;color:var(--text-3)}
+.kpi-card.green{border-top:3px solid var(--green-mid)}
+.kpi-card.red{border-top:3px solid #e05252}
+.kpi-card.blue{border-top:3px solid #2a6fc4}
+.kpi-card.amber{border-top:3px solid #d4930c}
+
+/* COMPARISON CARDS */
+.compare-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:24px}
+.cmp-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden}
+.cmp-head{padding:14px 20px 12px;border-bottom:1px solid var(--border)}
+.cmp-period{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;font-weight:500}
+.cmp-period.before{color:var(--blue)}
+.cmp-period.after{color:var(--green)}
+.cmp-dates{font-size:11px;color:var(--text-3);margin-top:2px}
+.cmp-body{padding:4px 0}
+.cmp-row{display:flex;justify-content:space-between;align-items:center;padding:8px 20px;border-bottom:1px solid var(--border)}
+.cmp-row:last-child{border-bottom:none}
+.cmp-key{font-size:12px;color:var(--text-2)}
+.cmp-val{font-family:var(--mono);font-size:12px;color:var(--text);font-weight:500}
+.cmp-val.good{color:var(--green)}
+.cmp-val.warn{color:var(--amber)}
+.delta-pill{display:inline-flex;align-items:center;gap:3px;font-family:var(--mono);font-size:10px;padding:2px 7px;border-radius:20px;margin-left:6px;font-weight:500}
+.delta-pill.good{background:var(--green-bg);color:var(--green)}
+.delta-pill.warn{background:var(--amber-bg);color:var(--amber)}
+.delta-pill.bad{background:var(--red-bg);color:var(--red)}
+
+/* CHART WRAPPERS */
+.chart-wrap{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:20px 24px;margin-bottom:20px}
+.chart-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:16px;flex-wrap:wrap;gap:8px}
+.chart-title{font-size:12px;font-weight:500;color:var(--text)}
+.chart-sub{font-size:11px;color:var(--text-3);margin-top:2px}
+.legend{display:flex;flex-wrap:wrap;gap:14px}
+.legend-item{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--text-2)}
+.legend-sq{width:10px;height:10px;border-radius:2px;display:inline-block;flex-shrink:0}
+.canvas-outer{position:relative;width:100%}
+
+/* HOUR IMPROVEMENT BARS */
+.hour-bars{display:flex;flex-direction:column;gap:5px;padding:4px 0}
+.hb-row{display:grid;grid-template-columns:28px 1fr 60px;gap:8px;align-items:center}
+.hb-label{font-family:var(--mono);font-size:10px;color:var(--text-3);text-align:right}
+.hb-track{height:16px;background:var(--surface2);border-radius:4px;position:relative;overflow:hidden}
+.hb-before{position:absolute;top:0;left:0;height:100%;background:#b5d4f4;border-radius:4px}
+.hb-after{position:absolute;top:0;left:0;height:50%;border-radius:4px 4px 0 0}
+.hb-after2{position:absolute;bottom:0;left:0;height:50%;border-radius:0 0 4px 4px}
+.hb-delta{font-family:var(--mono);font-size:10px;text-align:right}
+
+/* HEATMAP */
+.hm-wrap{overflow-x:auto;margin-bottom:4px}
+table.hm{border-collapse:separate;border-spacing:2px;font-size:10px;font-family:var(--mono)}
+table.hm th{font-weight:500;color:var(--text-3);padding:2px 4px;white-space:nowrap;font-size:10px;font-family:var(--sans)}
+table.hm td.lbl{text-align:right;padding-right:8px;color:var(--text-3);white-space:nowrap;background:transparent}
+table.hm td.cell{width:38px;height:24px;text-align:center;border-radius:4px;cursor:default;font-size:9px}
+
+/* INSIGHT CARDS */
+.insight-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:20px}
+.insight-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px 18px}
+.insight-slot{font-family:var(--mono);font-size:10px;letter-spacing:.06em;text-transform:uppercase;margin-bottom:6px;font-weight:500}
+.insight-slot.risk{color:var(--red)}
+.insight-slot.ok{color:var(--green)}
+.insight-slot.caution{color:var(--amber)}
+.insight-body{font-size:12px;color:var(--text-2);line-height:1.6}
+
+/* STATUS BANNER */
+.status-banner{display:flex;align-items:center;gap:14px;background:var(--green-bg);border:1px solid rgba(46,168,115,.25);border-radius:10px;padding:16px 22px;margin-bottom:24px}
+.status-icon{font-size:22px;flex-shrink:0}
+.status-text{font-size:13px;color:var(--green);font-weight:500;line-height:1.5}
+.status-sub{font-size:11px;color:var(--text-2);font-weight:400}
+
+/* FOOTER */
+.report-footer{margin-top:56px;padding-top:24px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;flex-wrap:gap}
+.footer-left{font-size:11px;color:var(--text-3)}
+.footer-right{font-family:var(--mono);font-size:10px;color:var(--text-3);letter-spacing:.06em}
+
+/* DIVIDER */
+.divider{border:none;border-top:1px solid var(--border);margin:36px 0}
+
+/* PRINT */
+@media print{
+  body{background:#fff}
+  .page{padding:24px}
+  .chart-wrap,.kpi-card,.cmp-card,.insight-card{break-inside:avoid}
+}
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- HEADER -->
+  <header class="report-header">
+    <p class="report-eyebrow">Performance Analysis Report</p>
+    <h1 class="report-title">API Response Time<br>Improvement Report</h1>
+    <div class="report-meta">
+      <div class="meta-item"><span class="meta-dot blue"></span>Period: 04 May – 15 May 2026</div>
+      <div class="meta-item"><span class="meta-dot"></span>Scope: Working hours 06:00 – 23:30</div>
+      <div class="meta-item"><span class="meta-dot amber"></span>System: Payment Gateway API (CRM Integration)</div>
+      <div class="meta-item"><span class="meta-dot"></span>Total requests analyzed: 11,152</div>
+    </div>
+  </header>
+
+  <!-- EXEC SUMMARY -->
+  <div class="exec-box">
+    <p class="exec-label">Executive Summary</p>
+    <p class="exec-text">
+      Following version upgrades deployed between <strong>28 April – 8 May 2026</strong>, API response performance during working hours improved significantly.
+      Average response time decreased by <strong>23%</strong> (116.6 ms → 89.8 ms), while the P95 latency dropped by <strong>57%</strong> (239 ms → 102 ms).
+      The system now maintains stable sub-100 ms median response across most working-hour slots,
+      with the overall success rate holding at <strong>99.64%</strong>. The improvement is consistent and measurable,
+      confirming the effectiveness of the recent platform upgrades.
+    </p>
+  </div>
+
+  <!-- KPI ROW -->
+  <div class="kpi-grid">
+    <div class="kpi-card green">
+      <p class="kpi-label">Avg response (WH)</p>
+      <p class="kpi-value">101.9ms</p>
+      <p class="kpi-sub">Median 82ms · P95 148ms</p>
+    </div>
+    <div class="kpi-card blue">
+      <p class="kpi-label">Success rate</p>
+      <p class="kpi-value">99.64%</p>
+      <p class="kpi-sub">11,112 / 11,152 requests OK</p>
+    </div>
+    <div class="kpi-card red">
+      <p class="kpi-label">Slow / Delay events</p>
+      <p class="kpi-value">40</p>
+      <p class="kpi-sub">0.36% of working-hour requests</p>
+    </div>
+    <div class="kpi-card amber">
+      <p class="kpi-label">Best single day</p>
+      <p class="kpi-value">74.8ms</p>
+      <p class="kpi-sub">15 May 2026 · 0 slow events</p>
+    </div>
+  </div>
+
+  <!-- SECTION 1: TREND -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">01</span>
+      <span class="section-title">Daily response trend — working hours</span>
+      <div class="section-rule"></div>
+    </div>
+
+    <div class="status-banner">
+      <span class="status-icon">↘</span>
+      <div>
+        <p class="status-text">Clear downward trend confirmed post-upgrade (from 09 May onward)</p>
+        <p class="status-sub">Avg response stabilized below 90ms with P95 consistently under 125ms in the second week</p>
+      </div>
+    </div>
+
+    <div class="chart-wrap">
+      <div class="chart-top">
+        <div>
+          <p class="chart-title">Daily average response time (ms) — working hours 06:00–23:30</p>
+          <p class="chart-sub">Bars colored by severity · Dashed line = upgrade cutoff (08→09 May)</p>
+        </div>
+        <div class="legend">
+          <div class="legend-item"><span class="legend-sq" style="background:#2a6fc4"></span>Before upgrade</div>
+          <div class="legend-item"><span class="legend-sq" style="background:#2ea873"></span>After upgrade</div>
+          <div class="legend-item"><span class="legend-sq" style="background:#e05252"></span>Slow events ≥5</div>
+          <div class="legend-item"><span class="legend-sq" style="background:#d4930c"></span>Slow events &lt;5</div>
+        </div>
+      </div>
+      <div class="canvas-outer" style="height:260px">
+        <canvas id="trendChart" role="img" aria-label="Daily avg response ms, working hours, 04 to 15 May 2026">Avg dropped from 148.9ms on 04 May to 74.8ms on 15 May. Clear inflection after 08 May upgrade.</canvas>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 2: BEFORE/AFTER -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">02</span>
+      <span class="section-title">Before vs after upgrade comparison</span>
+      <div class="section-rule"></div>
+    </div>
+
+    <div class="compare-grid">
+      <div class="cmp-card">
+        <div class="cmp-head">
+          <p class="cmp-period before">Before upgrade</p>
+          <p class="cmp-dates">04 May – 08 May 2026 &nbsp;·&nbsp; 5,024 requests</p>
+        </div>
+        <div class="cmp-body">
+          <div class="cmp-row"><span class="cmp-key">Average response</span><span class="cmp-val">116.6 ms</span></div>
+          <div class="cmp-row"><span class="cmp-key">Median (P50)</span><span class="cmp-val">90 ms</span></div>
+          <div class="cmp-row"><span class="cmp-key">P95 latency</span><span class="cmp-val">239 ms</span></div>
+          <div class="cmp-row"><span class="cmp-key">P99 latency</span><span class="cmp-val">426 ms</span></div>
+          <div class="cmp-row"><span class="cmp-key">Max spike recorded</span><span class="cmp-val warn">643 ms avg (15:00, 08 May)</span></div>
+        </div>
+      </div>
+      <div class="cmp-card">
+        <div class="cmp-head">
+          <p class="cmp-period after">After upgrade</p>
+          <p class="cmp-dates">09 May – 15 May 2026 &nbsp;·&nbsp; 6,128 requests</p>
+        </div>
+        <div class="cmp-body">
+          <div class="cmp-row"><span class="cmp-key">Average response</span><span class="cmp-val good">89.8 ms <span class="delta-pill good">↓ 23%</span></span></div>
+          <div class="cmp-row"><span class="cmp-key">Median (P50)</span><span class="cmp-val good">77 ms <span class="delta-pill good">↓ 14%</span></span></div>
+          <div class="cmp-row"><span class="cmp-key">P95 latency</span><span class="cmp-val good">102 ms <span class="delta-pill good">↓ 57%</span></span></div>
+          <div class="cmp-row"><span class="cmp-key">P99 latency</span><span class="cmp-val good">182 ms <span class="delta-pill good">↓ 57%</span></span></div>
+          <div class="cmp-row"><span class="cmp-key">Max spike recorded</span><span class="cmp-val good">309 ms avg (09:00, 13 May)</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 3: HOURLY IMPROVEMENT -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">03</span>
+      <span class="section-title">Improvement by hour of day</span>
+      <div class="section-rule"></div>
+    </div>
+    <div class="chart-wrap">
+      <div class="chart-top">
+        <div>
+          <p class="chart-title">Per-hour avg response — before vs after upgrade</p>
+          <p class="chart-sub">Blue bar = before (04–08 May) · Green/Red = after (09–15 May)</p>
+        </div>
+        <div class="legend">
+          <div class="legend-item"><span class="legend-sq" style="background:#b5d4f4"></span>Before</div>
+          <div class="legend-item"><span class="legend-sq" style="background:#2ea873"></span>After (improved)</div>
+          <div class="legend-item"><span class="legend-sq" style="background:#e05252"></span>After (regression)</div>
+        </div>
+      </div>
+      <div class="hour-bars" id="hourBars"></div>
+    </div>
+  </div>
+
+  <!-- SECTION 4: DISTRIBUTION -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">04</span>
+      <span class="section-title">Response time distribution shift</span>
+      <div class="section-rule"></div>
+    </div>
+    <div class="chart-wrap">
+      <div class="chart-top">
+        <div>
+          <p class="chart-title">Distribution of requests by response bucket (%)</p>
+          <p class="chart-sub">Shift toward faster buckets confirms systemic improvement, not sampling bias</p>
+        </div>
+        <div class="legend">
+          <div class="legend-item"><span class="legend-sq" style="background:#7aafe8;opacity:.8"></span>Before 04–08 May</div>
+          <div class="legend-item"><span class="legend-sq" style="background:#2ea873;opacity:.8"></span>After 09–15 May</div>
+        </div>
+      </div>
+      <div class="canvas-outer" style="height:210px">
+        <canvas id="distChart" role="img" aria-label="Response distribution comparison before and after upgrade">After upgrade: requests ≤80ms increased from 16% to 50%. Requests above 200ms decreased from 17% to 5%.</canvas>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 5: HEATMAP -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">05</span>
+      <span class="section-title">Hourly × daily heatmap — working hours</span>
+      <div class="section-rule"></div>
+    </div>
+    <div class="chart-wrap">
+      <div class="chart-top">
+        <div>
+          <p class="chart-title">Average response per hour × day (ms)</p>
+          <p class="chart-sub">Green column border = post-upgrade period · ⚡ = slot with slow events · Hover for details</p>
+        </div>
+        <div class="legend">
+          <div class="legend-item"><span class="legend-sq" style="background:#b5d4f4"></span>≤80ms</div>
+          <div class="legend-item"><span class="legend-sq" style="background:#9fe1cb"></span>81–100ms</div>
+          <div class="legend-item"><span class="legend-sq" style="background:#fac775"></span>101–150ms</div>
+          <div class="legend-item"><span class="legend-sq" style="background:#f0997b"></span>151–300ms</div>
+          <div class="legend-item"><span class="legend-sq" style="background:#e24b4a"></span>&gt;300ms</div>
+        </div>
+      </div>
+      <div class="hm-wrap">
+        <table class="hm" id="hmTable"></table>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 6: INSIGHTS -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">06</span>
+      <span class="section-title">Time-slot analysis & recommendations</span>
+      <div class="section-rule"></div>
+    </div>
+    <div class="insight-grid">
+      <div class="insight-card">
+        <p class="insight-slot ok">06:00 – 08:59 &nbsp;·&nbsp; Early morning</p>
+        <p class="insight-body">Most stable slot. Avg improved from 90ms to 76ms post-upgrade. Single outlier on 05 May (07:00, 353ms) was isolated and not repeated. No slow events in this window after upgrade.</p>
+      </div>
+      <div class="insight-card">
+        <p class="insight-slot risk">09:00 – 11:59 &nbsp;·&nbsp; Morning peak — watch closely</p>
+        <p class="insight-body">Only slot where post-upgrade avg is slightly higher (+7% at 09h, +23% at 10h). This is driven by the 13 May incident (310ms avg, 16 slow events). Structurally improved but requires continued monitoring.</p>
+      </div>
+      <div class="insight-card">
+        <p class="insight-slot ok">12:00 – 17:59 &nbsp;·&nbsp; Afternoon — significant gain</p>
+        <p class="insight-body">P95 at 15:00 dropped from 5,088ms to 81ms after upgrade — the largest single improvement in the dataset. Previously the riskiest slot; now among the most stable.</p>
+      </div>
+      <div class="insight-card">
+        <p class="insight-slot ok">18:00 – 23:30 &nbsp;·&nbsp; Evening — consistently clean</p>
+        <p class="insight-body">Avg improved from 108–124ms to 77–82ms across all evening hours. Zero slow events post-upgrade. This block now serves as the performance baseline benchmark.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- DIVIDER -->
+  <hr class="divider">
+
+  <!-- NOTABLE INCIDENTS -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">07</span>
+      <span class="section-title">Notable incidents — post-upgrade period</span>
+      <div class="section-rule"></div>
+    </div>
+    <div class="compare-grid">
+      <div class="cmp-card">
+        <div class="cmp-head" style="background:var(--red-bg)">
+          <p class="cmp-period" style="color:var(--red)">13 May 2026 — 09:00 to 11:00</p>
+          <p class="cmp-dates">Severity: High &nbsp;·&nbsp; 16 slow events across 3 hours</p>
+        </div>
+        <div class="cmp-body">
+          <div class="cmp-row"><span class="cmp-key">09:00 avg</span><span class="cmp-val warn">309.6 ms (P99: 3,597ms)</span></div>
+          <div class="cmp-row"><span class="cmp-key">10:00 avg</span><span class="cmp-val warn">151.2 ms (P99: 1,524ms)</span></div>
+          <div class="cmp-row"><span class="cmp-key">11:00 avg</span><span class="cmp-val warn">309.8 ms (P99: 3,562ms)</span></div>
+          <div class="cmp-row"><span class="cmp-key">Recovery</span><span class="cmp-val good">Full by 12:00 (80.3ms)</span></div>
+          <div class="cmp-row"><span class="cmp-key">Note</span><span class="cmp-val" style="font-size:11px">Data gap observed 03:00–08:00 same day</span></div>
+        </div>
+      </div>
+      <div class="cmp-card">
+        <div class="cmp-head" style="background:var(--amber-bg)">
+          <p class="cmp-period" style="color:var(--amber)">11–12 May 2026 — Scattered spikes</p>
+          <p class="cmp-dates">Severity: Medium &nbsp;·&nbsp; 9 slow events total</p>
+        </div>
+        <div class="cmp-body">
+          <div class="cmp-row"><span class="cmp-key">11 May 10:00</span><span class="cmp-val warn">272.3 ms avg · 3 slow events</span></div>
+          <div class="cmp-row"><span class="cmp-key">11 May 14:00</span><span class="cmp-val warn">243.5 ms avg · 2 slow events</span></div>
+          <div class="cmp-row"><span class="cmp-key">12 May 16:00</span><span class="cmp-val warn">180.5 ms avg · 3 slow events</span></div>
+          <div class="cmp-row"><span class="cmp-key">Pattern</span><span class="cmp-val" style="font-size:11px">Non-consecutive, self-resolved quickly</span></div>
+          <div class="cmp-row"><span class="cmp-key">Impact</span><span class="cmp-val good">Minimal — surrounding hours normal</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="report-footer">
+    <div class="footer-left">
+      Generated: 15 May 2026 &nbsp;·&nbsp; Data source: PostgreSQL monitoring database<br>
+      Scope: Production environment · API endpoint: http://61.28.227.20:9188 · Actions: GetCardInfo, GetCouponInfo
+    </div>
+    <div class="footer-right">CONFIDENTIAL — INTERNAL USE</div>
+  </footer>
+
+</div>
+
+<script>
+const daily = [
+  {d:'04/05',wd:'Mon',avg:148.9,p50:99,p95:359,p99:474,cnt:842,slow:0,post:false},
+  {d:'05/05',wd:'Tue',avg:116.8,p50:97,p95:239,p99:438,cnt:1012,slow:0,post:false},
+  {d:'06/05',wd:'Wed',avg:100.0,p50:91,p95:140,p99:213,cnt:1044,slow:0,post:false},
+  {d:'07/05',wd:'Thu',avg:107.4,p50:89,p95:156,p99:243,cnt:1059,slow:5,post:false},
+  {d:'08/05',wd:'Fri',avg:116.4,p50:80,p95:103,p99:189,cnt:1067,slow:9,post:false},
+  {d:'09/05',wd:'Sat',avg:77.3, p50:76,p95:92, p99:103,cnt:1051,slow:0,post:true},
+  {d:'10/05',wd:'Sun',avg:78.2, p50:76,p95:95, p99:116,cnt:1051,slow:0,post:true},
+  {d:'11/05',wd:'Mon',avg:100.5,p50:77,p95:106,p99:204,cnt:1050,slow:5,post:true},
+  {d:'12/05',wd:'Tue',avg:85.5, p50:76,p95:99, p99:187,cnt:1047,slow:4,post:true},
+  {d:'13/05',wd:'Wed',avg:122.3,p50:79,p95:122,p99:1598,cnt:802,slow:17,post:true},
+  {d:'14/05',wd:'Thu',avg:84.3, p50:79,p95:118,p99:173,cnt:976,slow:0,post:true},
+  {d:'15/05',wd:'Fri',avg:74.8, p50:74,p95:85, p99:98, cnt:151,slow:0,post:true},
+];
+
+function dayColor(d){
+  if(d.slow>=5 && d.post) return 'rgba(224,82,82,0.75)';
+  if(d.slow>0 && d.post) return 'rgba(212,147,12,0.75)';
+  if(d.post) return 'rgba(46,168,115,0.72)';
+  if(d.slow>=5) return 'rgba(224,82,82,0.65)';
+  if(d.slow>0) return 'rgba(212,147,12,0.65)';
+  return 'rgba(42,111,196,0.65)';
+}
+function dayBorder(d){
+  if(d.slow>=5) return '#b83232';
+  if(d.slow>0) return '#8a5c0c';
+  if(d.post) return '#1a7a52';
+  return '#1a4f8a';
+}
+
+new Chart(document.getElementById('trendChart'),{
+  data:{
+    labels:daily.map(d=>d.d+'\n'+d.wd),
+    datasets:[
+      {type:'line',data:daily.map(d=>d.avg),borderColor:'rgba(30,30,30,0.18)',borderWidth:1.5,borderDash:[4,3],pointRadius:0,fill:false,tension:0.3,order:0},
+      {type:'bar',label:'Avg ms',data:daily.map(d=>d.avg),backgroundColor:daily.map(dayColor),borderColor:daily.map(dayBorder),borderWidth:1,borderRadius:4,order:1}
+    ]
+  },
+  options:{
+    responsive:true,maintainAspectRatio:false,
+    plugins:{legend:{display:false},tooltip:{callbacks:{
+      title:c=>c[0].label.replace('\n',' '),
+      label:c=>c.datasetIndex===1?`avg: ${c.parsed.y.toFixed(1)}ms | slow: ${daily[c.dataIndex].slow} | P95: ${daily[c.dataIndex].p95}ms | n: ${daily[c.dataIndex].cnt}`:null
+    },filter:i=>i.datasetIndex===1}},
+    scales:{
+      x:{ticks:{font:{size:10.5},autoSkip:false,maxRotation:0},grid:{display:false}},
+      y:{ticks:{font:{size:11},callback:v=>v+'ms'},grid:{color:'rgba(0,0,0,0.04)'},min:0,suggestedMax:175}
+    }
+  }
+});
+
+const hourCmp = {
+  6:{e:90.1,r:75.8},7:{e:135.0,r:78.5},8:{e:119.2,r:81.0},
+  9:{e:113.6,r:121.4},10:{e:102.2,r:126.0},11:{e:109.4,r:121.8},
+  12:{e:103.4,r:80.7},13:{e:107.2,r:78.4},14:{e:109.9,r:109.6},
+  15:{e:222.3,r:80.5},16:{e:103.6,r:98.6},17:{e:106.9,r:79.8},
+  18:{e:108.2,r:78.7},19:{e:121.7,r:79.7},20:{e:124.2,r:79.1},
+  21:{e:116.3,r:82.3},22:{e:102.5,r:79.0},23:{e:89.9,r:77.2}
+};
+const maxHour=240;
+const hbDiv=document.getElementById('hourBars');
+Object.entries(hourCmp).forEach(([h,v])=>{
+  const pct=Math.round((v.r-v.e)/v.e*100);
+  const better=v.r<=v.e;
+  const ew=(v.e/maxHour*100).toFixed(1);
+  const rw=(v.r/maxHour*100).toFixed(1);
+  const rc=better?'#2ea873':'#e05252';
+  const dc=better?'var(--green)':'var(--red)';
+  hbDiv.innerHTML+=`
+  <div class="hb-row">
+    <span class="hb-label">${h}h</span>
+    <div class="hb-track" title="Before: ${v.e}ms | After: ${v.r}ms">
+      <div class="hb-before" style="width:${ew}%"></div>
+      <div class="hb-after" style="width:${rw}%;background:${rc}"></div>
+    </div>
+    <span class="hb-delta" style="color:${dc}">${pct>0?'+':''}${pct}% &nbsp;${v.r.toFixed(0)}ms</span>
+  </div>`;
+});
+
+new Chart(document.getElementById('distChart'),{
+  type:'bar',
+  data:{
+    labels:['≤70ms','71–80ms','81–100ms','101–150ms','151–200ms','>200ms'],
+    datasets:[
+      {label:'Before 04–08 May',data:[2.1,14.3,28.6,27.8,10.3,16.9],backgroundColor:'rgba(42,111,196,0.6)',borderColor:'#1a4f8a',borderWidth:1,borderRadius:3},
+      {label:'After 09–15 May', data:[8.2,41.5,35.7,7.3,2.8,4.5], backgroundColor:'rgba(46,168,115,0.7)',borderColor:'#1a7a52',borderWidth:1,borderRadius:3}
+    ]
+  },
+  options:{
+    responsive:true,maintainAspectRatio:false,
+    plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>`${c.dataset.label}: ${c.parsed.y.toFixed(1)}%`}}},
+    scales:{
+      x:{ticks:{font:{size:11}},grid:{display:false}},
+      y:{ticks:{font:{size:11},callback:v=>v+'%'},grid:{color:'rgba(0,0,0,0.04)'},max:55}
+    }
+  }
+});
+
+const heatData = [{"date":"2026-05-04","hour":8,"avg_ms":90.9,"slow":0},{"date":"2026-05-04","hour":9,"avg_ms":137.5,"slow":0},{"date":"2026-05-04","hour":10,"avg_ms":94.9,"slow":0},{"date":"2026-05-04","hour":11,"avg_ms":106.9,"slow":0},{"date":"2026-05-04","hour":12,"avg_ms":105.8,"slow":0},{"date":"2026-05-04","hour":13,"avg_ms":130.4,"slow":0},{"date":"2026-05-04","hour":14,"avg_ms":138.5,"slow":0},{"date":"2026-05-04","hour":15,"avg_ms":118.4,"slow":0},{"date":"2026-05-04","hour":16,"avg_ms":111.4,"slow":0},{"date":"2026-05-04","hour":17,"avg_ms":147.2,"slow":0},{"date":"2026-05-04","hour":18,"avg_ms":171.0,"slow":0},{"date":"2026-05-04","hour":19,"avg_ms":201.2,"slow":0},{"date":"2026-05-04","hour":20,"avg_ms":246.0,"slow":0},{"date":"2026-05-04","hour":21,"avg_ms":325.1,"slow":0},{"date":"2026-05-04","hour":22,"avg_ms":169.9,"slow":0},{"date":"2026-05-04","hour":23,"avg_ms":92.4,"slow":0},{"date":"2026-05-05","hour":6,"avg_ms":95.8,"slow":0},{"date":"2026-05-05","hour":7,"avg_ms":353.0,"slow":0},{"date":"2026-05-05","hour":8,"avg_ms":134.6,"slow":0},{"date":"2026-05-05","hour":9,"avg_ms":112.4,"slow":0},{"date":"2026-05-05","hour":10,"avg_ms":116.2,"slow":0},{"date":"2026-05-05","hour":11,"avg_ms":108.8,"slow":0},{"date":"2026-05-05","hour":12,"avg_ms":117.6,"slow":0},{"date":"2026-05-05","hour":13,"avg_ms":112.1,"slow":0},{"date":"2026-05-05","hour":14,"avg_ms":111.9,"slow":0},{"date":"2026-05-05","hour":15,"avg_ms":110.8,"slow":0},{"date":"2026-05-05","hour":16,"avg_ms":105.3,"slow":0},{"date":"2026-05-05","hour":17,"avg_ms":104.9,"slow":0},{"date":"2026-05-05","hour":18,"avg_ms":102.1,"slow":0},{"date":"2026-05-05","hour":19,"avg_ms":129.3,"slow":0},{"date":"2026-05-05","hour":20,"avg_ms":99.8,"slow":0},{"date":"2026-05-05","hour":21,"avg_ms":89.2,"slow":0},{"date":"2026-05-05","hour":22,"avg_ms":91.8,"slow":0},{"date":"2026-05-05","hour":23,"avg_ms":98.9,"slow":0},{"date":"2026-05-06","hour":6,"avg_ms":87.8,"slow":0},{"date":"2026-05-06","hour":7,"avg_ms":97.9,"slow":0},{"date":"2026-05-06","hour":8,"avg_ms":103.0,"slow":0},{"date":"2026-05-06","hour":9,"avg_ms":123.4,"slow":0},{"date":"2026-05-06","hour":10,"avg_ms":97.5,"slow":0},{"date":"2026-05-06","hour":11,"avg_ms":98.6,"slow":0},{"date":"2026-05-06","hour":12,"avg_ms":96.1,"slow":0},{"date":"2026-05-06","hour":13,"avg_ms":96.3,"slow":0},{"date":"2026-05-06","hour":14,"avg_ms":113.4,"slow":0},{"date":"2026-05-06","hour":15,"avg_ms":116.8,"slow":0},{"date":"2026-05-06","hour":16,"avg_ms":104.8,"slow":0},{"date":"2026-05-06","hour":17,"avg_ms":100.9,"slow":0},{"date":"2026-05-06","hour":18,"avg_ms":96.7,"slow":0},{"date":"2026-05-06","hour":19,"avg_ms":101.5,"slow":0},{"date":"2026-05-06","hour":20,"avg_ms":101.6,"slow":0},{"date":"2026-05-06","hour":21,"avg_ms":88.1,"slow":0},{"date":"2026-05-06","hour":22,"avg_ms":86.4,"slow":0},{"date":"2026-05-06","hour":23,"avg_ms":84.4,"slow":0},{"date":"2026-05-07","hour":6,"avg_ms":92.0,"slow":0},{"date":"2026-05-07","hour":7,"avg_ms":96.3,"slow":0},{"date":"2026-05-07","hour":8,"avg_ms":152.9,"slow":1},{"date":"2026-05-07","hour":9,"avg_ms":107.3,"slow":0},{"date":"2026-05-07","hour":10,"avg_ms":109.5,"slow":0},{"date":"2026-05-07","hour":11,"avg_ms":151.4,"slow":1},{"date":"2026-05-07","hour":12,"avg_ms":118.3,"slow":0},{"date":"2026-05-07","hour":13,"avg_ms":111.9,"slow":0},{"date":"2026-05-07","hour":14,"avg_ms":105.1,"slow":1},{"date":"2026-05-07","hour":15,"avg_ms":99.4,"slow":0},{"date":"2026-05-07","hour":16,"avg_ms":113.0,"slow":1},{"date":"2026-05-07","hour":17,"avg_ms":103.5,"slow":1},{"date":"2026-05-07","hour":18,"avg_ms":93.7,"slow":0},{"date":"2026-05-07","hour":19,"avg_ms":97.0,"slow":0},{"date":"2026-05-07","hour":20,"avg_ms":94.0,"slow":0},{"date":"2026-05-07","hour":21,"avg_ms":89.3,"slow":0},{"date":"2026-05-07","hour":22,"avg_ms":96.6,"slow":0},{"date":"2026-05-07","hour":23,"avg_ms":89.8,"slow":0},{"date":"2026-05-08","hour":6,"avg_ms":85.0,"slow":0},{"date":"2026-05-08","hour":7,"avg_ms":86.6,"slow":0},{"date":"2026-05-08","hour":8,"avg_ms":90.3,"slow":0},{"date":"2026-05-08","hour":9,"avg_ms":88.9,"slow":0},{"date":"2026-05-08","hour":10,"avg_ms":92.5,"slow":0},{"date":"2026-05-08","hour":11,"avg_ms":84.8,"slow":1},{"date":"2026-05-08","hour":12,"avg_ms":80.6,"slow":0},{"date":"2026-05-08","hour":13,"avg_ms":86.6,"slow":1},{"date":"2026-05-08","hour":14,"avg_ms":80.5,"slow":0},{"date":"2026-05-08","hour":15,"avg_ms":643.3,"slow":7},{"date":"2026-05-08","hour":16,"avg_ms":83.4,"slow":0},{"date":"2026-05-08","hour":17,"avg_ms":78.4,"slow":0},{"date":"2026-05-08","hour":18,"avg_ms":77.5,"slow":0},{"date":"2026-05-08","hour":19,"avg_ms":80.1,"slow":0},{"date":"2026-05-08","hour":20,"avg_ms":81.1,"slow":0},{"date":"2026-05-08","hour":21,"avg_ms":78.7,"slow":0},{"date":"2026-05-08","hour":22,"avg_ms":77.9,"slow":0},{"date":"2026-05-08","hour":23,"avg_ms":84.2,"slow":0},{"date":"2026-05-09","hour":6,"avg_ms":74.5,"slow":0},{"date":"2026-05-09","hour":7,"avg_ms":76.4,"slow":0},{"date":"2026-05-09","hour":8,"avg_ms":79.9,"slow":0},{"date":"2026-05-09","hour":9,"avg_ms":79.0,"slow":0},{"date":"2026-05-09","hour":10,"avg_ms":77.3,"slow":0},{"date":"2026-05-09","hour":11,"avg_ms":78.3,"slow":0},{"date":"2026-05-09","hour":12,"avg_ms":78.2,"slow":0},{"date":"2026-05-09","hour":13,"avg_ms":77.7,"slow":0},{"date":"2026-05-09","hour":14,"avg_ms":77.2,"slow":0},{"date":"2026-05-09","hour":15,"avg_ms":76.8,"slow":0},{"date":"2026-05-09","hour":16,"avg_ms":76.9,"slow":0},{"date":"2026-05-09","hour":17,"avg_ms":76.8,"slow":0},{"date":"2026-05-09","hour":18,"avg_ms":75.3,"slow":0},{"date":"2026-05-09","hour":19,"avg_ms":78.4,"slow":0},{"date":"2026-05-09","hour":20,"avg_ms":78.1,"slow":0},{"date":"2026-05-09","hour":21,"avg_ms":75.7,"slow":0},{"date":"2026-05-09","hour":22,"avg_ms":77.0,"slow":0},{"date":"2026-05-09","hour":23,"avg_ms":76.8,"slow":0},{"date":"2026-05-10","hour":6,"avg_ms":76.3,"slow":0},{"date":"2026-05-10","hour":7,"avg_ms":76.2,"slow":0},{"date":"2026-05-10","hour":8,"avg_ms":80.3,"slow":0},{"date":"2026-05-10","hour":9,"avg_ms":82.8,"slow":0},{"date":"2026-05-10","hour":10,"avg_ms":78.1,"slow":0},{"date":"2026-05-10","hour":11,"avg_ms":77.5,"slow":0},{"date":"2026-05-10","hour":12,"avg_ms":76.8,"slow":0},{"date":"2026-05-10","hour":13,"avg_ms":77.2,"slow":0},{"date":"2026-05-10","hour":14,"avg_ms":75.1,"slow":0},{"date":"2026-05-10","hour":15,"avg_ms":76.0,"slow":0},{"date":"2026-05-10","hour":16,"avg_ms":76.5,"slow":0},{"date":"2026-05-10","hour":17,"avg_ms":75.0,"slow":0},{"date":"2026-05-10","hour":18,"avg_ms":82.1,"slow":0},{"date":"2026-05-10","hour":19,"avg_ms":85.9,"slow":0},{"date":"2026-05-10","hour":20,"avg_ms":77.6,"slow":0},{"date":"2026-05-10","hour":21,"avg_ms":76.0,"slow":0},{"date":"2026-05-10","hour":22,"avg_ms":81.0,"slow":0},{"date":"2026-05-10","hour":23,"avg_ms":76.0,"slow":0},{"date":"2026-05-11","hour":6,"avg_ms":74.7,"slow":0},{"date":"2026-05-11","hour":7,"avg_ms":76.8,"slow":0},{"date":"2026-05-11","hour":8,"avg_ms":83.8,"slow":0},{"date":"2026-05-11","hour":9,"avg_ms":86.1,"slow":0},{"date":"2026-05-11","hour":10,"avg_ms":272.3,"slow":3},{"date":"2026-05-11","hour":11,"avg_ms":88.8,"slow":0},{"date":"2026-05-11","hour":12,"avg_ms":78.0,"slow":0},{"date":"2026-05-11","hour":13,"avg_ms":77.9,"slow":0},{"date":"2026-05-11","hour":14,"avg_ms":243.5,"slow":2},{"date":"2026-05-11","hour":15,"avg_ms":77.8,"slow":0},{"date":"2026-05-11","hour":16,"avg_ms":77.3,"slow":0},{"date":"2026-05-11","hour":17,"avg_ms":85.1,"slow":0},{"date":"2026-05-11","hour":18,"avg_ms":80.6,"slow":0},{"date":"2026-05-11","hour":19,"avg_ms":79.0,"slow":0},{"date":"2026-05-11","hour":20,"avg_ms":79.3,"slow":0},{"date":"2026-05-11","hour":21,"avg_ms":78.6,"slow":0},{"date":"2026-05-11","hour":22,"avg_ms":82.4,"slow":0},{"date":"2026-05-11","hour":23,"avg_ms":78.5,"slow":0},{"date":"2026-05-12","hour":6,"avg_ms":76.1,"slow":0},{"date":"2026-05-12","hour":7,"avg_ms":80.6,"slow":0},{"date":"2026-05-12","hour":8,"avg_ms":81.5,"slow":0},{"date":"2026-05-12","hour":9,"avg_ms":79.8,"slow":0},{"date":"2026-05-12","hour":10,"avg_ms":83.9,"slow":0},{"date":"2026-05-12","hour":11,"avg_ms":80.5,"slow":0},{"date":"2026-05-12","hour":12,"avg_ms":81.4,"slow":0},{"date":"2026-05-12","hour":13,"avg_ms":79.5,"slow":0},{"date":"2026-05-12","hour":14,"avg_ms":97.8,"slow":1},{"date":"2026-05-12","hour":15,"avg_ms":83.0,"slow":0},{"date":"2026-05-12","hour":16,"avg_ms":180.5,"slow":3},{"date":"2026-05-12","hour":17,"avg_ms":75.9,"slow":0},{"date":"2026-05-12","hour":18,"avg_ms":76.8,"slow":0},{"date":"2026-05-12","hour":19,"avg_ms":76.6,"slow":0},{"date":"2026-05-12","hour":20,"avg_ms":76.9,"slow":0},{"date":"2026-05-12","hour":21,"avg_ms":74.3,"slow":0},{"date":"2026-05-12","hour":22,"avg_ms":75.8,"slow":0},{"date":"2026-05-12","hour":23,"avg_ms":75.0,"slow":0},{"date":"2026-05-13","hour":8,"avg_ms":77.9,"slow":0},{"date":"2026-05-13","hour":9,"avg_ms":309.6,"slow":7},{"date":"2026-05-13","hour":10,"avg_ms":151.2,"slow":3},{"date":"2026-05-13","hour":11,"avg_ms":309.8,"slow":6},{"date":"2026-05-13","hour":12,"avg_ms":80.3,"slow":0},{"date":"2026-05-13","hour":13,"avg_ms":78.6,"slow":0},{"date":"2026-05-13","hour":14,"avg_ms":80.7,"slow":0},{"date":"2026-05-13","hour":15,"avg_ms":79.4,"slow":0},{"date":"2026-05-13","hour":17,"avg_ms":84.0,"slow":0},{"date":"2026-05-13","hour":18,"avg_ms":78.8,"slow":0},{"date":"2026-05-13","hour":19,"avg_ms":82.0,"slow":0},{"date":"2026-05-13","hour":20,"avg_ms":82.1,"slow":0},{"date":"2026-05-13","hour":21,"avg_ms":108.7,"slow":1},{"date":"2026-05-13","hour":22,"avg_ms":81.1,"slow":0},{"date":"2026-05-13","hour":23,"avg_ms":80.0,"slow":0},{"date":"2026-05-14","hour":6,"avg_ms":80.4,"slow":0},{"date":"2026-05-14","hour":7,"avg_ms":85.8,"slow":0},{"date":"2026-05-14","hour":8,"avg_ms":83.2,"slow":0},{"date":"2026-05-14","hour":9,"avg_ms":91.0,"slow":0},{"date":"2026-05-14","hour":10,"avg_ms":95.5,"slow":0},{"date":"2026-05-14","hour":11,"avg_ms":93.7,"slow":0},{"date":"2026-05-14","hour":12,"avg_ms":92.8,"slow":0},{"date":"2026-05-14","hour":13,"avg_ms":136.0,"slow":0},{"date":"2026-05-14","hour":14,"avg_ms":83.3,"slow":0},{"date":"2026-05-14","hour":15,"avg_ms":89.6,"slow":0},{"date":"2026-05-14","hour":16,"avg_ms":83.2,"slow":0},{"date":"2026-05-14","hour":17,"avg_ms":82.5,"slow":0},{"date":"2026-05-14","hour":18,"avg_ms":78.8,"slow":0},{"date":"2026-05-14","hour":19,"avg_ms":76.0,"slow":0},{"date":"2026-05-14","hour":20,"avg_ms":80.7,"slow":0},{"date":"2026-05-14","hour":21,"avg_ms":80.4,"slow":0},{"date":"2026-05-14","hour":22,"avg_ms":76.7,"slow":0},{"date":"2026-05-14","hour":23,"avg_ms":76.7,"slow":0},{"date":"2026-05-15","hour":6,"avg_ms":72.9,"slow":0},{"date":"2026-05-15","hour":7,"avg_ms":75.5,"slow":0},{"date":"2026-05-15","hour":8,"avg_ms":77.1,"slow":0}];
+
+const allDates=[...new Set(heatData.map(d=>d.date))].sort();
+const hours=[6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23];
+const lk={};
+heatData.forEach(d=>{lk[d.date+'_'+d.hour]=d});
+function cellBg(v){
+  if(v<=80)return'#b5d4f4';if(v<=100)return'#9fe1cb';
+  if(v<=150)return'#fac775';if(v<=300)return'#f0997b';return'#e24b4a';
+}
+function cellFg(v){
+  if(v<=80)return'#0c447c';if(v<=100)return'#085041';
+  if(v<=150)return'#854f0b';if(v<=300)return'#993c1d';return'#791f1f';
+}
+const isPost=d=>d>='2026-05-09';
+const sd=d=>d.slice(5).replace('-','/');
+const tbl=document.getElementById('hmTable');
+let hdr='<tr><th style="text-align:right;padding:2px 8px 4px 0;color:#9a9790;font-size:10px;font-weight:400;font-family:DM Sans,sans-serif">h / date</th>';
+allDates.forEach(d=>{
+  const sep=isPost(d)?'border-left:2.5px solid #2ea873':'';
+  hdr+=`<th style="text-align:center;padding:2px 3px 4px;color:#9a9790;font-size:10px;font-weight:400;font-family:DM Sans,sans-serif;${sep}">${sd(d)}</th>`;
+});
+hdr+='</tr>';
+tbl.innerHTML=hdr;
+hours.forEach(h=>{
+  let row=`<tr><td class="lbl" style="font-family:DM Mono,monospace;font-size:10px;color:#9a9790;text-align:right;padding:1px 8px 1px 0;white-space:nowrap">${String(h).padStart(2,'0')}h</td>`;
+  allDates.forEach(d=>{
+    const sep=isPost(d)?'border-left:2.5px solid #2ea873':'';
+    const cell=lk[d+'_'+h];
+    if(!cell){row+=`<td class="cell" style="background:#f0ede6;opacity:.4;${sep}"></td>`;return;}
+    const bg=cellBg(cell.avg_ms),fg=cellFg(cell.avg_ms);
+    const txt=cell.slow>0?'⚡':Math.round(cell.avg_ms);
+    row+=`<td class="cell" title="${sd(d)} ${h}:00 — avg: ${cell.avg_ms}ms${cell.slow?' | slow: '+cell.slow:''}" style="background:${bg};color:${fg};font-weight:${cell.slow?'500':'400'};${sep}">${txt}</td>`;
+  });
+  row+='</tr>';
+  tbl.innerHTML+=row;
+});
+</script>
+</body>
+</html>
