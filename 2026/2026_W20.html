@@ -1,0 +1,745 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Dcorp | HaiPM Weekly Report — 2026_W20</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --dn:#003087;--dn2:#002266;--dg:#E8B84B;--dg2:#C9972A;
+  --bg:#F4F5F7;--sur:#FFFFFF;--sur2:#F0F1F4;--bdr:#DDE1EA;
+  --tx:#1A1E2E;--tx2:#4A5068;--tx3:#8891A8;
+  --gr:#0F7B4D;--gr-bg:#E8F5EE;
+  --am:#9A6100;--am-bg:#FDF3DC;
+  --re:#B91C1C;--re-bg:#FEF0F0;
+  --pu:#5B21B6;--pu-bg:#F0ECFE;
+  --bl:#1A56A0;--bl-bg:#EBF2FB;
+  --r:6px;--r2:10px;
+  --mono:'IBM Plex Mono',monospace;
+  --sans:'IBM Plex Sans',-apple-system,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--sans);background:var(--bg);color:var(--tx);font-size:13px;line-height:1.5}
+.shell{display:flex;flex-direction:column;min-height:100vh}
+.hdr{background:var(--dn);display:flex;align-items:center;justify-content:space-between;padding:0 24px;height:52px;flex-shrink:0}
+.hdr-l{display:flex;align-items:center;gap:10px}
+.logo{width:32px;height:32px;background:var(--dg);border-radius:4px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:15px;color:var(--dn);letter-spacing:-.5px}
+.brand{font-size:14px;font-weight:600;color:#fff;letter-spacing:.2px}.brand span{color:var(--dg);margin-left:2px}
+.dept{font-size:12px;color:rgba(255,255,255,.55);margin-left:4px}
+.hdr-r{display:flex;align-items:center;gap:12px}
+.wk-badge{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:20px;padding:3px 10px;font-size:11px;font-family:var(--mono);color:rgba(255,255,255,.85)}
+.usr{font-size:12px;color:rgba(255,255,255,.6)}
+.gold-bar{height:3px;background:linear-gradient(90deg,var(--dg),var(--dg2),transparent)}
+.body{display:grid;grid-template-columns:220px 1fr;flex:1}
+.sb{background:var(--sur);border-right:1px solid var(--bdr);position:sticky;top:0;height:calc(100vh - 55px);overflow-y:auto;display:flex;flex-direction:column}
+.sb-sec{padding:12px 0 6px}
+.sb-lbl{font-size:10px;font-weight:600;color:var(--tx3);text-transform:uppercase;letter-spacing:.9px;padding:0 16px;margin-bottom:4px}
+.nav{display:flex;align-items:center;gap:8px;padding:7px 16px;font-size:12px;color:var(--tx2);cursor:pointer;border-left:3px solid transparent;transition:all .1s}
+.nav:hover{background:var(--sur2);color:var(--dn)}
+.nav.on{background:#EBF0FA;color:var(--dn);border-left-color:var(--dn);font-weight:500}
+.nav-ic{width:16px;height:16px;border-radius:3px;flex-shrink:0;font-size:10px;display:flex;align-items:center;justify-content:center}
+.sdiv{height:1px;background:var(--bdr);margin:6px 16px}
+.ssub{padding:5px 16px 5px 28px;font-size:11px;color:var(--tx3);font-family:var(--mono)}
+.ssub.cur{color:var(--dn);font-weight:500}
+.sb-ft{margin-top:auto;padding:12px 16px;border-top:1px solid var(--bdr);font-size:10px;color:var(--tx3);line-height:1.7}
+.main{padding:24px 28px;overflow-x:hidden}
+.panel{display:none}.panel.on{display:block}
+.pghd{margin-bottom:20px;padding-bottom:16px;border-bottom:1px solid var(--bdr);display:flex;align-items:flex-start;justify-content:space-between}
+.pgt{font-size:20px;font-weight:600;color:var(--dn);letter-spacing:-.3px}
+.pgs{font-size:12px;color:var(--tx3);margin-top:4px;font-family:var(--mono)}
+.stats{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:20px}
+.stat{background:var(--sur);border:1px solid var(--bdr);border-radius:var(--r2);padding:14px 16px;border-top:3px solid transparent}
+.sl{font-size:10px;font-weight:600;color:var(--tx3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px}
+.sn{font-size:26px;font-weight:600;font-family:var(--mono);letter-spacing:-1px}
+.st-navy{border-top-color:var(--dn)}.st-gr{border-top-color:var(--gr)}.st-am{border-top-color:var(--am)}.st-pu{border-top-color:var(--pu)}.st-gy{border-top-color:var(--tx3)}
+.n-navy{color:var(--dn)}.n-gr{color:var(--gr)}.n-am{color:var(--am)}.n-re{color:var(--re)}.n-pu{color:var(--pu)}.n-gy{color:var(--tx3)}
+.sec{font-size:13px;font-weight:600;color:var(--dn);margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.cnt{font-size:10px;padding:2px 8px;border-radius:20px;background:var(--sur2);color:var(--tx3);border:1px solid var(--bdr);font-weight:500}
+.tw{background:var(--sur);border:1px solid var(--bdr);border-radius:var(--r2);overflow:hidden;margin-bottom:16px}
+table{width:100%;border-collapse:collapse}
+thead tr{background:var(--dn)}
+th{padding:8px 12px;font-size:10px;font-weight:600;color:rgba(255,255,255,.85);text-align:left;text-transform:uppercase;letter-spacing:.5px}
+td{padding:9px 12px;border-bottom:1px solid var(--bdr);vertical-align:top;font-size:12px;line-height:1.6}
+tbody tr:last-child td{border-bottom:none}
+tbody tr:hover td{background:#FAFBFC}
+.grp td{background:#F4F5F7;font-weight:600;font-size:11px;color:var(--dn);padding:6px 12px;border-bottom:1px solid var(--bdr)}
+.tid{font-size:11px;font-family:var(--mono)}.tid a{color:var(--bl);text-decoration:none}.tid a:hover{text-decoration:underline}
+.badge{display:inline-flex;padding:2px 8px;border-radius:20px;font-size:10px;font-weight:600}
+.b-done{background:var(--gr-bg);color:var(--gr)}.b-prog{background:var(--am-bg);color:var(--am)}
+.b-wait{background:var(--sur2);color:var(--tx2);border:1px solid var(--bdr)}.b-blk{background:var(--re-bg);color:var(--re)}
+.b-ven{background:var(--pu-bg);color:var(--pu)}.b-car{background:#EEF0FD;color:#4040B0}
+.b-high{background:var(--re-bg);color:var(--re)}.b-norm{background:var(--sur2);color:var(--tx2);border:1px solid var(--bdr)}
+.src{display:inline-block;padding:1px 6px;border-radius:3px;font-size:10px;font-family:var(--mono)}
+.s-cu{background:var(--pu-bg);color:var(--pu)}.s-bx{background:var(--bl-bg);color:var(--bl)}
+.s-in{background:var(--sur2);color:var(--tx3);border:1px solid var(--bdr)}.s-em{background:var(--gr-bg);color:var(--gr)}
+.alert{padding:10px 14px;border-radius:var(--r);font-size:12px;margin-bottom:14px;display:flex;gap:9px;align-items:flex-start;border-left:3px solid}
+.a-am{background:var(--am-bg);color:var(--am);border-color:var(--am)}
+.a-bl{background:var(--bl-bg);color:var(--bl);border-color:var(--bl)}
+.a-gr{background:var(--gr-bg);color:var(--gr);border-color:var(--gr)}
+.a-re{background:var(--re-bg);color:var(--re);border-color:var(--re)}
+.blk-box{border:1px solid #FECACA;border-radius:var(--r2);overflow:hidden;margin-bottom:16px}
+.blk-hd{padding:9px 14px;background:var(--re-bg);font-size:11px;font-weight:600;color:var(--re);border-bottom:1px solid #FECACA;display:flex;align-items:center;gap:7px}
+.blk-row{padding:10px 14px;border-bottom:1px solid var(--bdr);font-size:12px;display:flex;gap:10px;align-items:flex-start}
+.blk-row:last-child{border-bottom:none}
+.bx-wrap{background:var(--sur);border:1px solid var(--bdr);border-radius:var(--r2);overflow:hidden;margin-bottom:20px}
+.bx-hd{padding:9px 14px;background:var(--dn);font-size:11px;font-weight:600;color:rgba(255,255,255,.85);border-bottom:1px solid var(--bdr);display:flex;align-items:center;justify-content:space-between}
+.bx-body{padding:14px 16px;font-size:12px;font-family:var(--mono);color:var(--tx);line-height:1.9;white-space:pre-wrap}
+.copy-btn{padding:3px 10px;border-radius:4px;border:1px solid rgba(255,255,255,.25);background:transparent;font-size:11px;color:rgba(255,255,255,.8);cursor:pointer;font-family:var(--sans)}
+.copy-btn:hover{background:rgba(255,255,255,.12)}
+.sum3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px}
+.scard{background:var(--sur);border:1px solid var(--bdr);border-radius:var(--r2);padding:14px 16px;border-top:3px solid var(--dn)}
+.sc-lbl{font-size:10px;font-weight:600;color:var(--tx3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px}
+.sc-num{font-size:22px;font-weight:600;font-family:var(--mono)}
+.row-cr td{background:#FFF5F5}.row-wa td{background:#FFFBF0}
+.age-r{background:var(--re-bg);color:var(--re)}.age-a{background:var(--am-bg);color:var(--am)}
+.form-box{background:var(--sur);border:1px solid var(--bdr);border-radius:var(--r2);overflow:hidden;margin-bottom:16px}
+.form-hd{padding:10px 16px;background:var(--dn);font-size:12px;font-weight:600;color:rgba(255,255,255,.9)}
+.form-body{padding:16px}
+.fg{display:grid;gap:11px}.fr2{display:grid;grid-template-columns:1fr 1fr;gap:11px}
+.fl{font-size:11px;font-weight:600;color:var(--tx2);margin-bottom:4px;text-transform:uppercase;letter-spacing:.4px}
+.fl span{color:var(--re)}
+select,input[type=text],textarea{width:100%;font-size:12px;font-family:var(--sans);color:var(--tx);background:var(--sur);border:1px solid var(--bdr);border-radius:var(--r);padding:7px 10px;transition:border-color .12s}
+textarea{resize:vertical;min-height:60px}
+select:focus,input:focus,textarea:focus{outline:none;border-color:var(--dn)}
+.te{border:1px solid var(--bdr);border-radius:var(--r);padding:14px;position:relative;margin-bottom:10px;background:#FAFBFC}
+.te-rm{position:absolute;top:8px;right:10px;background:none;border:none;cursor:pointer;color:var(--tx3);font-size:16px;line-height:1}
+.te-rm:hover{color:var(--re)}
+.btn-add{padding:5px 12px;border-radius:var(--r);border:1px dashed var(--bdr);background:transparent;color:var(--tx2);font-size:12px;cursor:pointer;font-family:var(--sans)}
+.btn-add:hover{background:var(--sur2)}
+.btn-ol{padding:6px 14px;border-radius:var(--r);border:1px solid var(--bdr);background:var(--sur);color:var(--tx2);font-size:12px;font-family:var(--sans);cursor:pointer;font-weight:500}
+.btn-ol:hover{border-color:var(--dn);color:var(--dn);background:#EBF0FA}
+.btn-gd{padding:6px 14px;border-radius:var(--r);border:none;background:var(--dg);color:var(--dn);font-size:12px;font-family:var(--sans);cursor:pointer;font-weight:600}
+.btn-gd:hover{background:var(--dg2)}
+.tip{padding:9px 13px;background:var(--am-bg);border-radius:var(--r);border-left:3px solid var(--am);font-size:12px;color:var(--am);margin-bottom:14px}
+.foot{padding:12px 28px;background:var(--dn);font-size:11px;color:rgba(255,255,255,.5);display:flex;align-items:center;justify-content:space-between}
+.foot strong{color:rgba(255,255,255,.8)}
+.foot-g{color:var(--dg);font-family:var(--mono);font-size:11px}
+</style>
+</head>
+<body>
+<div class="shell">
+
+<header class="hdr">
+  <div class="hdr-l">
+    <div class="logo">DC</div>
+    <span class="brand">Dcorp<span>Technology</span></span>
+    <span style="color:rgba(255,255,255,.3);margin:0 6px">|</span>
+    <span class="dept">Core Technology Department</span>
+  </div>
+  <div class="hdr-r">
+    <span class="wk-badge">2026_W20</span>
+    <span class="usr">Phạm Minh Hải · Trưởng phòng</span>
+  </div>
+</header>
+<div class="gold-bar"></div>
+
+<div class="body">
+
+<aside class="sb">
+  <div class="sb-sec">
+    <div class="sb-lbl">Báo cáo W20</div>
+    <div class="nav on" onclick="go('w20',this)"><div class="nav-ic" style="background:#EBF0FA;color:var(--dn)">●</div>W20 — Báo cáo tuần</div>
+    <div class="nav" onclick="go('email',this)"><div class="nav-ic" style="background:var(--gr-bg);color:var(--gr)">@</div>Email tuần W20</div>
+    <div class="nav" onclick="go('longtasks',this)"><div class="nav-ic" style="background:var(--re-bg);color:var(--re)">!</div>Task tồn lâu ngày</div>
+    <div class="nav" onclick="go('backlog',this)"><div class="nav-ic" style="background:var(--pu-bg);color:var(--pu)">↺</div>Backlog & Carry-over</div>
+    <div class="nav" onclick="go('plan',this)"><div class="nav-ic" style="background:var(--am-bg);color:var(--am)">→</div>Kế hoạch W21</div>
+    <div class="nav" onclick="go('guide',this)"><div class="nav-ic" style="background:var(--sur2);color:var(--tx3)">☰</div>Quy trình</div>
+  </div>
+  <div class="sdiv"></div>
+  <div class="sb-sec">
+    <div class="sb-lbl">Lịch sử</div>
+    <div class="ssub" style="color:var(--tx3);opacity:.5">W19 | 11–15.May.2026</div>
+    <div class="ssub cur">→ W20 | 18–22.May.2026</div>
+    <div class="ssub" style="opacity:.35">W21 | 25–29.May ...</div>
+  </div>
+  <div class="sdiv"></div>
+  <div class="sb-sec">
+    <div class="sb-lbl">Master Tasks</div>
+    <div class="ssub" style="color:var(--am);opacity:1">▸ VTI</div>
+    <div class="ssub" style="color:var(--am);opacity:1">▸ VTI Philippine</div>
+    <div class="ssub" style="color:var(--am);opacity:1">▸ VTI — Tối ưu</div>
+    <div class="ssub" style="color:var(--tx3)">▸ Vibe Code</div>
+    <div class="ssub" style="color:var(--gr);opacity:1">▸ 4P's Presales</div>
+    <div class="ssub" style="color:var(--dn);opacity:1">▸ AI Công ty</div>
+  </div>
+  <div class="sb-ft">Dcorp Technology Corporation<br>Core Technology Dept · 2026</div>
+</aside>
+
+<main class="main">
+
+<!-- ════ W20 ════ -->
+<div id="panel-w20" class="panel on">
+  <div class="pghd">
+    <div>
+      <div class="pgt">Báo cáo Tuần W20</div>
+      <div class="pgs">18-May-2026 → 22-May-2026 · Core Technology · Báo cáo CEO</div>
+    </div>
+    <div style="display:flex;gap:8px">
+      <button class="btn-ol" onclick="copyBx()">Copy Bitrix text</button>
+    </div>
+  </div>
+
+  <div class="stats">
+    <div class="stat st-navy"><div class="sl">Tổng đầu việc</div><div class="sn n-navy">11</div></div>
+    <div class="stat st-gr"><div class="sl">Hoàn thành</div><div class="sn n-gr">4</div></div>
+    <div class="stat st-am"><div class="sl">Đang xử lý</div><div class="sn n-am">5</div></div>
+    <div class="stat st-pu"><div class="sl">Chờ / Pending</div><div class="sn n-pu">1</div></div>
+    <div class="stat st-gy"><div class="sl">Chưa bắt đầu</div><div class="sn n-gy">1</div></div>
+  </div>
+
+  <div class="sec">Chi tiết task <span class="cnt">14 task · 7 nhóm</span></div>
+  <div class="tw"><table>
+    <thead><tr>
+      <th style="width:120px">Master Task</th>
+      <th style="width:108px">Task ID</th>
+      <th>Kết quả thực hiện</th>
+      <th style="width:148px">Khó khăn</th>
+      <th style="width:122px">Đề xuất</th>
+      <th style="width:102px">Trạng thái</th>
+    </tr></thead>
+    <tbody>
+      <!-- VTI -->
+      <tr class="grp"><td colspan="6">▸ VTI</td></tr>
+      <tr>
+        <td></td>
+        <td class="tid"><span class="src s-cu">ClickUp</span><br><a href="https://app.clickup.com/t/86eu201fh" target="_blank">TECH-6494</a></td>
+        <td>Script giảm giá kết hợp — <strong>hoàn thành một phần</strong>. Đã demo "One Promotion per Bill" cho VTI (Minh VTI, 20–21/05). Còn 1 case kết hợp Ecode cần chỉnh lại và quay lại script. Lịch chạy thật: <strong>1.Jun</strong>.</td>
+        <td>1 case Ecode chưa xử lý xong</td>
+        <td>Fix case Ecode; chốt lịch deploy 1.Jun</td>
+        <td><span class="badge b-prog">Hoàn thành 1 phần</span></td>
+      </tr>
+      <tr>
+        <td></td>
+        <td class="tid"><span class="src s-cu">ClickUp</span><br><a href="https://app.clickup.com/t/86exaugc9" target="_blank">TECH-13045</a></td>
+        <td>Ecode cho ngày 5.Jun — đã đưa giải pháp kỹ thuật lên task. Đang đánh giá nội bộ, chưa chốt phương án với VTI.</td>
+        <td>Đang đánh giá kỹ thuật nội bộ</td>
+        <td>Chốt phương án và confirm VTI</td>
+        <td><span class="badge b-prog">Đang đánh giá</span></td>
+      </tr>
+      <tr>
+        <td></td>
+        <td class="tid"><span class="src s-em">Email</span><br>#201346</td>
+        <td>Mở ticket rkeeper: <em>RK7 | common shift close with error, cannot generate commonshift file</em>. Đã có 2 update từ vendor trong ngày 20/05. Đang theo dõi.</td>
+        <td>Chờ xác nhận từ rkeeper</td>
+        <td>Follow up ticket W21</td>
+        <td><span class="badge b-prog">Đang theo dõi</span></td>
+      </tr>
+
+      <!-- VTI Philippine -->
+      <tr class="grp"><td colspan="6">▸ VTI Philippine</td></tr>
+      <tr>
+        <td></td>
+        <td class="tid"><span class="src s-bx">Bitrix</span><br><a href="https://intranet.dcorp.com.vn/company/personal/user/8/tasks/task/view/88734/" target="_blank">88734</a></td>
+        <td>Carry-over W19. Quản lý số: vẫn chờ hãng. Script form nội bộ: chưa sắp xếp được trong tuần.</td>
+        <td><span class="badge b-ven" style="display:block;margin-bottom:3px">Vendor</span>Chưa có tin từ hãng<br><span class="badge b-wait" style="display:inline-block;margin-top:3px">Nội bộ</span>Script chưa làm</td>
+        <td>Escalate vendor; bắt đầu script W21</td>
+        <td><span class="badge b-blk">Blocker</span></td>
+      </tr>
+
+      <!-- VTI Tối ưu -->
+      <tr class="grp"><td colspan="6">▸ VTI — Tối ưu hệ thống</td></tr>
+      <tr>
+        <td></td>
+        <td class="tid"><span class="src s-em">Email</span><br>#200828 ✓</td>
+        <td>Ticket <em>CRM V7 – SQL Query Parameterization</em> — rkeeper đánh dấu <strong>Completed</strong> ngày 21/05. Đang monitor kết quả sau khi vendor xử lý.</td>
+        <td>—</td>
+        <td>Monitor thêm 1–2 tuần</td>
+        <td><span class="badge b-done">Vendor hoàn thành</span></td>
+      </tr>
+      <tr>
+        <td></td>
+        <td class="tid"><span class="src s-in">Nội bộ</span></td>
+        <td>Monitor CRM sau nâng cấp 7.15.6.14. Hệ thống <strong>ổn định hoàn toàn</strong> sau 1 tuần, không phát sinh vấn đề.</td>
+        <td>—</td>
+        <td>Đóng task theo dõi</td>
+        <td><span class="badge b-done">Hoàn thành</span></td>
+      </tr>
+
+      <!-- Vibe Code -->
+      <tr class="grp"><td colspan="6">▸ Vibe Code</td></tr>
+      <tr>
+        <td></td>
+        <td class="tid"><span class="src s-in">Nội bộ</span></td>
+        <td>Chấm công: Đang vận hành test cùng team CC. Chưa có đánh giá chính thức từ team.</td>
+        <td>Chưa có phản hồi từ Nghĩa</td>
+        <td>Check Nghĩa đầu W21</td>
+        <td><span class="badge b-wait">Pending</span></td>
+      </tr>
+
+      <!-- AI Công ty -->
+      <tr class="grp"><td colspan="6">▸ AI Công ty</td></tr>
+      <tr>
+        <td></td>
+        <td class="tid"><span class="src s-in">Nội bộ</span></td>
+        <td>Hoàn thành cài đặt <strong>Graylog</strong> cho các server nội bộ. Hệ thống log tập trung đã hoạt động, bắt đầu theo dõi được. Kế hoạch tiếp theo: bổ sung thêm log lỗi theo nhu cầu.</td>
+        <td>—</td>
+        <td>Cấu hình thêm log lỗi theo priority</td>
+        <td><span class="badge b-done">Hoàn thành</span></td>
+      </tr>
+
+      <!-- 4P's Presales -->
+      <tr class="grp"><td colspan="6">▸ 4P's Presales</td></tr>
+      <tr>
+        <td></td>
+        <td class="tid"><span class="src s-em">Email</span><br>Carry-over</td>
+        <td>Review file Requirement Analysis 4P's từ W19. Đang trong giai đoạn chuẩn bị tài liệu kỹ thuật để đánh giá.</td>
+        <td>—</td>
+        <td>Hoàn thiện tài liệu kỹ thuật W21</td>
+        <td><span class="badge b-prog">Đang chuẩn bị</span></td>
+      </tr>
+
+      <!-- AI Công ty -->
+      <tr class="grp"><td colspan="6">▸ AI Công ty</td></tr>
+      <tr>
+        <td></td>
+        <td class="tid"><span class="src s-bx">Bitrix</span><br>92488 / 92519</td>
+        <td>
+          <strong>Chấm công & lương (92488):</strong> Đang vận hành test cùng team CC, chưa có đánh giá chính thức.<br>
+          <strong>Zalo OA + AI for CC (92519):</strong> Đang trong giai đoạn khảo sát và lên plan, chưa bắt đầu triển khai.
+        </td>
+        <td>Chờ đánh giá từ team CC</td>
+        <td>Thu thập feedback CC W21</td>
+        <td><span class="badge b-prog">Đang test</span></td>
+      </tr>
+      <tr>
+        <td></td>
+        <td class="tid"><span class="src s-bx">Bitrix</span><br>92521 / 92522 / 92540 / 92572</td>
+        <td>Nghiên cứu & hướng dẫn ứng dụng AI Google (Gemini, Google Workspace, Google Business) cho Dcorp nội bộ. Đang trong giai đoạn nghiên cứu ban đầu.</td>
+        <td>—</td>
+        <td>Lên plan cụ thể W21</td>
+        <td><span class="badge b-wait">Chờ thực hiện</span></td>
+      </tr>
+
+      <!-- VTI Tối ưu bổ sung -->
+      <tr class="grp"><td colspan="6">▸ VTI — Tối ưu hệ thống (bổ sung)</td></tr>
+      <tr>
+        <td></td>
+        <td class="tid"><span class="src s-bx">Bitrix</span><br>92518</td>
+        <td>Graylog / OpenSearch Centralized Logs — <strong>hoàn thành cài đặt giai đoạn 1</strong>. Các server đã kết nối, log tập trung hoạt động. Chuyển sang giai đoạn tối ưu: bổ sung log lỗi theo priority, cấu hình alert.</td>
+        <td>—</td>
+        <td>Cấu hình log lỗi + alert W21</td>
+        <td><span class="badge b-done">Phase 1 xong</span></td>
+      </tr>
+      <tr>
+        <td></td>
+        <td class="tid"><span class="src s-bx">Bitrix</span><br>92580 / 92688</td>
+        <td>Tối ưu hạ tầng VMware VTI trên VNG Cloud + thống kê/mô tả toàn bộ Infrastructure & Software. Đang trong giai đoạn khảo sát ban đầu.</td>
+        <td>—</td>
+        <td>Lên plan tối ưu W21</td>
+        <td><span class="badge b-wait">Chờ thực hiện</span></td>
+      </tr>
+
+      <!-- Nội bộ -->
+      <tr class="grp"><td colspan="6">▸ Nội bộ / Digital Transformation</td></tr>
+      <tr>
+        <td></td>
+        <td class="tid"><span class="src s-bx">Bitrix</span><br>92940</td>
+        <td>Rà soát & chuẩn hóa danh sách phần mềm toàn công ty. Team kỹ thuật đang thống kê. Phần kế toán chưa hoàn thiện, chờ finalize.</td>
+        <td>Kế toán chưa hoàn thiện phần của mình</td>
+        <td>Chờ kế toán → tổng hợp final</td>
+        <td><span class="badge b-prog">Đang thống kê</span></td>
+      </tr>
+    </tbody>
+  </table></div>
+
+  <div class="sec">Blocker & Điểm theo dõi</div>
+  <div class="blk-box">
+    <div class="blk-hd">&#9888; Cần xử lý trong tuần W21</div>
+    <div class="blk-row"><span style="flex-shrink:0">&#128308;</span><div><strong>Philippine (88734) — Vendor:</strong> Tuần 2 chưa có tin từ hãng về quản lý số. Cần escalate chính thức.</div></div>
+    <div class="blk-row"><span style="flex-shrink:0">&#128308;</span><div><strong>Script giảm giá kết hợp — Ecode case:</strong> Cần fix trước 1.Jun để đảm bảo lịch chạy thật.</div></div>
+    <div class="blk-row"><span style="flex-shrink:0">&#128993;</span><div><strong>TECH-13045 — Ecode 5.Jun:</strong> Chốt phương án kỹ thuật và confirm với VTI.</div></div>
+    <div class="blk-row"><span style="flex-shrink:0">&#128993;</span><div><strong>Ticket #201346 (common shift close):</strong> Đang chờ phản hồi thêm từ rkeeper.</div></div>
+    <div class="blk-row"><span style="flex-shrink:0">&#128993;</span><div><strong>Philippine — Script form nội bộ:</strong> 2 tuần carry-over. Cần bắt đầu W21.</div></div>
+    <div class="blk-row"><span style="flex-shrink:0">&#128309;</span><div><strong>Lưu ý:</strong> Một số task carry-over chưa được cập nhật trên Bitrix — cần sync lại trạng thái để báo cáo chính xác.</div></div>
+  </div>
+
+  <div class="sec">Nội dung gửi Bitrix</div>
+  <div class="bx-wrap">
+    <div class="bx-hd"><span>&#128203; Copy paste lên Bitrix</span><button class="copy-btn" onclick="copyBx()">Copy</button></div>
+    <div class="bx-body" id="bx-text">📋 HaiPM | W20 | 18–22.May.2026
+
+✅ Hoàn thành:
+- Graylog: Cài đặt xong cho các server, hệ thống log tập trung đã hoạt động
+- Ticket #200828 (rkeeper): SQL Query Parameterization → vendor hoàn thành 21/05
+- CRM 7.15.6.14: Monitor 1 tuần, hệ thống ổn định hoàn toàn → đóng task theo dõi
+
+🔄 Đang xử lý:
+- TECH-6494: Script giảm giá kết hợp — demo "One Promotion per Bill" đã thực hiện. Còn 1 case Ecode cần fix, lịch chạy thật 1.Jun
+- TECH-13045: Ecode 5.Jun — đã đưa giải pháp lên task, đang đánh giá kỹ thuật nội bộ, chưa chốt
+- #201346 (rkeeper): RK7 common shift close error → mở ticket, đang theo dõi
+- 4P's Presales: Đang chuẩn bị tài liệu kỹ thuật sau họp 14/05
+
+⏳ Chưa bắt đầu:
+- Philippine (88734): Script form nội bộ — 2 tuần carry-over, cần bắt đầu W21
+- Vibe Code / Chấm công (92488): Đang vận hành test cùng team CC, chưa có đánh giá
+- Graylog/OpenSearch (92518): Phase 1 hoàn thành — log tập trung hoạt động, chuyển sang tối ưu
+- Rà soát phần mềm công ty (92940): Team kỹ thuật đang thống kê, chờ kế toán finalize
+- AI Google / Gemini (92521–92572): Đang nghiên cứu ban đầu
+- VTI Infra / VMware (92580, 92688): Đang khảo sát
+
+🔴 Blocker:
+- Philippine (88734): Vendor chưa cung cấp quản lý số → cần escalate chính thức
+- TECH-6494: Fix case Ecode phải xong trước 1.Jun
+
+📅 Kế hoạch W21:
+- Fix case Ecode cho script giảm giá kết hợp → deploy 1.Jun
+- Chốt phương án Ecode 5.Jun với VTI
+- Bắt đầu script form nội bộ Philippine
+- Escalate vendor Philippine về quản lý số
+- Hoàn thiện tài liệu kỹ thuật 4P's</div>
+  </div>
+</div>
+
+<!-- ════ EMAIL ════ -->
+<div id="panel-email" class="panel">
+  <div class="pghd"><div>
+    <div class="pgt">Email tuần W20</div>
+    <div class="pgs">18–22.May.2026 · d.haipm@dcorp.com.vn</div>
+  </div></div>
+
+  <div class="sum3">
+    <div class="scard"><div class="sc-lbl">Cần action</div><div class="sc-num n-gr">4</div></div>
+    <div class="scard"><div class="sc-lbl">Vendor tickets</div><div class="sc-num n-pu">5</div></div>
+    <div class="scard"><div class="sc-lbl">Tổng công việc</div><div class="sc-num n-navy">9</div></div>
+  </div>
+
+  <div class="sec">Email cần action <span class="cnt">4 email</span></div>
+  <div class="tw"><table>
+    <thead><tr><th style="width:85px">Ngày</th><th>Subject</th><th style="width:145px">Từ / Đối tượng</th><th style="width:85px">Loại</th><th style="width:145px">Action / Ghi chú</th></tr></thead>
+    <tbody>
+      <tr>
+        <td style="font-size:11px;font-family:var(--mono)">20–21/05</td>
+        <td>One Promotion per Bill – Final Tech Demo Prep Before Nationwide Rollout</td>
+        <td>minh.nguyenngoctue@vtijs.com</td>
+        <td><span class="badge b-prog">Demo VTI</span></td>
+        <td>Demo script giảm giá kết hợp. Còn 1 case Ecode → fix trước 1.Jun</td>
+      </tr>
+      <tr>
+        <td style="font-size:11px;font-family:var(--mono)">21–22/05</td>
+        <td>RE: Label Printer++ (recap + cấu hình SALA store)</td>
+        <td>thuan.vo@vtijs.com → team</td>
+        <td><span class="badge b-wait">Theo dõi</span></td>
+        <td>Dcorp team đã cấu hình xong tại SALA. Bạn theo dõi qua email.</td>
+      </tr>
+      <tr>
+        <td style="font-size:11px;font-family:var(--mono)">21/05</td>
+        <td>Huy: Introduce Dcorp Technology (to Jollibee)</td>
+        <td>d.huynt@dcorp.com.vn → Jollibee</td>
+        <td><span class="badge b-wait">CC</span></td>
+        <td>Huy giới thiệu Dcorp tới Jollibee. Bạn được CC — theo dõi.</td>
+      </tr>
+      <tr>
+        <td style="font-size:11px;font-family:var(--mono)">21/05</td>
+        <td>[DcorpxVTI] Weekly meeting for POS project — reminder</td>
+        <td>calendar.yandex.ru</td>
+        <td><span class="badge b-done">Meeting</span></td>
+        <td>Họp weekly VTI POS project 21/05 05:00–06:00 (GMT+3)</td>
+      </tr>
+    </tbody>
+  </table></div>
+
+  <div class="sec">Vendor Tickets — rkeeper <span class="cnt">5 tickets tuần này</span></div>
+  <div class="tw"><table>
+    <thead><tr><th style="width:95px">Ticket</th><th>Chủ đề</th><th style="width:75px">Ngày</th><th style="width:100px">Trạng thái</th><th style="width:150px">Ghi chú</th></tr></thead>
+    <tbody>
+      <tr>
+        <td style="font-family:var(--mono);font-size:11px">#201346</td>
+        <td>RK7 | common shift close with error, cannot generate commonshift file</td>
+        <td style="font-size:11px">20/05</td>
+        <td><span class="badge b-prog">Mới + 2 update</span></td>
+        <td>Mở 20/05, đang theo dõi W21</td>
+      </tr>
+      <tr>
+        <td style="font-family:var(--mono);font-size:11px">#200828 ✓</td>
+        <td>CRM V7 – SQL Query Parameterization / Query Store Pollution</td>
+        <td style="font-size:11px">21/05</td>
+        <td><span class="badge b-done">Completed</span></td>
+        <td>Vendor đánh dấu hoàn thành 21/05</td>
+      </tr>
+      <tr>
+        <td style="font-family:var(--mono);font-size:11px">#200828</td>
+        <td>CRM V7 – SQL Query Parameterization (comment update)</td>
+        <td style="font-size:11px">20/05</td>
+        <td><span class="badge b-prog">Comment mới</span></td>
+        <td>Update trước khi đóng ticket</td>
+      </tr>
+      <tr>
+        <td style="font-family:var(--mono);font-size:11px">#200768 ✓</td>
+        <td>RK7 | Reference server cannot open webinterface</td>
+        <td style="font-size:11px">22/05</td>
+        <td><span class="badge b-done">Completed</span></td>
+        <td>Vendor đóng ticket 22/05</td>
+      </tr>
+      <tr>
+        <td style="font-family:var(--mono);font-size:11px">#200768</td>
+        <td>RK7 | Reference server (comment update)</td>
+        <td style="font-size:11px">22/05</td>
+        <td><span class="badge b-prog">Comment mới</span></td>
+        <td>Update trước khi đóng ticket</td>
+      </tr>
+    </tbody>
+  </table></div>
+
+  <div class="alert a-gr"><span>&#128161;</span><div>Tuần W20: 2 ticket rkeeper đã được đóng — <strong>#200768</strong> (Reference server) và <strong>#200828</strong> (SQL Query Parameterization). Ticket mới <strong>#201346</strong> (common shift close) cần tiếp tục theo dõi W21.</div></div>
+</div>
+
+<!-- ════ LONG TASKS ════ -->
+<div id="panel-longtasks" class="panel">
+  <div class="pghd"><div>
+    <div class="pgt">Task tồn lâu ngày</div>
+    <div class="pgs">Tính đến 22-May-2026 · Cần review định kỳ hàng tháng</div>
+  </div></div>
+
+  <div class="alert a-am"><span>&#9888;</span><div>12 task tồn trên 3 tháng, trong đó có 8 task đã quá due date. Cần review trong cuộc họp team gần nhất.</div></div>
+
+  <div class="sum3">
+    <div class="scard" style="border-top-color:var(--re)"><div class="sc-lbl">Tồn &gt;6 tháng</div><div class="sc-num n-re">8</div></div>
+    <div class="scard" style="border-top-color:var(--am)"><div class="sc-lbl">Tồn 3–6 tháng</div><div class="sc-num n-am">4</div></div>
+    <div class="scard"><div class="sc-lbl">Tổng</div><div class="sc-num n-navy">12</div></div>
+  </div>
+
+  <div class="sec">Danh sách <span class="cnt">lâu nhất trước</span></div>
+  <div class="tw"><table>
+    <thead><tr>
+      <th style="width:110px">Task ID</th><th>Tên task</th>
+      <th style="width:110px">Khách hàng</th><th style="width:80px">Tuổi</th>
+      <th style="width:85px">Due date</th><th style="width:90px">Status</th><th style="width:80px">Mức</th>
+    </tr></thead>
+    <tbody>
+      <tr class="row-cr"><td class="tid"><a href="https://app.clickup.com/t/86eqrx5fp" target="_blank">TECH-1563</a></td><td>Tư vấn yêu cầu phát triển chức năng Skymenu</td><td>Madame Lân</td><td style="font-size:11px">~29 tháng</td><td style="font-size:11px;color:var(--re)">Nov 2024</td><td><span class="badge b-prog">in progress</span></td><td><span class="badge age-r">Quá hạn</span></td></tr>
+      <tr class="row-cr"><td class="tid"><a href="https://app.clickup.com/t/86er9f7az" target="_blank">TECH-3632</a></td><td>Kiểm tra thông báo thanh toán online/visa</td><td>VTI</td><td style="font-size:11px">~17 tháng</td><td style="font-size:11px;color:var(--tx3)">—</td><td><span class="badge b-prog">in progress</span></td><td><span class="badge age-r">&gt;6 tháng</span></td></tr>
+      <tr class="row-cr"><td class="tid"><a href="https://app.clickup.com/t/86er9h1t5" target="_blank">TECH-3646</a></td><td>Màn hình QMS tự chuyển về trang chủ</td><td>VTI</td><td style="font-size:11px">~17 tháng</td><td style="font-size:11px;color:var(--re)">Jan 2025</td><td><span class="badge b-prog">in progress</span></td><td><span class="badge age-r">Quá hạn</span></td></tr>
+      <tr class="row-cr"><td class="tid"><a href="https://app.clickup.com/t/86er9f6bz" target="_blank">TECH-3630</a></td><td>File mô tả tham số setup config in/out app</td><td>VTI</td><td style="font-size:11px">~17 tháng</td><td style="font-size:11px;color:var(--re)">Jan 2025</td><td><span class="badge b-wait">to do</span></td><td><span class="badge age-r">Quá hạn</span></td></tr>
+      <tr class="row-cr"><td class="tid"><a href="https://app.clickup.com/t/86ergkkrz" target="_blank">TECH-4051</a></td><td>Script chặn huỷ HĐ sau xuất GTGT</td><td>VTI</td><td style="font-size:11px">~15 tháng</td><td style="font-size:11px;color:var(--re)">Feb 2025</td><td><span class="badge b-prog">in progress</span></td><td><span class="badge age-r">Quá hạn</span></td></tr>
+      <tr class="row-cr"><td class="tid"><a href="https://app.clickup.com/t/86ern01wf" target="_blank">TECH-4473</a></td><td>Gửi danh mục menu, modifier, combo, receipt</td><td>VTI</td><td style="font-size:11px">~14 tháng</td><td style="font-size:11px;color:var(--re)">Feb 2025</td><td><span class="badge b-wait">to do</span></td><td><span class="badge age-r">Quá hạn</span></td></tr>
+      <tr class="row-cr"><td class="tid"><a href="https://app.clickup.com/t/86erp1vt7" target="_blank">TECH-4564</a></td><td>Thêm tính năng phiếu trừ hàng SkyInventory</td><td>Mộc BBQ</td><td style="font-size:11px">~13 tháng</td><td style="font-size:11px;color:var(--re)">Mar 2025</td><td><span class="badge b-wait">to do</span></td><td><span class="badge age-r">Quá hạn</span></td></tr>
+      <tr class="row-cr"><td class="tid"><a href="https://app.clickup.com/t/86erq08g1" target="_blank">TECH-4619</a></td><td>Lỗi giao tiếp XML với máy POS</td><td>Golden Gate</td><td style="font-size:11px">~13 tháng</td><td style="font-size:11px;color:var(--re)">Mar 2025</td><td><span class="badge b-wait">to do</span></td><td><span class="badge age-r">Quá hạn</span></td></tr>
+      <tr class="row-wa"><td class="tid"><a href="https://app.clickup.com/t/86et1hqce" target="_blank">TECH-5310</a></td><td>Phiếu in xuống Expo/KDS mất ghi chú</td><td>VTI</td><td style="font-size:11px">~10 tháng</td><td style="font-size:11px;color:var(--tx3)">—</td><td><span class="badge b-blk">urgent</span></td><td><span class="badge age-a">3–6 tháng</span></td></tr>
+      <tr class="row-wa"><td class="tid"><a href="https://app.clickup.com/t/86etc0bh5" target="_blank">TECH-5561</a></td><td>Voucher không ghi nhận coupon payment</td><td>Newpearl</td><td style="font-size:11px">~9 tháng</td><td style="font-size:11px;color:var(--re)">May 2025</td><td><span class="badge b-wait">pending</span></td><td><span class="badge age-a">Quá hạn</span></td></tr>
+      <tr class="row-wa"><td class="tid"><a href="https://app.clickup.com/t/86et9323e" target="_blank">TECH-5522</a></td><td>Thêm chức năng SkyTab</td><td>Elgaucho</td><td style="font-size:11px">~9 tháng</td><td style="font-size:11px;color:var(--tx3)">—</td><td><span class="badge b-wait">to do</span></td><td><span class="badge age-a">3–6 tháng</span></td></tr>
+      <tr class="row-wa"><td class="tid"><a href="https://app.clickup.com/t/86etp5rjn" target="_blank">TECH-5839</a></td><td>Chỉnh font chữ view bill Sky CRM Zalo OA</td><td>Quê Nhà</td><td style="font-size:11px">~6 tháng</td><td style="font-size:11px;color:var(--am)">Jun 2025</td><td><span class="badge b-wait">to do</span></td><td><span class="badge age-a">3–6 tháng</span></td></tr>
+    </tbody>
+  </table></div>
+  <div class="alert a-bl"><span>&#128161;</span><div>Đề xuất: Review 8 task quá hạn trong cuộc họp team. Phân loại: đã xong chưa close → close ngay; cần escalate KH; không còn relevant → đóng.</div></div>
+</div>
+
+<!-- ════ BACKLOG ════ -->
+<div id="panel-backlog" class="panel">
+  <div class="pghd"><div>
+    <div class="pgt">Backlog & Carry-over</div>
+    <div class="pgs">Task theo dõi nhiều tuần · Lịch sử</div>
+  </div></div>
+
+  <div class="alert a-re"><span>&#9888;</span><div>Philippine (88734) đã carry-over <strong>2 tuần liên tiếp</strong>. Cần hành động cụ thể W21.</div></div>
+
+  <div class="sec">Carry-over sang W21</div>
+  <div class="tw" style="margin-bottom:16px"><table>
+    <thead><tr><th>Task</th><th>Mô tả</th><th style="width:80px">W19</th><th style="width:80px">W20</th><th style="width:100px">W21</th></tr></thead>
+    <tbody>
+      <tr>
+        <td class="tid"><a href="https://intranet.dcorp.com.vn/company/personal/user/8/tasks/task/view/88734/" target="_blank">88734</a></td>
+        <td>Philippine — Quản lý số chờ hãng</td>
+        <td><span class="badge b-ven">Vendor</span></td>
+        <td><span class="badge b-ven">Vendor</span></td>
+        <td style="font-size:11px;font-weight:600;color:var(--re)">→ Escalate</td>
+      </tr>
+      <tr>
+        <td class="tid" style="color:var(--tx3)">Nội bộ</td>
+        <td>Philippine — Script form nội bộ</td>
+        <td><span class="badge b-wait">Chưa làm</span></td>
+        <td><span class="badge b-wait">Chưa làm</span></td>
+        <td style="font-size:11px;font-weight:600;color:var(--re)">→ Bắt đầu W21</td>
+      </tr>
+      <tr>
+        <td class="tid" style="color:var(--tx3)">Nội bộ</td>
+        <td>Vibe Code — Chấm công, đang test cùng team CC</td>
+        <td><span class="badge b-car">Pending</span></td>
+        <td><span class="badge b-prog">Đang test</span></td>
+        <td style="font-size:11px;font-weight:500">Thu thập feedback</td>
+      </tr>
+      <tr>
+        <td class="tid"><a href="https://app.clickup.com/t/86eu201fh" target="_blank">TECH-6494</a></td>
+        <td>Script giảm giá kết hợp — fix case Ecode</td>
+        <td style="font-size:11px;color:var(--tx3)">—</td>
+        <td><span class="badge b-prog">1 case còn</span></td>
+        <td style="font-size:11px;font-weight:600;color:var(--am)">→ Deploy 1.Jun</td>
+      </tr>
+    </tbody>
+  </table></div>
+
+  <div class="sec">Hoàn thành W20</div>
+  <div class="tw"><table>
+    <thead><tr><th style="width:110px">Task / Source</th><th>Mô tả</th><th style="width:70px">Tuần</th><th style="width:90px">Status</th></tr></thead>
+    <tbody>
+      <tr><td class="tid" style="color:var(--tx3)">Nội bộ</td><td>Graylog — cài đặt cho các server, bắt đầu monitor được</td><td style="font-size:11px;font-family:var(--mono)">W20</td><td><span class="badge b-done">Done</span></td></tr>
+      <tr><td class="tid" style="font-family:var(--mono)">#200828</td><td>rkeeper: SQL Query Parameterization — vendor hoàn thành</td><td style="font-size:11px;font-family:var(--mono)">W20</td><td><span class="badge b-done">Done</span></td></tr>
+      <tr><td class="tid" style="font-family:var(--mono)">#200768</td><td>rkeeper: Reference server issue — vendor đóng ticket</td><td style="font-size:11px;font-family:var(--mono)">W20</td><td><span class="badge b-done">Done</span></td></tr>
+      <tr><td class="tid" style="font-family:var(--mono)">92518</td><td>Graylog/OpenSearch — cài đặt Phase 1 xong, log tập trung hoạt động</td><td style="font-size:11px;font-family:var(--mono)">W20</td><td><span class="badge b-done">Phase 1</span></td></tr>
+      <tr><td class="tid" style="color:var(--tx3)">Nội bộ</td><td>CRM 7.15.6.14 — monitor 1 tuần, hệ thống ổn định hoàn toàn</td><td style="font-size:11px;font-family:var(--mono)">W20</td><td><span class="badge b-done">Done</span></td></tr>
+    </tbody>
+  </table></div>
+</div>
+
+<!-- ════ KẾ HOẠCH W21 ════ -->
+<div id="panel-plan" class="panel">
+  <div class="pghd"><div>
+    <div class="pgt">Kế hoạch tuần W21</div>
+    <div class="pgs">25–29.May.2026 · Từ carry-over + kế hoạch bổ sung</div>
+  </div></div>
+
+  <div class="sum3">
+    <div class="scard" style="border-top-color:var(--re)"><div class="sc-lbl">High priority</div><div class="sc-num n-re">4</div></div>
+    <div class="scard" style="border-top-color:var(--am)"><div class="sc-lbl">Normal</div><div class="sc-num n-am">4</div></div>
+    <div class="scard"><div class="sc-lbl">Tổng kế hoạch</div><div class="sc-num n-navy">8</div></div>
+  </div>
+
+  <div class="sec">Kế hoạch W21 <span class="cnt">8 mục</span></div>
+  <div class="tw" style="margin-bottom:16px"><table>
+    <thead><tr><th style="width:145px">Master Task</th><th>Nội dung kế hoạch</th><th style="width:80px">Ưu tiên</th><th style="width:165px">Nguồn</th></tr></thead>
+    <tbody>
+      <tr><td>VTI</td><td><strong>Fix case Ecode cho script giảm giá kết hợp → chuẩn bị deploy 1.Jun</strong></td><td><span class="badge b-high">High</span></td><td>Carry-over W20, deadline cứng</td></tr>
+      <tr><td>VTI</td><td><strong>Chốt phương án kỹ thuật Ecode 5.Jun và confirm với VTI</strong></td><td><span class="badge b-high">High</span></td><td>TECH-13045</td></tr>
+      <tr><td>VTI Philippine</td><td><strong>Escalate chính thức vendor về quản lý số (88734) — 2 tuần chưa có tin</strong></td><td><span class="badge b-high">High</span></td><td>Carry-over 2 tuần</td></tr>
+      <tr><td>VTI Philippine</td><td><strong>Bắt đầu thực hiện script form nội bộ Philippine</strong></td><td><span class="badge b-high">High</span></td><td>Carry-over 2 tuần</td></tr>
+      <tr><td>VTI</td><td>Follow up ticket #201346 (common shift close error)</td><td><span class="badge b-norm">Normal</span></td><td>Ticket mở W20</td></tr>
+      <tr><td>AI Công ty</td><td>Cấu hình thêm log lỗi Graylog theo priority sau khi hệ thống ổn định</td><td><span class="badge b-norm">Normal</span></td><td>Sau cài đặt W20</td></tr>
+      <tr><td>4P's Presales</td><td>Hoàn thiện tài liệu kỹ thuật đánh giá cho 4P's</td><td><span class="badge b-norm">Normal</span></td><td>Carry-over W19</td></tr>
+      <tr><td>Vibe Code</td><td>Check tiến độ Nghĩa về chấm công / phân ca</td><td><span class="badge b-norm">Normal</span></td><td>Carry-over 2 tuần</td></tr>
+    </tbody>
+  </table></div>
+
+  <div class="tip">Thêm công việc phát sinh hoặc kế hoạch mới bên dưới. Nhấn "Gửi Claude" để tổng hợp vào báo cáo W21.</div>
+
+  <div class="form-box">
+    <div class="form-hd">Thêm kế hoạch W21</div>
+    <div class="form-body">
+      <div id="plan-entries">
+        <div class="te" id="pe-0">
+          <button class="te-rm" onclick="rmEl('pe-0')">×</button>
+          <div class="fg">
+            <div class="fr2">
+              <div><div class="fl">Master Task <span>*</span></div>
+                <select><option>-- Chọn --</option><option>VTI</option><option>VTI — Tối ưu hệ thống</option><option>VTI Philippine</option><option>AI Công ty</option><option>Vibe Code</option><option>4P's Presales</option><option>Other</option></select>
+              </div>
+              <div><div class="fl">Ưu tiên</div>
+                <select><option value="high">High</option><option value="normal" selected>Normal</option><option value="low">Low</option></select>
+              </div>
+            </div>
+            <div><div class="fl">Nội dung kế hoạch <span>*</span></div><textarea placeholder="Mô tả kế hoạch..."></textarea></div>
+            <div><div class="fl">Task ID liên quan</div><input type="text" placeholder="TECH-xxxxx..."></div>
+          </div>
+        </div>
+      </div>
+      <button class="btn-add" onclick="addPlan()">+ Thêm</button>
+      <div style="margin-top:12px;text-align:right"><button class="btn-gd" onclick="sendPlan()">Gửi Claude ↗</button></div>
+    </div>
+  </div>
+
+  <div class="form-box">
+    <div class="form-hd">Công việc phát sinh W20 (không có task ID)</div>
+    <div class="form-body">
+      <div id="adhoc-entries">
+        <div class="te" id="ae-0">
+          <button class="te-rm" onclick="rmEl('ae-0')">×</button>
+          <div class="fg">
+            <div class="fr2">
+              <div><div class="fl">Master Task <span>*</span></div>
+                <select><option>-- Chọn --</option><option>VTI</option><option>VTI — Tối ưu hệ thống</option><option>VTI Philippine</option><option>AI Công ty</option><option>Vibe Code</option><option>4P's Presales</option><option>Other</option></select>
+              </div>
+              <div><div class="fl">Trạng thái</div>
+                <select><option value="done">Hoàn thành</option><option value="prog">Đang xử lý</option><option value="wait">Chưa bắt đầu</option></select>
+              </div>
+            </div>
+            <div><div class="fl">Mô tả công việc <span>*</span></div><textarea placeholder="Mô tả việc đã làm..."></textarea></div>
+            <div><div class="fl">Khó khăn (nếu có)</div><input type="text" placeholder="..."></div>
+          </div>
+        </div>
+      </div>
+      <button class="btn-add" onclick="addAdhoc()">+ Thêm</button>
+      <div style="margin-top:12px;text-align:right"><button class="btn-gd" onclick="sendAdhoc()">Bổ sung vào báo cáo ↗</button></div>
+    </div>
+  </div>
+</div>
+
+<!-- ════ GUIDE ════ -->
+<div id="panel-guide" class="panel">
+  <div class="pghd"><div>
+    <div class="pgt">Quy trình làm báo cáo tuần</div>
+    <div class="pgs">Áp dụng từ W19 · 2026 · Core Technology</div>
+  </div></div>
+  <div class="tw"><table>
+    <thead><tr><th style="width:130px">Thời điểm</th><th>Việc cần làm</th><th style="width:200px">Công cụ</th></tr></thead>
+    <tbody>
+      <tr><td>Thứ 4–5</td><td>Rà soát ClickUp + Bitrix + Gmail, ghi chú việc đã làm</td><td>ClickUp / Bitrix / Gmail</td></tr>
+      <tr><td>Thứ 5–6 sáng</td><td>Nhập task vào Claude → nhận báo cáo 6 tab + Bitrix text</td><td>Claude (skill weekly-report-haipm)</td></tr>
+      <tr><td>Thứ 6 trước 17:00</td><td>Copy text lên Bitrix + đính kèm file HTML</td><td>Bitrix</td></tr>
+      <tr><td>Hàng tháng</td><td>Review tab "Task tồn lâu ngày" → đóng hoặc escalate</td><td>Dashboard</td></tr>
+    </tbody>
+  </table></div>
+  <div class="alert a-bl" style="margin-top:12px"><span>&#128204;</span><div>Naming convention: <strong>2026_W[xx].html</strong> — ví dụ: 2026_W20.html, 2026_W21.html</div></div>
+</div>
+
+</main>
+</div>
+
+<footer class="foot">
+  <span><strong>Dcorp Technology Corporation</strong> · Core Technology Department · Phạm Minh Hải</span>
+  <span class="foot-g">2026_W20 · 18–22.May.2026 · Generated with Claude</span>
+</footer>
+</div>
+
+<script>
+function go(id,el){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('on'));
+  document.querySelectorAll('.nav').forEach(i=>i.classList.remove('on'));
+  document.getElementById('panel-'+id).classList.add('on');
+  el.classList.add('on');
+}
+function copyBx(){
+  navigator.clipboard.writeText(document.getElementById('bx-text').innerText).then(()=>{
+    document.querySelectorAll('.copy-btn,.btn-ol').forEach(b=>{
+      if(b.textContent.includes('Copy')){
+        const o=b.textContent;b.textContent='✓ Đã copy';
+        b.style.color='var(--gr)';b.style.borderColor='var(--gr)';
+        setTimeout(()=>{b.textContent=o;b.style.color='';b.style.borderColor='';},2000);
+      }
+    });
+  });
+}
+function rmEl(id){const e=document.getElementById(id);if(e)e.remove();}
+let pc=1,ac=1;
+const MS=['-- Chọn --','VTI','VTI — Tối ưu hệ thống','VTI Philippine','AI Công ty','Vibe Code',"4P's Presales",'Other'];
+const mo=()=>MS.map(m=>`<option>${m}</option>`).join('');
+function addPlan(){
+  const id='pe-'+pc++;const d=document.createElement('div');d.className='te';d.id=id;
+  d.innerHTML=`<button class="te-rm" onclick="rmEl('${id}')">×</button><div class="fg"><div class="fr2"><div><div class="fl">Master Task <span style="color:var(--re)">*</span></div><select>${mo()}</select></div><div><div class="fl">Ưu tiên</div><select><option value="high">High</option><option value="normal" selected>Normal</option><option value="low">Low</option></select></div></div><div><div class="fl">Nội dung <span style="color:var(--re)">*</span></div><textarea placeholder="Mô tả kế hoạch..."></textarea></div><div><div class="fl">Task ID</div><input type="text" placeholder="TECH-xxxxx..."></div></div>`;
+  document.getElementById('plan-entries').appendChild(d);
+}
+function addAdhoc(){
+  const id='ae-'+ac++;const d=document.createElement('div');d.className='te';d.id=id;
+  d.innerHTML=`<button class="te-rm" onclick="rmEl('${id}')">×</button><div class="fg"><div class="fr2"><div><div class="fl">Master Task <span style="color:var(--re)">*</span></div><select>${mo()}</select></div><div><div class="fl">Trạng thái</div><select><option value="done">Hoàn thành</option><option value="prog">Đang xử lý</option><option value="wait">Chưa bắt đầu</option></select></div></div><div><div class="fl">Mô tả <span style="color:var(--re)">*</span></div><textarea placeholder="Mô tả việc..."></textarea></div><div><div class="fl">Khó khăn</div><input type="text" placeholder="..."></div></div>`;
+  document.getElementById('adhoc-entries').appendChild(d);
+}
+function sendPlan(){
+  const en=document.querySelectorAll('#plan-entries .te');let msg='Thêm kế hoạch W21:\n';
+  en.forEach((e,i)=>{
+    const s=e.querySelectorAll('select'),t=e.querySelectorAll('textarea'),inp=e.querySelectorAll('input[type=text]');
+    const m=s[0]?.value||'',p=s[1]?.value||'normal',c=t[0]?.value||'',tid=inp[0]?.value||'';
+    if(c.trim())msg+=`${i+1}. [${m}] ${p.toUpperCase()} — ${c}${tid?' ('+tid+')':''}\n`;
+  });
+  alert(msg||'Chưa có kế hoạch nào.');
+}
+function sendAdhoc(){
+  const en=document.querySelectorAll('#adhoc-entries .te');let msg='Bổ sung công việc phát sinh W20:\n';
+  en.forEach((e,i)=>{
+    const s=e.querySelectorAll('select'),t=e.querySelectorAll('textarea'),inp=e.querySelectorAll('input[type=text]');
+    const m=s[0]?.value||'',st=s[1]?.value||'done',desc=t[0]?.value||'',issue=inp[0]?.value||'';
+    const sl=st==='done'?'Hoàn thành':st==='prog'?'Đang xử lý':'Chưa bắt đầu';
+    if(desc.trim())msg+=`${i+1}. [${m}] ${sl} — ${desc}${issue?' | Khó khăn: '+issue:''}\n`;
+  });
+  alert(msg||'Chưa có việc nào.');
+}
+</script>
+</body>
+</html>
