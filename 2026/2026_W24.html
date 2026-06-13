@@ -1,0 +1,806 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HaiPM | W24 | 08–13.Jun.2026</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --navy: #003087;
+  --gold: #E8B84B;
+  --white: #ffffff;
+  --bg: #f0f3f8;
+  --dark: #001a4d;
+  --tabs-bg: #001f5c;
+  --green: #16a34a;
+  --amber: #d97706;
+  --red: #dc2626;
+  --blue: #2563eb;
+  --purple: #7c3aed;
+  --gray: #6b7280;
+  --border: #e2e8f0;
+  --radius: 10px;
+  --shadow: 0 2px 8px rgba(0,30,80,.08);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'IBM Plex Sans', sans-serif; background: var(--bg); color: #1e293b; font-size: 13px; }
+a { color: var(--navy); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+.header {
+  background: var(--navy); padding: 0 24px; height: 62px;
+  display: grid; grid-template-columns: auto 1fr auto;
+  align-items: center; gap: 16px;
+  position: sticky; top: 0; z-index: 100;
+}
+.logo-box {
+  width: 38px; height: 38px; border-radius: 6px;
+  background: var(--gold); display: flex; align-items: center; justify-content: center;
+  font-weight: 800; font-size: 14px; color: var(--navy); letter-spacing: -1px;
+}
+.header-title { font-size: 11px; font-weight: 700; color: var(--white); letter-spacing: 1.5px; text-transform: uppercase; }
+.header-sub { font-size: 10px; color: rgba(255,255,255,.55); margin-top: 2px; }
+.header-right { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; }
+.h-badge { font-size: 9px; font-weight: 700; padding: 3px 8px; border-radius: 20px; letter-spacing: .5px; text-transform: uppercase; font-family: 'IBM Plex Mono', monospace; }
+.hb-gold { background: var(--gold); color: var(--navy); }
+.hb-outline { border: 1px solid rgba(255,255,255,.3); color: rgba(255,255,255,.7); }
+
+.tab-nav {
+  background: var(--tabs-bg); display: flex; overflow-x: auto;
+  position: sticky; top: 62px; z-index: 99;
+  border-bottom: 1px solid rgba(255,255,255,.08);
+}
+.tab-nav::-webkit-scrollbar { height: 3px; }
+.tab-nav::-webkit-scrollbar-thumb { background: var(--gold); border-radius: 2px; }
+.nav-tab {
+  padding: 0 18px; height: 44px; display: flex; align-items: center; gap: 6px;
+  font-size: 11px; font-weight: 600; color: rgba(255,255,255,.55);
+  cursor: pointer; white-space: nowrap; border-bottom: 2px solid transparent;
+  transition: color .15s, border-color .15s; letter-spacing: .3px;
+}
+.nav-tab:hover { color: rgba(255,255,255,.85); }
+.nav-tab.active { color: var(--gold); border-bottom-color: var(--gold); }
+
+.tab-content { display: none; padding: 20px 24px 40px; }
+.tab-content.active { display: block; }
+
+.stat-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; margin-bottom: 20px; }
+.stat-card { background: var(--white); border-radius: var(--radius); padding: 14px 16px; border-top: 3px solid transparent; box-shadow: var(--shadow); }
+.stat-num { font-family: 'IBM Plex Mono', monospace; font-size: 28px; font-weight: 700; line-height: 1; }
+.stat-lbl { font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: .8px; color: var(--gray); margin-top: 5px; }
+.stat-sub { font-size: 9px; color: var(--gray); margin-top: 3px; font-family: 'IBM Plex Mono', monospace; }
+.bc-navy { border-top-color: var(--navy); }
+.bc-green { border-top-color: var(--green); }
+.bc-amber { border-top-color: var(--amber); }
+.bc-red { border-top-color: var(--red); }
+.bc-purple { border-top-color: var(--purple); }
+
+.section { margin-bottom: 24px; }
+.section-title {
+  font-size: 9px; font-weight: 800; text-transform: uppercase;
+  letter-spacing: 1.5px; color: var(--navy);
+  margin-bottom: 10px; padding-bottom: 6px; border-bottom: 1px solid var(--border);
+}
+
+.task-table { width: 100%; border-collapse: collapse; background: var(--white); border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); }
+.task-table thead { background: var(--navy); }
+.task-table thead th { padding: 10px 12px; text-align: left; font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: .8px; color: rgba(255,255,255,.8); }
+.task-table tbody tr { border-bottom: 1px solid var(--border); transition: background .1s; }
+.task-table tbody tr:last-child { border-bottom: none; }
+.task-table tbody tr:hover { background: #f8fafc; }
+.task-table td { padding: 10px 12px; vertical-align: top; font-size: 12px; }
+
+.badge { display: inline-block; padding: 2px 7px; border-radius: 20px; font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: .4px; white-space: nowrap; }
+.b-done { background: #dcfce7; color: #15803d; }
+.b-ip { background: #dbeafe; color: #1d4ed8; }
+.b-pending { background: #fef9c3; color: #a16207; }
+.b-block { background: #fee2e2; color: #b91c1c; }
+.b-vti { background: #ede9fe; color: #5b21b6; }
+.b-ai { background: #ecfdf5; color: #047857; }
+.b-other { background: #f3f4f6; color: #374151; }
+.b-ph { background: #fff7ed; color: #c2410c; }
+.b-vibe { background: #fdf4ff; color: #7e22ce; }
+.b-opt { background: #e0f2fe; color: #0369a1; }
+.b-clickup { background: #ede9fe; color: #6d28d9; }
+.b-bitrix { background: #dbeafe; color: #1e40af; }
+.b-noid { background: #f1f5f9; color: #475569; }
+.b-vendor { background: #fee2e2; color: #b91c1c; border: 1px solid #fca5a5; }
+.b-internal { background: #f1f5f9; color: #475569; border: 1px solid #cbd5e1; }
+.b-warn { background: #fef3c7; color: #b45309; }
+
+.hl-wrap { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
+.hl-banner { display: flex; gap: 14px; align-items: flex-start; background: var(--white); border-radius: var(--radius); padding: 14px 16px; box-shadow: var(--shadow); border-left: 4px solid var(--navy); }
+.hl-banner.green { border-left-color: var(--green); }
+.hl-banner.gold { border-left-color: var(--gold); }
+.hl-banner.amber { border-left-color: var(--amber); }
+.hl-banner.red { border-left-color: var(--red); }
+.hl-icon { font-size: 20px; line-height: 1; flex-shrink: 0; margin-top: 2px; }
+.hl-title { font-size: 12px; font-weight: 700; color: var(--navy); margin-bottom: 3px; }
+.hl-body { font-size: 11px; color: #475569; line-height: 1.55; }
+
+.bitrix-box { background: #0f172a; border-radius: var(--radius); padding: 16px 18px; position: relative; }
+.bitrix-box pre { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #94a3b8; white-space: pre-wrap; line-height: 1.7; }
+.copy-btn { position: absolute; top: 10px; right: 12px; background: var(--gold); color: var(--navy); border: none; border-radius: 6px; padding: 4px 10px; font-size: 10px; font-weight: 700; cursor: pointer; font-family: 'IBM Plex Sans', sans-serif; }
+.copy-btn:hover { background: #d4a43b; }
+
+.plan-table { width: 100%; border-collapse: collapse; background: var(--white); border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); }
+.plan-table thead { background: #001a4d; }
+.plan-table thead th { padding: 10px 12px; text-align: left; font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: .8px; color: rgba(255,255,255,.8); }
+.plan-table tbody tr { border-bottom: 1px solid var(--border); }
+.plan-table tbody tr:last-child { border-bottom: none; }
+.plan-table td { padding: 10px 12px; font-size: 12px; vertical-align: top; }
+.priority-H { color: var(--red); font-weight: 700; font-size: 10px; }
+.priority-N { color: var(--blue); font-size: 10px; }
+.priority-L { color: var(--gray); font-size: 10px; }
+
+.email-list { display: flex; flex-direction: column; gap: 8px; }
+.email-card { background: var(--white); border-radius: var(--radius); padding: 12px 14px; box-shadow: var(--shadow); display: flex; gap: 12px; align-items: flex-start; }
+.email-icon { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+.email-subject { font-size: 12px; font-weight: 600; margin-bottom: 3px; }
+.email-meta { font-size: 10px; color: var(--gray); font-family: 'IBM Plex Mono', monospace; }
+.email-action { font-size: 11px; color: #475569; margin-top: 5px; }
+
+.aged-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 12px; }
+.aged-card { background: var(--white); border-radius: var(--radius); padding: 14px 16px; box-shadow: var(--shadow); }
+.aged-header { font-size: 10px; font-weight: 700; color: var(--gray); text-transform: uppercase; letter-spacing: .8px; margin-bottom: 10px; border-bottom: 1px solid var(--border); padding-bottom: 6px; }
+.aged-item { padding: 5px 0; border-bottom: 1px solid #f1f5f9; font-size: 11px; }
+.aged-item:last-child { border-bottom: none; }
+.aged-item .a-title { font-weight: 500; }
+.aged-item .a-meta { font-size: 10px; color: var(--gray); font-family: 'IBM Plex Mono', monospace; margin-top: 2px; }
+
+.process-card { background: var(--white); border-radius: var(--radius); padding: 16px 18px; box-shadow: var(--shadow); margin-bottom: 14px; }
+.process-card h3 { font-size: 12px; font-weight: 700; color: var(--navy); margin-bottom: 10px; }
+.process-steps { display: flex; flex-direction: column; gap: 8px; }
+.p-step { display: flex; gap: 10px; align-items: flex-start; font-size: 12px; }
+.p-num { width: 22px; height: 22px; border-radius: 50%; background: var(--navy); color: white; display: flex; align-items: center; justify-content: center; font-size: 9px; font-weight: 700; flex-shrink: 0; margin-top: 1px; }
+
+.footer { background: var(--navy); padding: 12px 24px; display: flex; justify-content: space-between; align-items: center; margin-top: 40px; }
+.footer-l { font-size: 11px; color: rgba(255,255,255,.7); }
+.footer-r { font-size: 10px; color: rgba(255,255,255,.4); font-family: 'IBM Plex Mono', monospace; }
+
+@media (max-width: 768px) {
+  .stat-grid { grid-template-columns: repeat(2,1fr); }
+  .aged-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="logo-box">DC</div>
+  <div>
+    <div class="header-title">Weekly Report — Core Technology Department</div>
+    <div class="header-sub">Dcorp Technology Corporation &nbsp;·&nbsp; Phạm Minh Hải → CEO</div>
+  </div>
+  <div class="header-right">
+    <span class="h-badge hb-gold">TUẦN 24 · 2026</span>
+    <span class="h-badge hb-outline">08–13.Jun.2026</span>
+  </div>
+</div>
+
+<div class="tab-nav">
+  <div class="nav-tab active" onclick="switchTab('w24',this)">📊 W24 Báo cáo tuần</div>
+  <div class="nav-tab" onclick="switchTab('email',this)">📧 Email tuần W24</div>
+  <div class="nav-tab" onclick="switchTab('aged',this)">⏳ Task tồn lâu ngày</div>
+  <div class="nav-tab" onclick="switchTab('backlog',this)">🔄 Backlog &amp; Carry-over</div>
+  <div class="nav-tab" onclick="switchTab('plan',this)">📅 Kế hoạch W25</div>
+  <div class="nav-tab" onclick="switchTab('process',this)">📋 Quy trình</div>
+</div>
+
+<!-- TAB W24 -->
+<div class="tab-content active" id="tab-w24">
+  <div class="stat-grid">
+    <div class="stat-card bc-navy">
+      <div class="stat-num">13</div>
+      <div class="stat-lbl">Tổng đầu việc</div>
+      <div class="stat-sub">W24 active</div>
+    </div>
+    <div class="stat-card bc-green">
+      <div class="stat-num">8</div>
+      <div class="stat-lbl">Hoàn thành</div>
+      <div class="stat-sub">task + nội bộ</div>
+    </div>
+    <div class="stat-card bc-amber">
+      <div class="stat-num">3</div>
+      <div class="stat-lbl">Đang xử lý</div>
+      <div class="stat-sub">in-progress</div>
+    </div>
+    <div class="stat-card bc-red">
+      <div class="stat-num">1</div>
+      <div class="stat-lbl">Blocker</div>
+      <div class="stat-sub">cần xác nhận</div>
+    </div>
+    <div class="stat-card bc-purple">
+      <div class="stat-num">1</div>
+      <div class="stat-lbl">Carry-over W25</div>
+      <div class="stat-sub">TECH-13354</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Highlights tuần W24</div>
+    <div class="hl-wrap">
+      <div class="hl-banner green">
+        <div class="hl-icon">✅</div>
+        <div>
+          <div class="hl-title">VTI DR/Recovery Plan E-Code 1.5M — Hoàn thành (Bitrix #92949)</div>
+          <div class="hl-body">Thực hiện thành công kế hoạch DR/Recovery 10–12/6. DR server <strong>10.251.14.11</strong> sẵn sàng, backup jobs + MCR updates hoàn tất. Tài liệu HTML DR Plan đã bàn giao nội bộ. HaiPM co-lead Failback với Team KT.</div>
+        </div>
+      </div>
+      <div class="hl-banner green">
+        <div class="hl-icon">✅</div>
+        <div>
+          <div class="hl-title">TECH-14215 La Sirena — Shift Date Logic POS — Hoàn thành</div>
+          <div class="hl-body">Script xử lý logic Shift Date trên POS La Sirena đã hoàn thành và bàn giao CC team sau khi nhận confirm. Task đã đóng trong tuần.</div>
+        </div>
+      </div>
+      <div class="hl-banner gold">
+        <div class="hl-icon">🔧</div>
+        <div>
+          <div class="hl-title">TECH-14884 QSR — Re-index toàn bộ Database — Đang monitoring</div>
+          <div class="hl-body">Đã hoàn thành re-index toàn bộ DB cho QSR. Hiện đang monitoring 24–48h để xác nhận ổn định trước khi đóng task.</div>
+        </div>
+      </div>
+      <div class="hl-banner amber">
+        <div class="hl-icon">🎯</div>
+        <div>
+          <div class="hl-title">Vận hành sự kiện VTI 12/6 + Test CRM v7.15.6.24 + RK7 v7.26.5.003</div>
+          <div class="hl-body">Tham gia vận hành sự kiện VTI 12/6, đảm bảo POS/E-Code ổn định. Đồng thời test 2 phiên bản mới: CRM 7.15.6.24 và RK7 7.26.5.003 — phát hiện và ghi nhận tính năng ẩn liên quan giới hạn máy POS và Cashstation.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Chi tiết công việc W24 (08–13/06/2026)</div>
+    <table class="task-table">
+      <thead>
+        <tr>
+          <th style="width:115px">MasterTask</th>
+          <th style="width:125px">Task ID</th>
+          <th>Kết quả thực hiện</th>
+          <th style="width:120px">Khó khăn</th>
+          <th style="width:130px">Next / Đề xuất</th>
+          <th style="width:95px">Trạng thái</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="badge b-vti">VTI</span></td>
+          <td><a href="https://intranet.dcorp.com.vn/company/personal/user/8/tasks/task/view/92949/" target="_blank"><span class="badge b-bitrix">Bitrix #92949</span></a></td>
+          <td><strong>VTI DR/Recovery Plan E-Code 1.5M</strong><br><span style="font-size:11px;color:#475569">Hoàn thành DR/Recovery 10–12/6. Production DB 10.251.14.6, DR server 10.251.14.11. Backup jobs, MCR updates, failback co-lead Team KT.</span></td>
+          <td>—</td>
+          <td>Monitor post-DR W25</td>
+          <td><span class="badge b-done">Hoàn thành</span></td>
+        </tr>
+        <tr>
+          <td><span class="badge b-vti">VTI</span></td>
+          <td><a href="https://app.clickup.com/t/9018236177/TECH-14215" target="_blank"><span class="badge b-clickup">TECH-14215</span></a></td>
+          <td><strong>La Sirena — Shift Date Logic POS</strong><br><span style="font-size:11px;color:#475569">Script xử lý Shift Date hoàn chỉnh sau khi CC confirm. Đã bàn giao và đóng task.</span></td>
+          <td>—</td>
+          <td>—</td>
+          <td><span class="badge b-done">Hoàn thành</span></td>
+        </tr>
+        <tr>
+          <td><span class="badge b-vti">VTI</span></td>
+          <td><a href="https://intranet.dcorp.com.vn/company/personal/user/8/tasks/task/view/93016/" target="_blank"><span class="badge b-bitrix">Bitrix #93016</span></a></td>
+          <td><strong>E-Code VTI Knowledge Base v1.1</strong><br><span style="font-size:11px;color:#475569">Tổng hợp 2 sự cố tháng 5/2026: INC-001 (Query Store cleared manually), INC-002 (auto-update statistics degraded index). KB HTML v1.1 đã xuất bản.</span></td>
+          <td>—</td>
+          <td>—</td>
+          <td><span class="badge b-done">Hoàn thành</span></td>
+        </tr>
+        <tr>
+          <td><span class="badge b-vti">VTI</span></td>
+          <td><span class="badge b-noid">Nội bộ</span></td>
+          <td><strong>Vận hành sự kiện VTI 12/6</strong><br><span style="font-size:11px;color:#475569">Tham gia trực tiếp vận hành, đảm bảo hệ thống POS/E-Code ổn định trong toàn bộ sự kiện.</span></td>
+          <td>—</td>
+          <td>—</td>
+          <td><span class="badge b-done">Hoàn thành</span></td>
+        </tr>
+        <tr>
+          <td><span class="badge b-opt">VTI — Tối ưu HT</span></td>
+          <td><span class="badge b-noid">Nội bộ</span></td>
+          <td><strong>VNG Cloud Cleanup — Xóa VM theo danh sách</strong><br><span style="font-size:11px;color:#475569">Xóa VM theo danh sách đã xác nhận từ Việt (VTI). Phối hợp Hiệp infra sizing hoàn tất.</span></td>
+          <td>—</td>
+          <td>—</td>
+          <td><span class="badge b-done">Hoàn thành</span></td>
+        </tr>
+        <tr>
+          <td><span class="badge b-opt">VTI — Tối ưu HT</span></td>
+          <td><span class="badge b-noid">Nội bộ</span></td>
+          <td><strong>SkyMonitor DB Optimization</strong><br><span style="font-size:11px;color:#475569">Hoàn thành tối ưu DB SkyMonitor. Query Store Plan đã mở (không có Bitrix task ID — nội bộ).</span></td>
+          <td>—</td>
+          <td>—</td>
+          <td><span class="badge b-done">Hoàn thành</span></td>
+        </tr>
+        <tr>
+          <td><span class="badge b-opt">VTI — Tối ưu HT</span></td>
+          <td><span class="badge b-noid">Nội bộ</span></td>
+          <td><strong>VTI Workshop — Chuẩn bị diagram + Monitor nodes</strong><br><span style="font-size:11px;color:#475569">Đã chuẩn bị diagram. Workshop dời từ 11/6 sang <strong>17/6</strong>. HaiPM đang hoàn thiện phần monitor nodes.</span></td>
+          <td><span class="badge b-internal">Nội bộ</span> Workshop dời lịch</td>
+          <td>Hoàn thiện trước 17/6</td>
+          <td><span class="badge b-ip">Đang xử lý</span></td>
+        </tr>
+        <tr>
+          <td><span class="badge b-other">Other / QSR</span></td>
+          <td><a href="https://app.clickup.com/t/9018236177/TECH-14884" target="_blank"><span class="badge b-clickup">TECH-14884</span></a></td>
+          <td><strong>QSR — Re-index toàn bộ Database</strong><br><span style="font-size:11px;color:#475569">Đã hoàn thành re-index. Đang monitoring giai đoạn sau thao tác để xác nhận ổn định.</span></td>
+          <td>—</td>
+          <td>Confirm ổn định → đóng W25</td>
+          <td><span class="badge b-ip">Đang theo dõi</span></td>
+        </tr>
+        <tr>
+          <td><span class="badge b-ph">VTI Philippine</span></td>
+          <td><a href="https://app.clickup.com/t/9018236177/TECH-13354" target="_blank"><span class="badge b-clickup">TECH-13354</span></a></td>
+          <td><strong>Philippine BIR/Supreme Coffee Demo</strong><br><span style="font-size:11px;color:#475569">Demo dời sang đầu tháng 7. Đang chuẩn bị tài liệu kỹ thuật và base demo.</span></td>
+          <td>—</td>
+          <td>Chuẩn bị W25 → demo Jul</td>
+          <td><span class="badge b-pending">Carry-over W25</span></td>
+        </tr>
+        <tr>
+          <td><span class="badge b-vibe">Vibe Code / VTI</span></td>
+          <td><span class="badge b-noid">Nội bộ</span></td>
+          <td><strong>Test CRM v7.15.6.24</strong><br><span style="font-size:11px;color:#475569">Test phiên bản CRM mới 7.15.6.24. Ghi nhận các kịch bản, test lại một số flow nghiệp vụ chính.</span></td>
+          <td>—</td>
+          <td>Tổng hợp feedback W25</td>
+          <td><span class="badge b-ip">Đang xử lý</span></td>
+        </tr>
+        <tr>
+          <td><span class="badge b-vibe">Vibe Code / VTI</span></td>
+          <td><span class="badge b-noid">Nội bộ</span></td>
+          <td><strong>Test RK7 v7.26.5.003</strong><br><span style="font-size:11px;color:#475569">Test phiên bản RK7 mới. Phát hiện và ghi nhận tính năng ẩn liên quan giới hạn máy POS và Cashstation.</span></td>
+          <td>—</td>
+          <td>Tổng hợp release notes W25</td>
+          <td><span class="badge b-ip">Đang xử lý</span></td>
+        </tr>
+        <tr>
+          <td><span class="badge b-ai">AI Công ty</span></td>
+          <td><a href="https://intranet.dcorp.com.vn/company/personal/user/8/tasks/task/view/93046/" target="_blank"><span class="badge b-bitrix">Bitrix #93046</span></a></td>
+          <td><strong>KB UCS Software for AI</strong><br><span style="font-size:11px;color:#475569">Xây dựng và tổng hợp KB UCS Software phục vụ AI nội bộ. Hạn 09/06 — cần xác nhận hoàn thành.</span></td>
+          <td><span class="badge b-internal">Nội bộ</span> Chờ xác nhận</td>
+          <td>Xác nhận + đóng W25</td>
+          <td><span class="badge b-pending">Chờ xác nhận</span></td>
+        </tr>
+        <tr>
+          <td><span class="badge b-other">Other</span></td>
+          <td><a href="https://intranet.dcorp.com.vn/company/personal/user/8/tasks/task/view/93087/" target="_blank"><span class="badge b-bitrix">Bitrix #93087</span></a></td>
+          <td><strong>The Street — Rà soát tính năng kho</strong><br><span style="font-size:11px;color:#475569">Rà soát tính năng kho để đưa vào hợp đồng dự án The Street. Hạn 07/06 — cần update trạng thái.</span></td>
+          <td><span class="badge b-internal">Nội bộ</span> Chờ xác nhận</td>
+          <td>Clarify hoặc đóng W25</td>
+          <td><span class="badge b-pending">Chờ xác nhận</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Blocker &amp; Rủi ro cần chú ý</div>
+    <div class="hl-wrap">
+      <div class="hl-banner red">
+        <div class="hl-icon">🔴</div>
+        <div>
+          <div class="hl-title">Bitrix #93046 — KB UCS for AI — Deadline 09/06 chưa xác nhận xong</div>
+          <div class="hl-body">Task deadline 09/06 vẫn ở trạng thái "Chờ thực hiện". <span class="badge b-internal">Nội bộ</span> Cần xác nhận tiến độ và update hoặc gia hạn deadline trong W25.</div>
+        </div>
+      </div>
+      <div class="hl-banner amber">
+        <div class="hl-icon">⚠️</div>
+        <div>
+          <div class="hl-title">VTI Workshop 17/6 — Deadline cứng sáng 17/6</div>
+          <div class="hl-body">Workshop dời từ 11/6 sang 17/6. Phần monitor nodes HaiPM PIC vẫn đang thực hiện. <span class="badge b-internal">Nội bộ</span> Cần hoàn thiện trước sáng 17/6.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Text báo cáo Bitrix (copy-paste)</div>
+    <div class="bitrix-box">
+      <button class="copy-btn" onclick="copyBitrix()">Copy</button>
+      <pre id="bitrix-text">📋 HaiPM | W24 | 08–13.Jun.2026
+
+✅ Hoàn thành:
+- Bitrix #92949 (VTI DR/Recovery E-Code 1.5M): Thực hiện 10–12/6, DR server 10.251.14.11 sẵn sàng, tài liệu đã bàn giao
+- TECH-14215 (La Sirena Shift Date Logic POS): Script hoàn thành & bàn giao CC sau khi nhận confirm
+- Bitrix #93016 (KB E-Code VTI v1.1): Tổng hợp INC-001, INC-002 tháng 5/2026, tài liệu HTML xuất bản
+- Nội bộ (VNG Cloud Cleanup VTI): Xóa VM theo danh sách xác nhận từ Việt/VTI, phối hợp Hiệp sizing
+- Nội bộ (SkyMonitor DB Optimization): Hoàn thành tối ưu DB, Query Store Plan mở (không có Bitrix ID)
+- Nội bộ (Vận hành sự kiện VTI 12/6): Đảm bảo POS/E-Code ổn định toàn bộ sự kiện
+
+🔄 Đang xử lý:
+- TECH-14884 (QSR DB Re-index): Re-index hoàn thành, đang monitoring giai đoạn ổn định
+- Nội bộ (VTI Workshop 17/6): Đang hoàn thiện monitor nodes, workshop dời từ 11/6 → 17/6
+- Nội bộ (Test CRM v7.15.6.24 + RK7 v7.26.5.003): Ghi nhận tính năng ẩn POS/Cashstation
+
+📅 Carry-over → W25:
+- TECH-13354 (VTI Philippine BIR): Chuẩn bị tài liệu + base demo, lịch demo đầu tháng 7
+
+⚠️ Cần attention W25:
+- Bitrix #93046 (KB UCS for AI): Deadline 09/06, cần xác nhận trạng thái
+- Bitrix #93087 (The Street kho): Deadline 07/06, cần clarify hoặc đóng task
+
+🔴 Blocker:
+- VTI Workshop 17/6: Deadline cứng sáng 17/6, phần monitor nodes đang thực hiện [Nội bộ]
+
+📅 Kế hoạch W25 (15–20.Jun.2026):
+- VTI Workshop 17/6: Hoàn thiện monitor nodes, tham dự workshop [HIGH]
+- Monitoring SQL Server & PostgreSQL VTI (carry-over priority) [HIGH]
+- TECH-13354 Philippine: Chuẩn bị tài liệu BIR + base demo [HIGH]
+- TECH-14884 QSR: Confirm ổn định post-index, đóng task [NORMAL]
+- Tổng hợp feedback CRM v7.15.6.24 + RK7 v7.26.5.003 [NORMAL]</pre>
+    </div>
+  </div>
+</div>
+
+<!-- TAB EMAIL -->
+<div class="tab-content" id="tab-email">
+  <div class="section">
+    <div class="section-title">Email W24 — Phân loại (08–13/06/2026)</div>
+    <div class="hl-banner amber" style="margin-bottom:14px">
+      <div class="hl-icon">ℹ️</div>
+      <div>
+        <div class="hl-title">Gmail MCP chưa pull trực tiếp trong phiên này</div>
+        <div class="hl-body">Danh sách dưới đây tổng hợp từ context công việc tuần W24. Bổ sung thêm email quan trọng nếu cần để cập nhật báo cáo.</div>
+      </div>
+    </div>
+    <div class="email-list">
+      <div class="email-card">
+        <div class="email-icon">🔴</div>
+        <div style="flex:1">
+          <div class="email-subject">VTI — Xác nhận lịch Workshop + DR plan 10–12/6</div>
+          <div class="email-meta">VTI (Gia / Tuong / Việt) · 08–12/06/2026</div>
+          <div class="email-action"><span class="badge b-done">Đã xử lý</span> DR plan hoàn thành. Workshop xác nhận đổi sang 17/6.</div>
+        </div>
+      </div>
+      <div class="email-card">
+        <div class="email-icon">🟣</div>
+        <div style="flex:1">
+          <div class="email-subject">UCS/rkeeper — Release notes RK7 v7.26.5.003</div>
+          <div class="email-meta">sd@rkeeper.ru · Vendor ticket · W24</div>
+          <div class="email-action"><span class="badge b-ip">Đang xử lý</span> Đã nhận release notes. Đang test và ghi nhận tính năng ẩn POS/Cashstation.</div>
+        </div>
+      </div>
+      <div class="email-card">
+        <div class="email-icon">🔵</div>
+        <div style="flex:1">
+          <div class="email-subject">VNG Cloud — Xác nhận xóa VM list</div>
+          <div class="email-meta">VNG Cloud HCM-3 / Việt VTI · W24</div>
+          <div class="email-action"><span class="badge b-done">Đã xử lý</span> Việt xác nhận danh sách VM. VNG Cloud cleanup hoàn tất.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TAB AGED -->
+<div class="tab-content" id="tab-aged">
+  <div class="section">
+    <div class="section-title">Task tồn lâu ngày — Review &amp; Action</div>
+    <p style="font-size:12px;color:#475569;margin-bottom:14px">Dữ liệu Bitrix: <strong>50+ task</strong> ở trạng thái "Chờ thực hiện" quá hạn từ 2022–2025. Phân nhóm theo độ tuổi:</p>
+    <div class="aged-grid">
+      <div class="aged-card" style="border-top:3px solid var(--red)">
+        <div class="aged-header">🔴 &gt;12 tháng — Cần đóng/archive</div>
+        <div class="aged-item">
+          <div class="a-title">#65239 — Đào tạo, cấp certificate KT</div>
+          <div class="a-meta">Nov 2023 · Other</div>
+        </div>
+        <div class="aged-item">
+          <div class="a-title">#65352 — Feature list RK7 POS</div>
+          <div class="a-meta">Oct 2023 · Other</div>
+        </div>
+        <div class="aged-item">
+          <div class="a-title">#67351 — La Sirena SkyInventory</div>
+          <div class="a-meta">Dec 2023 · Other</div>
+        </div>
+        <div class="aged-item">
+          <div class="a-title">#74644 — Vẽ topology Cloud Dcorp</div>
+          <div class="a-meta">Apr 2024 · Other</div>
+        </div>
+        <div class="aged-item">
+          <div class="a-title">+ ~20 tasks từ 2022–2023</div>
+          <div class="a-meta">Đề xuất: Archive hoặc đóng batch</div>
+        </div>
+      </div>
+      <div class="aged-card" style="border-top:3px solid var(--amber)">
+        <div class="aged-header">🟡 3–12 tháng — Cần clarify</div>
+        <div class="aged-item">
+          <div class="a-title">#92146 — BIR Philippine tài liệu demo</div>
+          <div class="a-meta">Mar 2026 · VTI Philippine · Demo Jul/2026</div>
+        </div>
+        <div class="aged-item">
+          <div class="a-title">#91922 — Tích hợp Mini ERP với Amis</div>
+          <div class="a-meta">Feb 2026 · Other · Chưa tiến triển</div>
+        </div>
+        <div class="aged-item">
+          <div class="a-title">#90210 — AI cho Dcorp (MainTask)</div>
+          <div class="a-meta">Sep 2025 · AI Công ty · Cần review sub-tasks</div>
+        </div>
+        <div class="aged-item">
+          <div class="a-title">#92488 — App chấm công Dcorp 2026</div>
+          <div class="a-meta">Apr 2026 · Vibe Code · Chưa bắt đầu</div>
+        </div>
+        <div class="aged-item">
+          <div class="a-title">#91725 — Digital Transformation Dcorp</div>
+          <div class="a-meta">Jan 2026 · Other · Master task cần review</div>
+        </div>
+      </div>
+      <div class="aged-card" style="border-top:3px solid var(--navy)">
+        <div class="aged-header">🔵 &lt;3 tháng — Ưu tiên review</div>
+        <div class="aged-item">
+          <div class="a-title">#92580 — Tối ưu VMW VTI trên VNG Cloud</div>
+          <div class="a-meta">Apr 2026 · VTI Tối ưu HT · In progress</div>
+        </div>
+        <div class="aged-item">
+          <div class="a-title">#92519 — Zalo OA + AI/Automation for CC</div>
+          <div class="a-meta">Apr 2026 · VTI Tối ưu HT · Overdue</div>
+        </div>
+        <div class="aged-item">
+          <div class="a-title">#92524 — ostLauncher Dcorp version</div>
+          <div class="a-meta">Apr 2026 · AI Công ty · Overdue</div>
+        </div>
+        <div class="aged-item">
+          <div class="a-title">#92906 — Khảo sát bản quyền phần mềm 2026</div>
+          <div class="a-meta">May 2026 · Other · Đã xong nhưng chưa đóng</div>
+        </div>
+        <div class="aged-item">
+          <div class="a-title">#92940 — Chuẩn hóa danh sách phần mềm</div>
+          <div class="a-meta">May 2026 · Other · Overdue</div>
+        </div>
+      </div>
+    </div>
+    <div class="hl-banner amber" style="margin-top:16px">
+      <div class="hl-icon">💡</div>
+      <div>
+        <div class="hl-title">Đề xuất: Batch-close task tồn lâu</div>
+        <div class="hl-body">Có ~30 task từ 2022–2024 vẫn open. Đề xuất dành 1 buổi trong W26 để batch-close hoặc archive các task không còn relevant. Ưu tiên đóng trước các task &gt;12 tháng không có activity thực sự. Giúp giảm noise trong Bitrix dashboard.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TAB BACKLOG -->
+<div class="tab-content" id="tab-backlog">
+  <div class="section">
+    <div class="section-title">Carry-over sang W25</div>
+    <table class="task-table">
+      <thead>
+        <tr>
+          <th style="width:120px">MasterTask</th>
+          <th>Task</th>
+          <th>Lý do carry-over</th>
+          <th style="width:160px">Action W25</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="badge b-ph">VTI Philippine</span></td>
+          <td><a href="https://app.clickup.com/t/9018236177/TECH-13354" target="_blank"><span class="badge b-clickup">TECH-13354</span></a> Philippine BIR Demo</td>
+          <td>Demo BIR/Supreme Coffee dời sang đầu Jul. Đang chuẩn bị tài liệu và base demo.</td>
+          <td>Hoàn thành tài liệu trước Jul</td>
+        </tr>
+        <tr>
+          <td><span class="badge b-opt">VTI — Tối ưu HT</span></td>
+          <td><span class="badge b-noid">Nội bộ</span> VTI Workshop 17/6</td>
+          <td>Dời từ 11/6 sang 17/6. Monitor nodes chưa hoàn thiện.</td>
+          <td>Xong trước sáng 17/6 — HIGH</td>
+        </tr>
+        <tr>
+          <td><span class="badge b-other">Other / QSR</span></td>
+          <td><a href="https://app.clickup.com/t/9018236177/TECH-14884" target="_blank"><span class="badge b-clickup">TECH-14884</span></a> QSR DB Re-index</td>
+          <td>Re-index xong, đang monitoring. Chưa chính thức đóng.</td>
+          <td>Confirm ổn định → đóng task</td>
+        </tr>
+        <tr>
+          <td><span class="badge b-vibe">Vibe Code / VTI</span></td>
+          <td><span class="badge b-noid">Nội bộ</span> Test CRM + RK7</td>
+          <td>Đang trong quá trình ghi nhận tính năng ẩn.</td>
+          <td>Tổng hợp feedback report</td>
+        </tr>
+        <tr>
+          <td><span class="badge b-ai">AI Công ty</span></td>
+          <td><a href="https://intranet.dcorp.com.vn/company/personal/user/8/tasks/task/view/93046/" target="_blank"><span class="badge b-bitrix">Bitrix #93046</span></a> KB UCS for AI</td>
+          <td>Deadline 09/06, trạng thái chưa xác nhận.</td>
+          <td>Clarify + đóng hoặc gia hạn</td>
+        </tr>
+        <tr>
+          <td><span class="badge b-other">Other</span></td>
+          <td><a href="https://intranet.dcorp.com.vn/company/personal/user/8/tasks/task/view/93087/" target="_blank"><span class="badge b-bitrix">Bitrix #93087</span></a> The Street kho</td>
+          <td>Deadline 07/06, cần update trạng thái.</td>
+          <td>Clarify hoặc đóng</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section" style="margin-top:20px">
+    <div class="section-title">Đã hoàn thành trong W24</div>
+    <table class="task-table">
+      <thead>
+        <tr>
+          <th>Task</th>
+          <th>Kết quả</th>
+          <th style="width:120px">Ngày hoàn thành</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><a href="https://intranet.dcorp.com.vn/company/personal/user/8/tasks/task/view/92949/" target="_blank"><span class="badge b-bitrix">Bitrix #92949</span></a> VTI DR/Recovery E-Code 1.5M</td>
+          <td>DR plan hoàn thành 10–12/6, DR server 10.251.14.11 sẵn sàng failback</td>
+          <td><span style="font-family:'IBM Plex Mono',monospace;font-size:11px">12/06/2026</span></td>
+        </tr>
+        <tr>
+          <td><a href="https://app.clickup.com/t/9018236177/TECH-14215" target="_blank"><span class="badge b-clickup">TECH-14215</span></a> La Sirena Shift Date Logic</td>
+          <td>Script hoàn thành sau CC confirm, đã bàn giao và đóng</td>
+          <td><span style="font-family:'IBM Plex Mono',monospace;font-size:11px">W24</span></td>
+        </tr>
+        <tr>
+          <td><a href="https://intranet.dcorp.com.vn/company/personal/user/8/tasks/task/view/93016/" target="_blank"><span class="badge b-bitrix">Bitrix #93016</span></a> KB E-Code VTI v1.1</td>
+          <td>INC-001 + INC-002 tháng 5/2026 documented, HTML KB v1.1 xuất bản</td>
+          <td><span style="font-family:'IBM Plex Mono',monospace;font-size:11px">W24</span></td>
+        </tr>
+        <tr>
+          <td><span class="badge b-noid">Nội bộ</span> VNG Cloud Cleanup VTI</td>
+          <td>VM xóa theo danh sách xác nhận, phối hợp Hiệp sizing hoàn tất</td>
+          <td><span style="font-family:'IBM Plex Mono',monospace;font-size:11px">W24</span></td>
+        </tr>
+        <tr>
+          <td><span class="badge b-noid">Nội bộ</span> SkyMonitor DB Optimization</td>
+          <td>Tối ưu hoàn thành, Query Store Plan mở (no Bitrix ID)</td>
+          <td><span style="font-family:'IBM Plex Mono',monospace;font-size:11px">W24</span></td>
+        </tr>
+        <tr>
+          <td><span class="badge b-noid">Nội bộ</span> Vận hành sự kiện VTI 12/6</td>
+          <td>POS/E-Code ổn định toàn bộ sự kiện</td>
+          <td><span style="font-family:'IBM Plex Mono',monospace;font-size:11px">12/06/2026</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- TAB PLAN W25 -->
+<div class="tab-content" id="tab-plan">
+  <div class="stat-grid" style="grid-template-columns:repeat(3,1fr)">
+    <div class="stat-card bc-navy">
+      <div class="stat-num">7</div>
+      <div class="stat-lbl">Tổng kế hoạch W25</div>
+      <div class="stat-sub">15–20 Jun 2026</div>
+    </div>
+    <div class="stat-card bc-red">
+      <div class="stat-num">3</div>
+      <div class="stat-lbl">High Priority</div>
+      <div class="stat-sub">Deadline cứng</div>
+    </div>
+    <div class="stat-card bc-amber">
+      <div class="stat-num">4</div>
+      <div class="stat-lbl">Carry-over W24</div>
+      <div class="stat-sub">Đang tiếp tục</div>
+    </div>
+  </div>
+  <div class="section">
+    <div class="section-title">Kế hoạch tuần W25 (15–20/06/2026)</div>
+    <table class="plan-table">
+      <thead>
+        <tr>
+          <th style="width:120px">MasterTask</th>
+          <th>Nội dung kế hoạch</th>
+          <th style="width:75px">Ưu tiên</th>
+          <th style="width:160px">Ghi chú</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="badge b-opt">VTI — Tối ưu HT</span></td>
+          <td><strong>VTI Workshop 17/6</strong> — Hoàn thiện monitor nodes, tham dự và trình bày</td>
+          <td><span class="priority-H">HIGH</span></td>
+          <td>Deadline cứng sáng 17/6. HaiPM PIC phần monitor.</td>
+        </tr>
+        <tr>
+          <td><span class="badge b-vti">VTI</span></td>
+          <td><strong>Monitoring SQL Server &amp; PostgreSQL VTI</strong> — Thiết lập monitoring DB chính thức (W24 priority còn tồn)</td>
+          <td><span class="priority-H">HIGH</span></td>
+          <td>Priority từ W24, bị DR plan chiếm ưu tiên.</td>
+        </tr>
+        <tr>
+          <td><span class="badge b-ph">VTI Philippine</span></td>
+          <td><strong>TECH-13354 — Chuẩn bị base demo + tài liệu BIR</strong> cho BIR/Supreme Vietnamese Coffee</td>
+          <td><span class="priority-H">HIGH</span></td>
+          <td>Demo đầu Jul, tài liệu phải xong trước.</td>
+        </tr>
+        <tr>
+          <td><span class="badge b-other">Other / QSR</span></td>
+          <td><strong>TECH-14884 — Confirm ổn định post-index</strong>, đóng task chính thức</td>
+          <td><span class="priority-N">NORMAL</span></td>
+          <td>Monitoring W24 xong → confirm + đóng.</td>
+        </tr>
+        <tr>
+          <td><span class="badge b-vibe">Vibe Code / VTI</span></td>
+          <td><strong>Tổng hợp feedback CRM v7.15.6.24 + RK7 v7.26.5.003</strong> — Viết release notes nội bộ, gửi team</td>
+          <td><span class="priority-N">NORMAL</span></td>
+          <td>Deliverable: doc tổng hợp tính năng + giới hạn POS.</td>
+        </tr>
+        <tr>
+          <td><span class="badge b-ai">AI Công ty</span></td>
+          <td><strong>Bitrix #93046 — KB UCS for AI</strong> — Xác nhận trạng thái, hoàn thiện nếu chưa xong</td>
+          <td><span class="priority-N">NORMAL</span></td>
+          <td>Clarify trước khi action.</td>
+        </tr>
+        <tr>
+          <td><span class="badge b-other">Other</span></td>
+          <td><strong>Bitrix #93087 — The Street kho</strong> — Clarify trạng thái, đóng hoặc escalate</td>
+          <td><span class="priority-L">LOW</span></td>
+          <td>Deadline 07/06 đã qua, cần update.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- TAB PROCESS -->
+<div class="tab-content" id="tab-process">
+  <div class="section">
+    <div class="section-title">Workflow báo cáo tuần — HaiPM / Core Technology</div>
+    <div class="process-card">
+      <h3>📋 5 bước tạo báo cáo tuần</h3>
+      <div class="process-steps">
+        <div class="p-step"><div class="p-num">1</div><div>Pull tự động: ClickUp MCP + Bitrix PostgreSQL (haipmwlreport) + Gmail MCP — song song</div></div>
+        <div class="p-step"><div class="p-num">2</div><div>Confirm danh sách task active với HaiPM — loại bỏ task không có activity</div></div>
+        <div class="p-step"><div class="p-num">3</div><div>Nhập bổ sung: công việc nội bộ không có task ID, kế hoạch tuần tới</div></div>
+        <div class="p-step"><div class="p-num">4</div><div>Phân loại: MasterTask, trạng thái, Vendor vs Nội bộ trong blocker, task "Chưa bắt đầu" cần lý do</div></div>
+        <div class="p-step"><div class="p-num">5</div><div>Xuất 3 output: HTML Dashboard (6 tab) + Bảng báo cáo chuẩn + Text Bitrix copy-paste</div></div>
+      </div>
+    </div>
+    <div class="process-card">
+      <h3>📅 Lịch &amp; hệ thống</h3>
+      <div class="process-steps">
+        <div class="p-step"><div class="p-num">T6</div><div>Deadline gửi báo cáo: <strong>trước 17:00 Thứ 6</strong></div></div>
+        <div class="p-step"><div class="p-num">18h</div><div>n8n sync Bitrix → PostgreSQL lúc 18:00 Thứ 2–6 · Workflow ID: TTJolyrkLgaTNyW6</div></div>
+        <div class="p-step"><div class="p-num">DB</div><div>PostgreSQL schema: weekly_report.tasks · responsible_id = '8' · haipmwlreport MCP</div></div>
+      </div>
+    </div>
+    <div class="process-card">
+      <h3>🏷️ Badge mapping</h3>
+      <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:8px">
+        <span class="badge b-vti">VTI</span>
+        <span class="badge b-opt">VTI — Tối ưu hệ thống</span>
+        <span class="badge b-ph">VTI Philippine</span>
+        <span class="badge b-ai">AI Công ty</span>
+        <span class="badge b-vibe">Vibe Code</span>
+        <span class="badge b-other">Other</span>
+        <span class="badge b-clickup">ClickUp TECH-xxxxx</span>
+        <span class="badge b-bitrix">Bitrix #ID</span>
+        <span class="badge b-noid">Nội bộ / Không ID</span>
+        <span class="badge b-vendor">Vendor blocker</span>
+        <span class="badge b-internal">Nội bộ blocker</span>
+        <span class="badge b-done">Hoàn thành</span>
+        <span class="badge b-ip">Đang xử lý</span>
+        <span class="badge b-pending">Chờ xác nhận</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="footer">
+  <div class="footer-l"><strong>Phạm Minh Hải</strong> · Trưởng phòng Core Technology · Dcorp Technology Corporation</div>
+  <div class="footer-r">weekly_report_HaiPM v1 · Generated 13/06/2026</div>
+</div>
+
+<script>
+function switchTab(id, btn) {
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('tab-' + id).classList.add('active');
+  if (btn) btn.classList.add('active');
+}
+function copyBitrix() {
+  const text = document.getElementById('bitrix-text').textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    const btn = document.querySelector('.copy-btn');
+    btn.textContent = '✓ Đã copy!';
+    setTimeout(() => { btn.textContent = 'Copy'; }, 2000);
+  });
+}
+</script>
+</body>
+</html>
