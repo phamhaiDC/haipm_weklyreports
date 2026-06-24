@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>My Command Center — Dcorp Core Tech</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --navy: #003087;
+    --navy-dark: #001f5e;
+    --gold: #E8B84B;
+    --bg: #f5f6fa;
+    --surface: #ffffff;
+    --border: #e2e5ee;
+    --text: #1a1d2e;
+    --muted: #6b7080;
+    --radius: 10px;
+    --shadow: 0 1px 4px rgba(0,0,0,0.07);
+  }
+  body { font-family: 'Segoe UI', 'IBM Plex Sans', Arial, sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+  header { background: var(--navy); color: #fff; padding: 0 2rem; height: 56px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 8px rgba(0,48,135,0.18); }
+  .logo { font-size: 15px; font-weight: 600; letter-spacing: 0.01em; display: flex; align-items: center; gap: 10px; }
+  .logo-dot { width: 8px; height: 8px; background: var(--gold); border-radius: 50%; }
+  .header-right { font-size: 12px; color: rgba(255,255,255,0.55); }
+  .tabs { display: flex; gap: 0; border-bottom: 1px solid var(--border); background: var(--surface); padding: 0 2rem; position: sticky; top: 56px; z-index: 99; }
+  .tab { padding: 14px 22px; font-size: 14px; font-weight: 500; cursor: pointer; border: none; background: none; color: var(--muted); border-bottom: 2px solid transparent; transition: all 0.15s; }
+  .tab:hover { color: var(--navy); }
+  .tab.active { color: var(--navy); border-bottom-color: var(--navy); }
+  .content { max-width: 1100px; margin: 0 auto; padding: 1.5rem 2rem 3rem; }
+  .toolbar { display: flex; gap: 8px; margin-bottom: 1.25rem; flex-wrap: wrap; align-items: center; }
+  .toolbar input, .toolbar select { height: 36px; padding: 0 10px; border: 1px solid var(--border); border-radius: 8px; font-size: 13px; color: var(--text); background: var(--surface); outline: none; transition: border-color 0.15s; }
+  .toolbar input:focus, .toolbar select:focus { border-color: var(--navy); }
+  .toolbar input.wide { flex: 1; min-width: 160px; }
+  .btn { height: 36px; padding: 0 14px; border-radius: 8px; font-size: 13px; font-weight: 500; cursor: pointer; border: none; display: inline-flex; align-items: center; gap: 6px; transition: all 0.15s; }
+  .btn-primary { background: var(--navy); color: #fff; }
+  .btn-primary:hover { background: var(--navy-dark); }
+  .btn-outline { background: #fff; color: var(--navy); border: 1px solid var(--border); }
+  .btn-outline:hover { border-color: var(--navy); }
+  .btn-danger { background: #fff; color: #c0392b; border: 1px solid #fce4e4; }
+  .btn-danger:hover { background: #fce4e4; }
+  .filter-row { display: flex; gap: 6px; margin-bottom: 1rem; flex-wrap: wrap; }
+  .chip { padding: 5px 14px; border-radius: 20px; font-size: 12px; font-weight: 500; cursor: pointer; border: 1px solid var(--border); background: #fff; color: var(--muted); transition: all 0.12s; }
+  .chip.active { background: var(--navy); color: #fff; border-color: var(--navy); }
+  /* FILE GRID */
+  .file-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 12px; }
+  .file-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px; display: flex; flex-direction: column; gap: 8px; box-shadow: var(--shadow); transition: box-shadow 0.15s; }
+  .file-card:hover { box-shadow: 0 3px 10px rgba(0,48,135,0.1); }
+  .fc-top { display: flex; justify-content: space-between; align-items: center; }
+  .tag { font-size: 11px; font-weight: 600; padding: 2px 9px; border-radius: 10px; }
+  .tag-vti { background: #e8f0ff; color: #1a4aa0; }
+  .tag-dcorp { background: #f0eaff; color: #5534b0; }
+  .tag-client { background: #e6f9f0; color: #0d6e47; }
+  .tag-other { background: #f1f1f1; color: #555; }
+  .fc-name { font-size: 14px; font-weight: 600; color: var(--text); line-height: 1.35; }
+  .fc-desc { font-size: 12px; color: var(--muted); line-height: 1.4; }
+  .fc-link { font-size: 12px; color: var(--navy); text-decoration: none; display: flex; align-items: center; gap: 5px; font-weight: 500; }
+  .fc-link:hover { text-decoration: underline; }
+  .fc-link svg { flex-shrink: 0; }
+  .icon-btn { background: none; border: none; cursor: pointer; color: var(--muted); padding: 4px; border-radius: 5px; display: flex; align-items: center; }
+  .icon-btn:hover { background: #fce4e4; color: #c0392b; }
+  /* TASK LIST */
+  .stats-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 1.25rem; }
+  .stat-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px 18px; }
+  .stat-label { font-size: 11px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; }
+  .stat-value { font-size: 26px; font-weight: 700; color: var(--navy); margin-top: 2px; }
+  .task-list { display: flex; flex-direction: column; gap: 8px; }
+  .task-item { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 12px 14px; display: flex; align-items: flex-start; gap: 12px; box-shadow: var(--shadow); transition: opacity 0.15s; }
+  .task-item.done { opacity: 0.5; }
+  .task-item input[type=checkbox] { width: 17px; height: 17px; cursor: pointer; margin-top: 1px; flex-shrink: 0; accent-color: var(--navy); }
+  .task-body { flex: 1; min-width: 0; }
+  .task-name { font-size: 14px; font-weight: 500; color: var(--text); }
+  .task-name.done { text-decoration: line-through; color: var(--muted); }
+  .task-meta { display: flex; gap: 8px; margin-top: 4px; align-items: center; flex-wrap: wrap; }
+  .task-ref { font-size: 12px; color: var(--muted); }
+  .prio { font-size: 11px; font-weight: 600; padding: 2px 9px; border-radius: 10px; }
+  .prio-high { background: #fde8e8; color: #b02020; }
+  .prio-mid { background: #fef3d8; color: #8a5c00; }
+  .prio-low { background: #e6f9f0; color: #0d6e47; }
+  .task-date { font-size: 11px; color: var(--muted); }
+  .empty-state { text-align: center; padding: 3rem 1rem; color: var(--muted); font-size: 14px; }
+  .panel { display: none; }
+  .panel.active { display: block; }
+  .sep { height: 1px; background: var(--border); margin: 1.25rem 0; }
+  .section-label { font-size: 12px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 10px; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">
+    <div class="logo-dot"></div>
+    My Command Center
+  </div>
+  <div class="header-right">Core Technology · Dcorp</div>
+</header>
+
+<div class="tabs">
+  <button class="tab active" onclick="switchTab('files',this)">📁 File Drive</button>
+  <button class="tab" onclick="switchTab('tasks',this)">✅ Task đang làm</button>
+</div>
+
+<div class="content">
+
+  <!-- FILE PANEL -->
+  <div id="files" class="panel active">
+    <div class="toolbar">
+      <input class="wide" id="f-name" placeholder="Tên file / folder..." />
+      <input class="wide" id="f-url" placeholder="Link Google Drive..." />
+      <input style="width:150px" id="f-desc" placeholder="Ghi chú..." />
+      <select id="f-tag">
+        <option value="vti">VTI</option>
+        <option value="dcorp">Dcorp</option>
+        <option value="client">Client khác</option>
+        <option value="other">Khác</option>
+      </select>
+      <button class="btn btn-primary" onclick="addFile()">+ Thêm</button>
+    </div>
+    <div class="filter-row" id="file-filter-row">
+      <span class="chip active" onclick="filterFiles('all',this)">Tất cả</span>
+      <span class="chip" onclick="filterFiles('vti',this)">VTI</span>
+      <span class="chip" onclick="filterFiles('dcorp',this)">Dcorp</span>
+      <span class="chip" onclick="filterFiles('client',this)">Client</span>
+      <span class="chip" onclick="filterFiles('other',this)">Khác</span>
+    </div>
+    <div id="file-grid" class="file-grid"></div>
+  </div>
+
+  <!-- TASK PANEL -->
+  <div id="tasks" class="panel">
+    <div class="stats-row">
+      <div class="stat-card"><div class="stat-label">Tổng task</div><div class="stat-value" id="s-total">0</div></div>
+      <div class="stat-card"><div class="stat-label">Đang làm</div><div class="stat-value" id="s-open">0</div></div>
+      <div class="stat-card"><div class="stat-label">Hoàn thành</div><div class="stat-value" id="s-done">0</div></div>
+    </div>
+    <div class="toolbar">
+      <input class="wide" id="t-name" placeholder="Tên task / công việc..." />
+      <input style="width:150px" id="t-ref" placeholder="Mã TECH / ghi chú..." />
+      <select id="t-priority">
+        <option value="high">🔴 Cao</option>
+        <option value="mid" selected>🟡 Trung</option>
+        <option value="low">🟢 Thấp</option>
+      </select>
+      <button class="btn btn-primary" onclick="addTask()">+ Thêm</button>
+    </div>
+    <div class="filter-row" id="task-filter-row">
+      <span class="chip active" onclick="filterTasks('all',this)">Tất cả</span>
+      <span class="chip" onclick="filterTasks('open',this)">Đang làm</span>
+      <span class="chip" onclick="filterTasks('done',this)">Hoàn thành</span>
+    </div>
+    <div id="task-list" class="task-list"></div>
+  </div>
+
+</div>
+
+<script>
+const LS_FILES = 'mcc_files_v1';
+const LS_TASKS = 'mcc_tasks_v1';
+const TAG_LABEL = { vti:'VTI', dcorp:'Dcorp', client:'Client', other:'Khác' };
+const TAG_CLS   = { vti:'tag-vti', dcorp:'tag-dcorp', client:'tag-client', other:'tag-other' };
+const PRIO_LABEL = { high:'Cao', mid:'Trung', low:'Thấp' };
+const PRIO_CLS   = { high:'prio-high', mid:'prio-mid', low:'prio-low' };
+
+let files = JSON.parse(localStorage.getItem(LS_FILES) || '[]');
+let tasks = JSON.parse(localStorage.getItem(LS_TASKS) || '[]');
+let fileFilter = 'all';
+let taskFilter = 'all';
+
+function save() {
+  localStorage.setItem(LS_FILES, JSON.stringify(files));
+  localStorage.setItem(LS_TASKS, JSON.stringify(tasks));
+}
+
+function switchTab(id, btn) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById(id).classList.add('active');
+}
+
+function esc(s) {
+  return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+/* ---- FILES ---- */
+function addFile() {
+  const name = document.getElementById('f-name').value.trim();
+  const url  = document.getElementById('f-url').value.trim();
+  const desc = document.getElementById('f-desc').value.trim();
+  const tag  = document.getElementById('f-tag').value;
+  if (!name) { document.getElementById('f-name').focus(); return; }
+  files.unshift({ id: Date.now(), name, url, desc, tag, added: new Date().toLocaleDateString('vi-VN') });
+  save();
+  document.getElementById('f-name').value = '';
+  document.getElementById('f-url').value  = '';
+  document.getElementById('f-desc').value = '';
+  renderFiles();
+}
+
+function delFile(id) {
+  if (!confirm('Xóa file này?')) return;
+  files = files.filter(f => f.id !== id);
+  save(); renderFiles();
+}
+
+function filterFiles(val, el) {
+  fileFilter = val;
+  document.querySelectorAll('#file-filter-row .chip').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  renderFiles();
+}
+
+function renderFiles() {
+  const grid = document.getElementById('file-grid');
+  const list = fileFilter === 'all' ? files : files.filter(f => f.tag === fileFilter);
+  if (!list.length) {
+    grid.innerHTML = '<div class="empty-state">Chưa có file nào' + (fileFilter !== 'all' ? ' trong nhóm này' : '') + '.<br>Thêm link Drive ở thanh phía trên.</div>';
+    return;
+  }
+  grid.innerHTML = list.map(f => `
+    <div class="file-card">
+      <div class="fc-top">
+        <span class="tag ${TAG_CLS[f.tag]}">${TAG_LABEL[f.tag]}</span>
+        <button class="icon-btn" onclick="delFile(${f.id})" title="Xóa">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <div class="fc-name">${esc(f.name)}</div>
+      ${f.desc ? `<div class="fc-desc">${esc(f.desc)}</div>` : ''}
+      ${f.url
+        ? `<a class="fc-link" href="${esc(f.url)}" target="_blank">
+             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+             Mở Drive
+           </a>`
+        : '<span class="fc-desc">Chưa có link</span>'}
+    </div>
+  `).join('');
+}
+
+/* ---- TASKS ---- */
+function addTask() {
+  const name     = document.getElementById('t-name').value.trim();
+  const ref      = document.getElementById('t-ref').value.trim();
+  const priority = document.getElementById('t-priority').value;
+  if (!name) { document.getElementById('t-name').focus(); return; }
+  tasks.unshift({ id: Date.now(), name, ref, priority, done: false, added: new Date().toLocaleDateString('vi-VN') });
+  save(); renderTasks();
+  document.getElementById('t-name').value = '';
+  document.getElementById('t-ref').value  = '';
+}
+
+function toggleTask(id) {
+  const t = tasks.find(t => t.id === id);
+  if (t) t.done = !t.done;
+  save(); renderTasks();
+}
+
+function delTask(id) {
+  if (!confirm('Xóa task này?')) return;
+  tasks = tasks.filter(t => t.id !== id);
+  save(); renderTasks();
+}
+
+function filterTasks(val, el) {
+  taskFilter = val;
+  document.querySelectorAll('#task-filter-row .chip').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  renderTasks();
+}
+
+function renderTasks() {
+  const total = tasks.length;
+  const open  = tasks.filter(t => !t.done).length;
+  const done  = tasks.filter(t => t.done).length;
+  document.getElementById('s-total').textContent = total;
+  document.getElementById('s-open').textContent  = open;
+  document.getElementById('s-done').textContent  = done;
+
+  const list = document.getElementById('task-list');
+  let filtered = tasks;
+  if (taskFilter === 'open') filtered = tasks.filter(t => !t.done);
+  if (taskFilter === 'done') filtered = tasks.filter(t => t.done);
+
+  if (!filtered.length) {
+    list.innerHTML = '<div class="empty-state">Không có task nào' + (taskFilter !== 'all' ? ' ở trạng thái này' : '') + '.</div>';
+    return;
+  }
+
+  const pOrder = { high: 0, mid: 1, low: 2 };
+  const sorted = [...filtered].sort((a, b) => {
+    if (a.done !== b.done) return a.done ? 1 : -1;
+    return pOrder[a.priority] - pOrder[b.priority];
+  });
+
+  list.innerHTML = sorted.map(t => `
+    <div class="task-item ${t.done ? 'done' : ''}">
+      <input type="checkbox" ${t.done ? 'checked' : ''} onchange="toggleTask(${t.id})" />
+      <div class="task-body">
+        <div class="task-name ${t.done ? 'done' : ''}">${esc(t.name)}</div>
+        <div class="task-meta">
+          ${t.ref ? `<span class="task-ref">${esc(t.ref)}</span>` : ''}
+          <span class="prio ${PRIO_CLS[t.priority]}">${PRIO_LABEL[t.priority]}</span>
+          <span class="task-date">Thêm ${t.added}</span>
+        </div>
+      </div>
+      <button class="icon-btn" onclick="delTask(${t.id})" title="Xóa">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+  `).join('');
+}
+
+/* Enter key shortcuts */
+['f-name','f-url','f-desc'].forEach(id => document.getElementById(id).addEventListener('keydown', e => { if (e.key === 'Enter') addFile(); }));
+['t-name','t-ref'].forEach(id => document.getElementById(id).addEventListener('keydown', e => { if (e.key === 'Enter') addTask(); }));
+
+renderFiles();
+renderTasks();
+</script>
+</body>
+</html>
