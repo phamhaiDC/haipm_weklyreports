@@ -3,91 +3,292 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>My Command Center — Dcorp Core Tech</title>
+<title>My Command Center — HaiPM · Dcorp</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800;900&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  :root {
-    --navy: #003087; --navy-dark: #001f5e; --gold: #E8B84B;
-    --bg: #f5f6fa; --surface: #ffffff; --border: #e2e5ee;
-    --text: #1a1d2e; --muted: #6b7080; --radius: 10px;
-    --shadow: 0 1px 4px rgba(0,0,0,0.07);
-  }
-  body { font-family: 'Segoe UI','IBM Plex Sans',Arial,sans-serif; background:var(--bg); color:var(--text); min-height:100vh; }
-  header { background:var(--navy); color:#fff; padding:0 2rem; height:56px; display:flex; align-items:center; justify-content:space-between; position:sticky; top:0; z-index:100; box-shadow:0 2px 8px rgba(0,48,135,.18); }
-  .logo { font-size:15px; font-weight:600; display:flex; align-items:center; gap:10px; }
-  .logo-dot { width:8px; height:8px; background:var(--gold); border-radius:50%; }
-  #conn-status { font-size:12px; display:flex; align-items:center; gap:6px; }
-  .dot { width:8px; height:8px; border-radius:50%; background:#aaa; }
-  .dot.ok { background:#4caf50; } .dot.err { background:#f44336; }
-  .dot.loading { background:var(--gold); animation:pulse 1s infinite; }
-  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
-  .tabs { display:flex; border-bottom:1px solid var(--border); background:var(--surface); padding:0 2rem; position:sticky; top:56px; z-index:99; }
-  .tab { padding:14px 22px; font-size:14px; font-weight:500; cursor:pointer; border:none; background:none; color:var(--muted); border-bottom:2px solid transparent; transition:all .15s; }
-  .tab:hover { color:var(--navy); } .tab.active { color:var(--navy); border-bottom-color:var(--navy); }
-  .content { max-width:1100px; margin:0 auto; padding:1.5rem 2rem 3rem; }
-  .toolbar { display:flex; gap:8px; margin-bottom:1.25rem; flex-wrap:wrap; align-items:center; }
-  .toolbar input,.toolbar select { height:36px; padding:0 10px; border:1px solid var(--border); border-radius:8px; font-size:13px; color:var(--text); background:var(--surface); outline:none; transition:border-color .15s; }
-  .toolbar input:focus,.toolbar select:focus { border-color:var(--navy); }
-  .toolbar input.wide { flex:1; min-width:160px; }
-  .btn { height:36px; padding:0 14px; border-radius:8px; font-size:13px; font-weight:500; cursor:pointer; border:none; display:inline-flex; align-items:center; gap:6px; transition:all .15s; }
-  .btn:disabled { opacity:.5; cursor:not-allowed; }
-  .btn-primary { background:var(--navy); color:#fff; } .btn-primary:hover:not(:disabled) { background:var(--navy-dark); }
-  .filter-row { display:flex; gap:6px; margin-bottom:1rem; flex-wrap:wrap; }
-  .chip { padding:5px 14px; border-radius:20px; font-size:12px; font-weight:500; cursor:pointer; border:1px solid var(--border); background:#fff; color:var(--muted); transition:all .12s; }
-  .chip.active { background:var(--navy); color:#fff; border-color:var(--navy); }
-  .file-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:12px; }
-  .file-card { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:14px; display:flex; flex-direction:column; gap:8px; box-shadow:var(--shadow); }
-  .fc-top { display:flex; justify-content:space-between; align-items:center; }
-  .tag { font-size:11px; font-weight:600; padding:2px 9px; border-radius:10px; }
-  .tag-vti{background:#e8f0ff;color:#1a4aa0;} .tag-dcorp{background:#f0eaff;color:#5534b0;} .tag-client{background:#e6f9f0;color:#0d6e47;} .tag-other{background:#f1f1f1;color:#555;}
-  .fc-name { font-size:14px; font-weight:600; color:var(--text); }
-  .fc-desc { font-size:12px; color:var(--muted); }
-  .fc-link { font-size:12px; color:var(--navy); text-decoration:none; display:flex; align-items:center; gap:5px; font-weight:500; }
-  .fc-link:hover { text-decoration:underline; }
-  .icon-btn { background:none; border:none; cursor:pointer; color:var(--muted); padding:4px; border-radius:5px; display:flex; align-items:center; }
-  .icon-btn:hover { background:#fce4e4; color:#c0392b; }
-  .stats-row { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-bottom:1.25rem; }
-  .stat-card { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:14px 18px; }
-  .stat-label { font-size:11px; font-weight:600; color:var(--muted); text-transform:uppercase; letter-spacing:.06em; }
-  .stat-value { font-size:26px; font-weight:700; color:var(--navy); margin-top:2px; }
-  .task-list { display:flex; flex-direction:column; gap:8px; }
-  .task-item { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:12px 14px; display:flex; align-items:flex-start; gap:12px; box-shadow:var(--shadow); }
-  .task-item.done { opacity:.5; }
-  .task-item input[type=checkbox] { width:17px; height:17px; cursor:pointer; margin-top:1px; flex-shrink:0; accent-color:var(--navy); }
-  .task-body { flex:1; min-width:0; }
-  .task-name { font-size:14px; font-weight:500; color:var(--text); }
-  .task-name.done { text-decoration:line-through; color:var(--muted); }
-  .task-meta { display:flex; gap:8px; margin-top:4px; align-items:center; flex-wrap:wrap; }
-  .task-ref { font-size:12px; color:var(--muted); }
-  .prio { font-size:11px; font-weight:600; padding:2px 9px; border-radius:10px; }
-  .prio-high{background:#fde8e8;color:#b02020;} .prio-mid{background:#fef3d8;color:#8a5c00;} .prio-low{background:#e6f9f0;color:#0d6e47;}
-  .task-date { font-size:11px; color:var(--muted); }
-  .empty-state { text-align:center; padding:3rem 1rem; color:var(--muted); font-size:14px; }
-  .panel { display:none; } .panel.active { display:block; }
-  .skeleton { background:linear-gradient(90deg,#eee 25%,#f5f5f5 50%,#eee 75%); background-size:200% 100%; animation:shimmer 1.2s infinite; border-radius:8px; }
-  @keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
-  .toast { position:fixed; bottom:24px; right:24px; background:var(--navy); color:#fff; padding:10px 18px; border-radius:8px; font-size:13px; z-index:999; opacity:0; transition:opacity .2s; pointer-events:none; }
-  .toast.show { opacity:1; } .toast.err { background:#c0392b; }
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --red:    #e30613;
+  --black:  #000000;
+  --white:  #ffffff;
+  --gray:   #727171;
+  --bg:     #f0f2f5;
+  --dark:   #1a1f2e;
+  --tabs:   #131722;
+  --amber:  #d97706;
+  --green:  #16a34a;
+  --blue:   #2563eb;
+  --navy:   #003087;
+  --gold:   #E8B84B;
+  --radius: 10px;
+  --shadow: 0 1px 6px rgba(0,0,0,.07);
+}
+body { font-family:'Montserrat',sans-serif; background:var(--bg); color:var(--black); min-height:100vh; }
+
+/* ── HEADER ── */
+header {
+  position:sticky; top:0; z-index:100;
+  background:var(--dark);
+  padding:0 1.5rem;
+  height:62px;
+  display:grid;
+  grid-template-columns:auto 1fr auto;
+  align-items:center;
+  gap:1rem;
+  box-shadow:0 2px 10px rgba(0,0,0,.3);
+}
+.logo-box {
+  width:38px; height:38px; border-radius:6px;
+  background:var(--red);
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  flex-shrink:0;
+}
+.logo-d { font-size:18px; font-weight:900; color:#fff; line-height:1; font-family:'Montserrat',sans-serif; }
+.logo-sub { font-size:5px; font-weight:800; color:rgba(255,255,255,.8); letter-spacing:1.5px; text-transform:uppercase; }
+.header-center { min-width:0; }
+.header-title {
+  font-size:11px; font-weight:800; color:var(--white);
+  letter-spacing:1.5px; text-transform:uppercase;
+}
+.header-sub {
+  font-size:9px; font-weight:600; color:rgba(255,255,255,.5);
+  letter-spacing:0.5px; margin-top:2px; font-family:'DM Mono',monospace;
+}
+.header-right { display:flex; align-items:center; gap:8px; flex-shrink:0; }
+.hbadge {
+  font-size:8px; font-weight:800; font-family:'DM Mono',monospace;
+  padding:3px 8px; border-radius:4px; text-transform:uppercase; letter-spacing:0.5px;
+}
+.hbadge-date { background:rgba(255,255,255,.1); color:rgba(255,255,255,.7); }
+.hbadge-ver  { background:var(--red); color:#fff; }
+.conn-dot-wrap { display:flex; align-items:center; gap:5px; }
+.cdot { width:7px; height:7px; border-radius:50%; background:#555; flex-shrink:0; }
+.cdot.ok { background:#22c55e; }
+.cdot.err { background:#ef4444; }
+.cdot.loading { background:var(--gold); animation:pulse .9s infinite; }
+.conn-lbl { font-size:9px; font-weight:700; font-family:'DM Mono',monospace; color:rgba(255,255,255,.5); text-transform:uppercase; letter-spacing:.5px; }
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.3} }
+
+/* ── TABS ── */
+.tab-bar {
+  position:sticky; top:62px; z-index:99;
+  background:var(--tabs);
+  display:flex; padding:0 1.5rem;
+  border-bottom:1px solid rgba(255,255,255,.06);
+}
+.nav-tab {
+  padding:14px 20px; font-size:11px; font-weight:700;
+  text-transform:uppercase; letter-spacing:1px;
+  cursor:pointer; border:none; background:none;
+  color:rgba(255,255,255,.4);
+  border-bottom:2px solid transparent;
+  transition:all .15s;
+}
+.nav-tab:hover { color:rgba(255,255,255,.7); }
+.nav-tab.active { color:var(--red); border-bottom-color:var(--red); }
+
+/* ── CONTENT ── */
+.content { max-width:1200px; margin:0 auto; padding:1.5rem 1.5rem 4rem; }
+.tab-content { display:none; }
+.tab-content.active { display:block; }
+
+/* ── STATS ROW ── */
+.stats-row { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-bottom:1.5rem; }
+.stat-card {
+  background:var(--white); border-radius:var(--radius); box-shadow:var(--shadow);
+  padding:16px 20px; border-top:3px solid var(--red);
+}
+.stat-label {
+  font-size:9px; font-weight:800; color:var(--gray);
+  text-transform:uppercase; letter-spacing:1px;
+}
+.stat-value {
+  font-size:32px; font-weight:900; font-family:'DM Mono',monospace;
+  color:var(--dark); margin-top:4px; line-height:1;
+}
+.stat-sub { font-size:9px; color:var(--gray); margin-top:4px; font-family:'DM Mono',monospace; }
+
+/* ── TOOLBAR ── */
+.toolbar {
+  background:var(--white); border-radius:var(--radius);
+  box-shadow:var(--shadow); padding:12px 14px;
+  display:flex; gap:8px; margin-bottom:1rem; flex-wrap:wrap; align-items:center;
+}
+.toolbar input, .toolbar select {
+  height:34px; padding:0 10px;
+  border:1px solid #e2e5ee; border-radius:6px;
+  font-size:12px; font-family:'Montserrat',sans-serif;
+  color:var(--black); background:#fafafa; outline:none;
+  transition:border-color .15s;
+}
+.toolbar input:focus, .toolbar select:focus { border-color:var(--red); }
+.toolbar input.wide { flex:1; min-width:150px; }
+.btn {
+  height:34px; padding:0 14px; border-radius:6px;
+  font-size:11px; font-weight:700; font-family:'Montserrat',sans-serif;
+  text-transform:uppercase; letter-spacing:.5px;
+  cursor:pointer; border:none; display:inline-flex; align-items:center; gap:6px;
+  transition:all .15s;
+}
+.btn:disabled { opacity:.45; cursor:not-allowed; }
+.btn-primary { background:var(--red); color:#fff; }
+.btn-primary:hover:not(:disabled) { background:#c0000f; }
+
+/* ── FILTER CHIPS ── */
+.filter-row { display:flex; gap:6px; margin-bottom:1rem; flex-wrap:wrap; }
+.chip {
+  padding:4px 12px; border-radius:20px; font-size:10px; font-weight:700;
+  text-transform:uppercase; letter-spacing:.5px;
+  cursor:pointer; border:1px solid #ddd; background:#fff; color:var(--gray);
+  transition:all .12s; font-family:'Montserrat',sans-serif;
+}
+.chip.active { background:var(--red); color:#fff; border-color:var(--red); }
+
+/* ── FILE GRID ── */
+.file-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(230px,1fr)); gap:12px; }
+.file-card {
+  background:var(--white); border-radius:var(--radius);
+  box-shadow:var(--shadow); padding:14px;
+  display:flex; flex-direction:column; gap:8px;
+  border-left:3px solid transparent; transition:box-shadow .15s;
+}
+.file-card:hover { box-shadow:0 4px 14px rgba(0,0,0,.11); }
+.file-card.tag-vti    { border-left-color:#2563eb; }
+.file-card.tag-dcorp  { border-left-color:var(--red); }
+.file-card.tag-client { border-left-color:var(--green); }
+.file-card.tag-other  { border-left-color:var(--gray); }
+.fc-top { display:flex; justify-content:space-between; align-items:center; }
+.tag {
+  font-size:8px; font-weight:800; padding:2px 8px; border-radius:3px;
+  text-transform:uppercase; letter-spacing:.5px; font-family:'DM Mono',monospace;
+}
+.tag-vti    { background:#dbeafe; color:#1d4ed8; }
+.tag-dcorp  { background:#fee2e2; color:#b91c1c; }
+.tag-client { background:#dcfce7; color:#15803d; }
+.tag-other  { background:#f3f4f6; color:#4b5563; }
+.fc-name { font-size:13px; font-weight:700; color:var(--dark); line-height:1.3; }
+.fc-desc { font-size:11px; color:var(--gray); line-height:1.4; }
+.fc-link {
+  font-size:11px; color:var(--navy); text-decoration:none;
+  font-weight:700; display:flex; align-items:center; gap:4px;
+}
+.fc-link:hover { color:var(--red); }
+.icon-btn {
+  background:none; border:none; cursor:pointer; color:#ccc;
+  padding:3px; border-radius:4px; font-size:13px;
+  transition:all .12s;
+}
+.icon-btn:hover { background:#fee2e2; color:var(--red); }
+
+/* ── TASK LIST ── */
+.task-list { display:flex; flex-direction:column; gap:8px; }
+.task-item {
+  background:var(--white); border-radius:var(--radius);
+  box-shadow:var(--shadow); padding:12px 14px;
+  display:flex; align-items:flex-start; gap:12px;
+  border-left:3px solid transparent; transition:opacity .15s;
+}
+.task-item.prio-high  { border-left-color:var(--red); }
+.task-item.prio-mid   { border-left-color:var(--amber); }
+.task-item.prio-low   { border-left-color:var(--green); }
+.task-item.done { opacity:.45; }
+.task-item input[type=checkbox] {
+  width:16px; height:16px; cursor:pointer; margin-top:2px;
+  flex-shrink:0; accent-color:var(--red);
+}
+.task-body { flex:1; min-width:0; }
+.task-name { font-size:13px; font-weight:600; color:var(--dark); }
+.task-name.done { text-decoration:line-through; color:var(--gray); }
+.task-meta { display:flex; gap:8px; margin-top:4px; align-items:center; flex-wrap:wrap; }
+.task-ref { font-size:10px; color:var(--gray); font-family:'DM Mono',monospace; }
+.prio-badge {
+  font-size:8px; font-weight:800; padding:2px 7px; border-radius:3px;
+  text-transform:uppercase; letter-spacing:.5px; font-family:'DM Mono',monospace;
+}
+.pb-high { background:#fee2e2; color:#b91c1c; }
+.pb-mid  { background:#fef3c7; color:#92400e; }
+.pb-low  { background:#dcfce7; color:#15803d; }
+.task-date { font-size:9px; color:#bbb; font-family:'DM Mono',monospace; }
+
+/* ── EMPTY & SKELETON ── */
+.empty-state {
+  text-align:center; padding:3rem 1rem;
+  color:var(--gray); font-size:13px; font-weight:600;
+}
+.empty-state .empty-icon { font-size:32px; margin-bottom:8px; }
+.skeleton {
+  background:linear-gradient(90deg,#eee 25%,#f5f5f5 50%,#eee 75%);
+  background-size:200% 100%; animation:shimmer 1.2s infinite; border-radius:6px;
+}
+@keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
+
+/* ── TOAST ── */
+.toast {
+  position:fixed; bottom:24px; right:24px;
+  background:var(--dark); color:#fff;
+  padding:10px 18px; border-radius:8px; font-size:12px; font-weight:600;
+  font-family:'Montserrat',sans-serif;
+  z-index:999; opacity:0; transition:opacity .2s; pointer-events:none;
+  border-left:3px solid var(--red);
+}
+.toast.show { opacity:1; }
+.toast.err { border-left-color:#ef4444; background:#1f0a0a; }
+.toast.ok  { border-left-color:var(--green); }
+
+/* ── FOOTER ── */
+footer {
+  background:var(--dark); color:rgba(255,255,255,.4);
+  padding:16px 1.5rem; margin-top:3rem;
+  display:flex; justify-content:space-between; align-items:center;
+  font-size:9px; font-family:'DM Mono',monospace; font-weight:500;
+  text-transform:uppercase; letter-spacing:.5px;
+}
+footer strong { color:rgba(255,255,255,.7); }
 </style>
 </head>
 <body>
+
+<!-- HEADER -->
 <header>
-  <div class="logo"><div class="logo-dot"></div>My Command Center</div>
-  <div id="conn-status"><div class="dot" id="conn-dot"></div><span id="conn-label">Đang kết nối...</span></div>
+  <div class="logo-box">
+    <div class="logo-d">D</div>
+    <div class="logo-sub">corp</div>
+  </div>
+  <div class="header-center">
+    <div class="header-title">My Command Center — HaiPM</div>
+    <div class="header-sub">Dcorp Technology Corporation · Core Technology Department</div>
+  </div>
+  <div class="header-right">
+    <div class="conn-dot-wrap">
+      <div class="cdot" id="conn-dot"></div>
+      <span class="conn-lbl" id="conn-label">Init...</span>
+    </div>
+    <span class="hbadge hbadge-date" id="badge-date">—</span>
+    <span class="hbadge hbadge-ver">mcc_haipm v1.2</span>
+  </div>
 </header>
-<div class="tabs">
-  <button class="tab active" onclick="switchTab('files',this)">📁 File Drive</button>
-  <button class="tab" onclick="switchTab('tasks',this)">✅ Task đang làm</button>
+
+<!-- TABS -->
+<div class="tab-bar">
+  <button class="nav-tab active" onclick="switchTab('files',this)">📁 File Drive</button>
+  <button class="nav-tab" onclick="switchTab('tasks',this)">✅ Task đang làm</button>
 </div>
+
+<!-- CONTENT -->
 <div class="content">
-  <div id="files" class="panel active">
+
+  <!-- TAB: FILE DRIVE -->
+  <div id="tab-files" class="tab-content active">
     <div class="toolbar">
       <input class="wide" id="f-name" placeholder="Tên file / folder..." />
       <input class="wide" id="f-url" placeholder="Link Google Drive..." />
-      <input style="width:150px" id="f-note" placeholder="Ghi chú..." />
+      <input style="width:140px" id="f-note" placeholder="Ghi chú..." />
       <select id="f-tag">
-        <option value="vti">VTI</option><option value="dcorp">Dcorp</option>
-        <option value="client">Client khác</option><option value="other">Khác</option>
+        <option value="vti">VTI</option>
+        <option value="dcorp">Dcorp</option>
+        <option value="client">Client khác</option>
+        <option value="other">Khác</option>
       </select>
       <button class="btn btn-primary" id="btn-add-file" onclick="addFile()">+ Thêm</button>
     </div>
@@ -100,17 +301,33 @@
     </div>
     <div id="file-grid" class="file-grid"></div>
   </div>
-  <div id="tasks" class="panel">
+
+  <!-- TAB: TASK -->
+  <div id="tab-tasks" class="tab-content">
     <div class="stats-row">
-      <div class="stat-card"><div class="stat-label">Tổng task</div><div class="stat-value" id="s-total">—</div></div>
-      <div class="stat-card"><div class="stat-label">Đang làm</div><div class="stat-value" id="s-open">—</div></div>
-      <div class="stat-card"><div class="stat-label">Hoàn thành</div><div class="stat-value" id="s-done">—</div></div>
+      <div class="stat-card">
+        <div class="stat-label">Tổng task</div>
+        <div class="stat-value" id="s-total">—</div>
+        <div class="stat-sub">Tất cả trạng thái</div>
+      </div>
+      <div class="stat-card" style="border-top-color:var(--amber)">
+        <div class="stat-label">Đang làm</div>
+        <div class="stat-value" id="s-open">—</div>
+        <div class="stat-sub">Chưa hoàn thành</div>
+      </div>
+      <div class="stat-card" style="border-top-color:var(--green)">
+        <div class="stat-label">Hoàn thành</div>
+        <div class="stat-value" id="s-done">—</div>
+        <div class="stat-sub">Đã xong</div>
+      </div>
     </div>
     <div class="toolbar">
       <input class="wide" id="t-name" placeholder="Tên task / công việc..." />
       <input style="width:150px" id="t-ref" placeholder="Mã TECH / ghi chú..." />
       <select id="t-priority">
-        <option value="high">🔴 Cao</option><option value="mid" selected>🟡 Trung</option><option value="low">🟢 Thấp</option>
+        <option value="high">🔴 Cao</option>
+        <option value="mid" selected>🟡 Trung</option>
+        <option value="low">🟢 Thấp</option>
       </select>
       <button class="btn btn-primary" id="btn-add-task" onclick="addTask()">+ Thêm</button>
     </div>
@@ -121,90 +338,113 @@
     </div>
     <div id="task-list" class="task-list"></div>
   </div>
+
 </div>
+
+<!-- FOOTER -->
+<footer>
+  <div><strong>Phạm Minh Hải</strong> · Trưởng phòng Core Technology</div>
+  <div>mcc_haipm v1.2 · Built on <strong id="footer-date">—</strong> · Dcorp Technology Corporation</div>
+</footer>
+
 <div class="toast" id="toast"></div>
+
 <script>
+// ── CONFIG ────────────────────────────────────────────────────
 const cfg = {
-  url: 'https://n8n-edu.dcorp.com.vn/webhook/command-center',
-  token: 'HCM-HAI-1982'
+  url:   'https://n8n-edu.dcorp.com.vn/webhook/command-center',
+  token: 'HCM-HAI-1982',
+  version: 'mcc_haipm v1.2'
 };
 
-const TAG_LABEL = {vti:'VTI',dcorp:'Dcorp',client:'Client',other:'Khác'};
-const TAG_CLS   = {vti:'tag-vti',dcorp:'tag-dcorp',client:'tag-client',other:'tag-other'};
-const PRIO_LABEL = {high:'Cao',mid:'Trung',low:'Thấp'};
-const PRIO_CLS   = {high:'prio-high',mid:'prio-mid',low:'prio-low'};
-let allFiles=[],allTasks=[],fileFilter='all',taskFilter='all';
+const TAG_LABEL  = { vti:'VTI', dcorp:'Dcorp', client:'Client', other:'Khác' };
+const TAG_CLS    = { vti:'tag-vti', dcorp:'tag-dcorp', client:'tag-client', other:'tag-other' };
+const PRIO_LABEL = { high:'Cao', mid:'Trung', low:'Thấp' };
+const PRIO_BCLS  = { high:'pb-high', mid:'pb-mid', low:'pb-low' };
 
-window.onload = () => loadAll();
+let allFiles=[], allTasks=[], fileFilter='all', taskFilter='all';
 
-// ── API: an toàn với mọi loại response ────────────────────────
+// ── INIT ──────────────────────────────────────────────────────
+window.onload = () => {
+  const now = new Date();
+  const d = now.toLocaleDateString('vi-VN',{day:'2-digit',month:'2-digit',year:'numeric'});
+  document.getElementById('badge-date').textContent = d;
+  document.getElementById('footer-date').textContent = d;
+  loadAll();
+};
+
+// ── TAB SWITCH ────────────────────────────────────────────────
+function switchTab(id, btn) {
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('tab-' + id).classList.add('active');
+  if (btn) btn.classList.add('active');
+}
+
+// ── API ───────────────────────────────────────────────────────
 async function api(body) {
-  setConn('loading','Đang kết nối...');
+  setConn('loading', 'Syncing...');
   try {
     const res = await fetch(cfg.url, {
       method: 'POST',
-      headers: { 'Content-Type':'application/json', 'X-MCC-Key': cfg.token },
-      body: JSON.stringify(body)
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ ...body, token: cfg.token })
     });
-
-    // Với 204 No Content hoặc body rỗng → trả object rỗng, không parse
     const text = await res.text();
     if (!text || !text.trim()) {
-      setConn('ok','Đã kết nối');
+      setConn('ok', 'Connected');
       return { ok: true, data: [] };
     }
-
     const json = JSON.parse(text);
-    setConn('ok','Đã kết nối');
+    setConn('ok', 'Connected');
     return json;
   } catch(e) {
-    setConn('err','Lỗi kết nối');
-    showToast('Lỗi: ' + e.message, true);
+    setConn('err', 'Error');
+    showToast('Lỗi kết nối: ' + e.message, 'err');
     throw e;
   }
 }
 
-function setConn(s,l) {
-  document.getElementById('conn-dot').className='dot '+s;
-  document.getElementById('conn-label').textContent=l;
+function setConn(s, l) {
+  document.getElementById('conn-dot').className = 'cdot ' + s;
+  document.getElementById('conn-label').textContent = l;
 }
 
 let toastTimer;
-function showToast(msg,err) {
-  const t=document.getElementById('toast');
-  t.textContent=msg;
-  t.className='toast show'+(err?' err':'');
+function showToast(msg, type='ok') {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast show ' + type;
   clearTimeout(toastTimer);
-  toastTimer=setTimeout(()=>t.className='toast',2800);
-}
-
-function switchTab(id,btn) {
-  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
-  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
-  btn.classList.add('active');
-  document.getElementById(id).classList.add('active');
+  toastTimer = setTimeout(() => t.className = 'toast', 3000);
 }
 
 function esc(s) {
   return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
-function showSkeleton(id,count,type) {
-  const el=document.getElementById(id);
-  if(type==='card') {
-    el.innerHTML=Array(count).fill(0).map(()=>'<div class="file-card"><div class="skeleton" style="height:14px;width:60%;margin-bottom:8px"></div><div class="skeleton" style="height:12px;width:90%"></div><div class="skeleton" style="height:12px;width:40%;margin-top:8px"></div></div>').join('');
+// ── SKELETON ──────────────────────────────────────────────────
+function showSkeleton(id, count, type) {
+  const el = document.getElementById(id);
+  if (type === 'card') {
+    el.innerHTML = Array(count).fill(0).map(() =>
+      `<div class="file-card"><div class="skeleton" style="height:12px;width:55%;margin-bottom:10px"></div><div class="skeleton" style="height:14px;width:90%;margin-bottom:8px"></div><div class="skeleton" style="height:11px;width:40%"></div></div>`
+    ).join('');
   } else {
-    el.innerHTML=Array(count).fill(0).map(()=>'<div class="task-item"><div class="skeleton" style="width:17px;height:17px;border-radius:4px;flex-shrink:0"></div><div style="flex:1"><div class="skeleton" style="height:14px;width:70%;margin-bottom:6px"></div><div class="skeleton" style="height:11px;width:30%"></div></div></div>').join('');
+    el.innerHTML = Array(count).fill(0).map(() =>
+      `<div class="task-item prio-mid"><div class="skeleton" style="width:16px;height:16px;border-radius:3px;flex-shrink:0"></div><div style="flex:1"><div class="skeleton" style="height:13px;width:65%;margin-bottom:7px"></div><div class="skeleton" style="height:10px;width:30%"></div></div></div>`
+    ).join('');
   }
 }
 
+// ── LOAD ALL ──────────────────────────────────────────────────
 async function loadAll() {
-  showSkeleton('file-grid',6,'card');
-  showSkeleton('task-list',4,'row');
+  showSkeleton('file-grid', 6, 'card');
+  showSkeleton('task-list', 4, 'row');
   try {
-    const [fr,tr] = await Promise.all([
-      api({action:'file_list'}),
-      api({action:'task_list'})
+    const [fr, tr] = await Promise.all([
+      api({ action: 'file_list' }),
+      api({ action: 'task_list' })
     ]);
     allFiles = Array.isArray(fr.data) ? fr.data : (fr.data ? [fr.data] : []);
     allTasks = Array.isArray(tr.data) ? tr.data : (tr.data ? [tr.data] : []);
@@ -223,50 +463,48 @@ async function addFile() {
   const btn = document.getElementById('btn-add-file');
   btn.disabled = true;
   try {
-    const res = await api({action:'file_add',name,url,tag,note});
+    const res = await api({ action:'file_add', name, url, tag, note });
     const nf = Array.isArray(res.data) ? res.data[0] : res.data;
     if (nf && nf.id) allFiles.unshift(nf);
     renderFiles();
-    document.getElementById('f-name').value='';
-    document.getElementById('f-url').value='';
-    document.getElementById('f-note').value='';
-    showToast('Đã thêm file ✓');
-  } catch(_) {} finally { btn.disabled=false; }
+    ['f-name','f-url','f-note'].forEach(id => document.getElementById(id).value = '');
+    showToast('Đã thêm file ✓', 'ok');
+  } catch(_) {} finally { btn.disabled = false; }
 }
 
 async function delFile(id) {
   if (!confirm('Xóa file này?')) return;
   try {
-    await api({action:'file_delete',id});
-    allFiles = allFiles.filter(f=>f.id!=id);
+    await api({ action:'file_delete', id });
+    allFiles = allFiles.filter(f => f.id != id);
     renderFiles();
-    showToast('Đã xóa');
+    showToast('Đã xóa', 'ok');
   } catch(_) {}
 }
 
-function filterFiles(val,el) {
-  fileFilter=val;
-  document.querySelectorAll('#file-filter-row .chip').forEach(c=>c.classList.remove('active'));
+function filterFiles(val, el) {
+  fileFilter = val;
+  document.querySelectorAll('#file-filter-row .chip').forEach(c => c.classList.remove('active'));
   el.classList.add('active');
   renderFiles();
 }
 
 function renderFiles() {
   const grid = document.getElementById('file-grid');
-  const list = fileFilter==='all' ? allFiles : allFiles.filter(f=>f.tag===fileFilter);
+  const list = fileFilter === 'all' ? allFiles : allFiles.filter(f => f.tag === fileFilter);
   if (!list.length) {
-    grid.innerHTML='<div class="empty-state">Chưa có file nào'+(fileFilter!=='all'?' trong nhóm này':'')+'.<br>Thêm link Drive ở thanh phía trên.</div>';
+    grid.innerHTML = `<div class="empty-state" style="grid-column:1/-1"><div class="empty-icon">📂</div>Chưa có file nào${fileFilter !== 'all' ? ' trong nhóm này' : ''}.<br>Thêm link Drive ở thanh phía trên.</div>`;
     return;
   }
-  grid.innerHTML = list.map(f=>`
-    <div class="file-card">
+  grid.innerHTML = list.map(f => `
+    <div class="file-card ${TAG_CLS[f.tag]||'tag-other'}">
       <div class="fc-top">
         <span class="tag ${TAG_CLS[f.tag]||'tag-other'}">${TAG_LABEL[f.tag]||f.tag}</span>
         <button class="icon-btn" onclick="delFile(${f.id})" title="Xóa">✕</button>
       </div>
       <div class="fc-name">${esc(f.name)}</div>
       ${f.note ? `<div class="fc-desc">${esc(f.note)}</div>` : ''}
-      ${f.url ? `<a class="fc-link" href="${esc(f.url)}" target="_blank">↗ Mở Drive</a>` : '<span class="fc-desc">Chưa có link</span>'}
+      ${f.url ? `<a class="fc-link" href="${esc(f.url)}" target="_blank">↗ Mở Drive</a>` : '<span class="fc-desc" style="color:#ccc">Chưa có link</span>'}
     </div>
   `).join('');
 }
@@ -280,21 +518,20 @@ async function addTask() {
   const btn = document.getElementById('btn-add-task');
   btn.disabled = true;
   try {
-    const res = await api({action:'task_add',name,ref_code,priority});
+    const res = await api({ action:'task_add', name, ref_code, priority });
     const nt = Array.isArray(res.data) ? res.data[0] : res.data;
     if (nt && nt.id) allTasks.unshift(nt);
     renderTasks();
-    document.getElementById('t-name').value='';
-    document.getElementById('t-ref').value='';
-    showToast('Đã thêm task ✓');
-  } catch(_) {} finally { btn.disabled=false; }
+    ['t-name','t-ref'].forEach(id => document.getElementById(id).value = '');
+    showToast('Đã thêm task ✓', 'ok');
+  } catch(_) {} finally { btn.disabled = false; }
 }
 
 async function toggleTask(id) {
   try {
-    const res = await api({action:'task_toggle',id});
+    const res = await api({ action:'task_toggle', id });
     const u = Array.isArray(res.data) ? res.data[0] : res.data;
-    const t = allTasks.find(t=>t.id==id);
+    const t = allTasks.find(t => t.id == id);
     if (t && u && u.status) t.status = u.status;
     renderTasks();
   } catch(_) {}
@@ -303,53 +540,53 @@ async function toggleTask(id) {
 async function delTask(id) {
   if (!confirm('Xóa task này?')) return;
   try {
-    await api({action:'task_delete',id});
-    allTasks = allTasks.filter(t=>t.id!=id);
+    await api({ action:'task_delete', id });
+    allTasks = allTasks.filter(t => t.id != id);
     renderTasks();
-    showToast('Đã xóa');
+    showToast('Đã xóa', 'ok');
   } catch(_) {}
 }
 
-function filterTasks(val,el) {
-  taskFilter=val;
-  document.querySelectorAll('#task-filter-row .chip').forEach(c=>c.classList.remove('active'));
+function filterTasks(val, el) {
+  taskFilter = val;
+  document.querySelectorAll('#task-filter-row .chip').forEach(c => c.classList.remove('active'));
   el.classList.add('active');
   renderTasks();
 }
 
 function renderTasks() {
   const total = allTasks.length;
-  const open  = allTasks.filter(t=>t.status==='open').length;
-  const done  = allTasks.filter(t=>t.status==='done').length;
-  document.getElementById('s-total').textContent=total;
-  document.getElementById('s-open').textContent=open;
-  document.getElementById('s-done').textContent=done;
+  const open  = allTasks.filter(t => t.status === 'open').length;
+  const done  = allTasks.filter(t => t.status === 'done').length;
+  document.getElementById('s-total').textContent = total || '0';
+  document.getElementById('s-open').textContent  = open  || '0';
+  document.getElementById('s-done').textContent  = done  || '0';
 
   const list = document.getElementById('task-list');
-  let filtered = taskFilter==='open' ? allTasks.filter(t=>t.status==='open')
-               : taskFilter==='done' ? allTasks.filter(t=>t.status==='done')
+  let filtered = taskFilter === 'open' ? allTasks.filter(t => t.status === 'open')
+               : taskFilter === 'done' ? allTasks.filter(t => t.status === 'done')
                : allTasks;
 
   if (!filtered.length) {
-    list.innerHTML='<div class="empty-state">Không có task nào'+(taskFilter!=='all'?' ở trạng thái này':'')+'.</div>';
+    list.innerHTML = `<div class="empty-state"><div class="empty-icon">✅</div>Không có task nào${taskFilter !== 'all' ? ' ở trạng thái này' : ''}.</div>`;
     return;
   }
 
-  const pO={high:0,mid:1,low:2};
-  const sorted=[...filtered].sort((a,b)=>{
-    if (a.status!==b.status) return a.status==='done'?1:-1;
-    return (pO[a.priority]||1)-(pO[b.priority]||1);
+  const pO = { high:0, mid:1, low:2 };
+  const sorted = [...filtered].sort((a,b) => {
+    if (a.status !== b.status) return a.status === 'done' ? 1 : -1;
+    return (pO[a.priority]||1) - (pO[b.priority]||1);
   });
 
-  list.innerHTML = sorted.map(t=>`
-    <div class="task-item ${t.status==='done'?'done':''}">
+  list.innerHTML = sorted.map(t => `
+    <div class="task-item prio-${t.priority||'mid'} ${t.status==='done'?'done':''}">
       <input type="checkbox" ${t.status==='done'?'checked':''} onchange="toggleTask(${t.id})" />
       <div class="task-body">
         <div class="task-name ${t.status==='done'?'done':''}">${esc(t.name)}</div>
         <div class="task-meta">
           ${t.ref_code ? `<span class="task-ref">${esc(t.ref_code)}</span>` : ''}
-          <span class="prio ${PRIO_CLS[t.priority]||'prio-mid'}">${PRIO_LABEL[t.priority]||t.priority}</span>
-          ${t.added ? `<span class="task-date">Thêm ${t.added}</span>` : ''}
+          <span class="prio-badge ${PRIO_BCLS[t.priority]||'pb-mid'}">${PRIO_LABEL[t.priority]||t.priority}</span>
+          ${t.added ? `<span class="task-date">+ ${t.added}</span>` : ''}
         </div>
       </div>
       <button class="icon-btn" onclick="delTask(${t.id})" title="Xóa">✕</button>
@@ -357,11 +594,12 @@ function renderTasks() {
   `).join('');
 }
 
-['f-name','f-url','f-note'].forEach(id=>
-  document.getElementById(id).addEventListener('keydown',e=>{ if(e.key==='Enter') addFile(); })
+// ── ENTER SHORTCUTS ───────────────────────────────────────────
+['f-name','f-url','f-note'].forEach(id =>
+  document.getElementById(id).addEventListener('keydown', e => { if(e.key==='Enter') addFile(); })
 );
-['t-name','t-ref'].forEach(id=>
-  document.getElementById(id).addEventListener('keydown',e=>{ if(e.key==='Enter') addTask(); })
+['t-name','t-ref'].forEach(id =>
+  document.getElementById(id).addEventListener('keydown', e => { if(e.key==='Enter') addTask(); })
 );
 </script>
 </body>
