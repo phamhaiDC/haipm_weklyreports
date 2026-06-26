@@ -68,27 +68,18 @@
   @keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
   .toast { position:fixed; bottom:24px; right:24px; background:var(--navy); color:#fff; padding:10px 18px; border-radius:8px; font-size:13px; z-index:999; opacity:0; transition:opacity .2s; pointer-events:none; }
   .toast.show { opacity:1; } .toast.err { background:#c0392b; }
-  .config-bar { background:#fff8e6; border:1px solid #f0d080; border-radius:8px; padding:12px 16px; margin-bottom:1.25rem; display:flex; gap:10px; align-items:center; flex-wrap:wrap; font-size:13px; }
-  .config-bar input { height:32px; padding:0 10px; border:1px solid var(--border); border-radius:6px; font-size:13px; }
-  .config-bar input.url { width:340px; } .config-bar input.token { width:200px; font-family:monospace; }
 </style>
 </head>
 <body>
 <header>
   <div class="logo"><div class="logo-dot"></div>My Command Center</div>
-  <div id="conn-status"><div class="dot" id="conn-dot"></div><span id="conn-label">Chưa kết nối</span></div>
+  <div id="conn-status"><div class="dot" id="conn-dot"></div><span id="conn-label">Đang kết nối...</span></div>
 </header>
 <div class="tabs">
   <button class="tab active" onclick="switchTab('files',this)">📁 File Drive</button>
   <button class="tab" onclick="switchTab('tasks',this)">✅ Task đang làm</button>
 </div>
 <div class="content">
-  <div class="config-bar" id="config-bar">
-    ⚙️ <strong>Cấu hình API:</strong>
-    <input class="url" id="cfg-url" placeholder="https://n8n-edu.dcorp.com.vn/webhook/command-center" />
-    <input class="token" id="cfg-token" placeholder="X-MCC-Key (secret token)" type="password" />
-    <button class="btn btn-primary" onclick="saveConfig()">Kết nối</button>
-  </div>
   <div id="files" class="panel active">
     <div class="toolbar">
       <input class="wide" id="f-name" placeholder="Tên file / folder..." />
@@ -133,136 +124,245 @@
 </div>
 <div class="toast" id="toast"></div>
 <script>
-const CFG_KEY='mcc_config_v1';
-let cfg = {
+const cfg = {
   url: 'https://n8n-edu.dcorp.com.vn/webhook/command-center',
   token: 'HCM-HAI-1982'
 };
-const TAG_LABEL={vti:'VTI',dcorp:'Dcorp',client:'Client',other:'Khác'};
-const TAG_CLS={vti:'tag-vti',dcorp:'tag-dcorp',client:'tag-client',other:'tag-other'};
-const PRIO_LABEL={high:'Cao',mid:'Trung',low:'Thấp'};
-const PRIO_CLS={high:'prio-high',mid:'prio-mid',low:'prio-low'};
+
+const TAG_LABEL = {vti:'VTI',dcorp:'Dcorp',client:'Client',other:'Khác'};
+const TAG_CLS   = {vti:'tag-vti',dcorp:'tag-dcorp',client:'tag-client',other:'tag-other'};
+const PRIO_LABEL = {high:'Cao',mid:'Trung',low:'Thấp'};
+const PRIO_CLS   = {high:'prio-high',mid:'prio-mid',low:'prio-low'};
 let allFiles=[],allTasks=[],fileFilter='all',taskFilter='all';
 
-window.onload=()=>{
-  document.getElementById('config-bar').style.display='none';
-  loadAll();
-};
+window.onload = () => loadAll();
 
-function saveConfig(){
-  const url=document.getElementById('cfg-url').value.trim();
-  const token=document.getElementById('cfg-token').value.trim();
-  if(!url){showToast('Nhập URL webhook trước',true);return;}
-  cfg={url,token};
-  localStorage.setItem(CFG_KEY,JSON.stringify(cfg));
-  document.getElementById('config-bar').style.display='none';
-  loadAll();
-}
-
-async function api(body){
+// ── API: an toàn với mọi loại response ────────────────────────
+async function api(body) {
   setConn('loading','Đang kết nối...');
-  try{
-    const res=await fetch(cfg.url,{method:'POST',headers:{'Content-Type':'application/json',...(cfg.token?{'X-MCC-Key':cfg.token}:{})},body:JSON.stringify(body)});
-    if(!res.ok)throw new Error('HTTP '+res.status);
-    const json=await res.json();
+  try {
+    const res = await fetch(cfg.url, {
+      method: 'POST',
+      headers: { 'Content-Type':'application/json', 'X-MCC-Key': cfg.token },
+      body: JSON.stringify(body)
+    });
+
+    // Với 204 No Content hoặc body rỗng → trả object rỗng, không parse
+    const text = await res.text();
+    if (!text || !text.trim()) {
+      setConn('ok','Đã kết nối');
+      return { ok: true, data: [] };
+    }
+
+    const json = JSON.parse(text);
     setConn('ok','Đã kết nối');
     return json;
-  }catch(e){setConn('err','Lỗi kết nối');showToast('Lỗi: '+e.message,true);throw e;}
+  } catch(e) {
+    setConn('err','Lỗi kết nối');
+    showToast('Lỗi: ' + e.message, true);
+    throw e;
+  }
 }
 
-function setConn(s,l){document.getElementById('conn-dot').className='dot '+s;document.getElementById('conn-label').textContent=l;}
+function setConn(s,l) {
+  document.getElementById('conn-dot').className='dot '+s;
+  document.getElementById('conn-label').textContent=l;
+}
+
 let toastTimer;
-function showToast(msg,err){const t=document.getElementById('toast');t.textContent=msg;t.className='toast show'+(err?' err':'');clearTimeout(toastTimer);toastTimer=setTimeout(()=>t.className='toast',2800);}
-function switchTab(id,btn){document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));btn.classList.add('active');document.getElementById(id).classList.add('active');}
-function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function showToast(msg,err) {
+  const t=document.getElementById('toast');
+  t.textContent=msg;
+  t.className='toast show'+(err?' err':'');
+  clearTimeout(toastTimer);
+  toastTimer=setTimeout(()=>t.className='toast',2800);
+}
 
-function showSkeleton(id,count,type){
+function switchTab(id,btn) {
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById(id).classList.add('active');
+}
+
+function esc(s) {
+  return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function showSkeleton(id,count,type) {
   const el=document.getElementById(id);
-  if(type==='card'){el.innerHTML=Array(count).fill(0).map(()=>'<div class="file-card"><div class="skeleton" style="height:14px;width:60%;margin-bottom:8px"></div><div class="skeleton" style="height:12px;width:90%"></div><div class="skeleton" style="height:12px;width:40%;margin-top:8px"></div></div>').join('');}
-  else{el.innerHTML=Array(count).fill(0).map(()=>'<div class="task-item"><div class="skeleton" style="width:17px;height:17px;border-radius:4px;flex-shrink:0"></div><div style="flex:1"><div class="skeleton" style="height:14px;width:70%;margin-bottom:6px"></div><div class="skeleton" style="height:11px;width:30%"></div></div></div>').join('');}
+  if(type==='card') {
+    el.innerHTML=Array(count).fill(0).map(()=>'<div class="file-card"><div class="skeleton" style="height:14px;width:60%;margin-bottom:8px"></div><div class="skeleton" style="height:12px;width:90%"></div><div class="skeleton" style="height:12px;width:40%;margin-top:8px"></div></div>').join('');
+  } else {
+    el.innerHTML=Array(count).fill(0).map(()=>'<div class="task-item"><div class="skeleton" style="width:17px;height:17px;border-radius:4px;flex-shrink:0"></div><div style="flex:1"><div class="skeleton" style="height:14px;width:70%;margin-bottom:6px"></div><div class="skeleton" style="height:11px;width:30%"></div></div></div>').join('');
+  }
 }
 
-async function loadAll(){
-  showSkeleton('file-grid',6,'card');showSkeleton('task-list',4,'row');
-  try{
-    const[fr,tr]=await Promise.all([api({action:'file_list'}),api({action:'task_list'})]);
-    allFiles=Array.isArray(fr.data)?fr.data:(fr.data?[fr.data]:[]);
-    allTasks=Array.isArray(tr.data)?tr.data:(tr.data?[tr.data]:[]);
-    renderFiles();renderTasks();
-  }catch(_){}
+async function loadAll() {
+  showSkeleton('file-grid',6,'card');
+  showSkeleton('task-list',4,'row');
+  try {
+    const [fr,tr] = await Promise.all([
+      api({action:'file_list'}),
+      api({action:'task_list'})
+    ]);
+    allFiles = Array.isArray(fr.data) ? fr.data : (fr.data ? [fr.data] : []);
+    allTasks = Array.isArray(tr.data) ? tr.data : (tr.data ? [tr.data] : []);
+    renderFiles();
+    renderTasks();
+  } catch(_) {}
 }
 
-async function addFile(){
-  const name=document.getElementById('f-name').value.trim();
-  const url=document.getElementById('f-url').value.trim();
-  const note=document.getElementById('f-note').value.trim();
-  const tag=document.getElementById('f-tag').value;
-  if(!name){document.getElementById('f-name').focus();return;}
-  const btn=document.getElementById('btn-add-file');btn.disabled=true;
-  try{
-    const res=await api({action:'file_add',name,url,tag,note});
-    const nf=Array.isArray(res.data)?res.data[0]:res.data;
-    allFiles.unshift(nf);renderFiles();
-    document.getElementById('f-name').value='';document.getElementById('f-url').value='';document.getElementById('f-note').value='';
+// ── FILES ─────────────────────────────────────────────────────
+async function addFile() {
+  const name = document.getElementById('f-name').value.trim();
+  const url  = document.getElementById('f-url').value.trim();
+  const note = document.getElementById('f-note').value.trim();
+  const tag  = document.getElementById('f-tag').value;
+  if (!name) { document.getElementById('f-name').focus(); return; }
+  const btn = document.getElementById('btn-add-file');
+  btn.disabled = true;
+  try {
+    const res = await api({action:'file_add',name,url,tag,note});
+    const nf = Array.isArray(res.data) ? res.data[0] : res.data;
+    if (nf && nf.id) allFiles.unshift(nf);
+    renderFiles();
+    document.getElementById('f-name').value='';
+    document.getElementById('f-url').value='';
+    document.getElementById('f-note').value='';
     showToast('Đã thêm file ✓');
-  }catch(_){}finally{btn.disabled=false;}
+  } catch(_) {} finally { btn.disabled=false; }
 }
 
-async function delFile(id){
-  if(!confirm('Xóa file này?'))return;
-  try{await api({action:'file_delete',id});allFiles=allFiles.filter(f=>f.id!=id);renderFiles();showToast('Đã xóa');}catch(_){}
+async function delFile(id) {
+  if (!confirm('Xóa file này?')) return;
+  try {
+    await api({action:'file_delete',id});
+    allFiles = allFiles.filter(f=>f.id!=id);
+    renderFiles();
+    showToast('Đã xóa');
+  } catch(_) {}
 }
 
-function filterFiles(val,el){fileFilter=val;document.querySelectorAll('#file-filter-row .chip').forEach(c=>c.classList.remove('active'));el.classList.add('active');renderFiles();}
-
-function renderFiles(){
-  const grid=document.getElementById('file-grid');
-  const list=fileFilter==='all'?allFiles:allFiles.filter(f=>f.tag===fileFilter);
-  if(!list.length){grid.innerHTML='<div class="empty-state">Chưa có file nào'+(fileFilter!=='all'?' trong nhóm này':'')+'.<br>Thêm link Drive ở thanh phía trên.</div>';return;}
-  grid.innerHTML=list.map(f=>`<div class="file-card"><div class="fc-top"><span class="tag ${TAG_CLS[f.tag]||'tag-other'}">${TAG_LABEL[f.tag]||f.tag}</span><button class="icon-btn" onclick="delFile(${f.id})">✕</button></div><div class="fc-name">${esc(f.name)}</div>${f.note?`<div class="fc-desc">${esc(f.note)}</div>`:''} ${f.url?`<a class="fc-link" href="${esc(f.url)}" target="_blank">↗ Mở Drive</a>`:'<span class="fc-desc">Chưa có link</span>'}</div>`).join('');
+function filterFiles(val,el) {
+  fileFilter=val;
+  document.querySelectorAll('#file-filter-row .chip').forEach(c=>c.classList.remove('active'));
+  el.classList.add('active');
+  renderFiles();
 }
 
-async function addTask(){
-  const name=document.getElementById('t-name').value.trim();
-  const ref_code=document.getElementById('t-ref').value.trim();
-  const priority=document.getElementById('t-priority').value;
-  if(!name){document.getElementById('t-name').focus();return;}
-  const btn=document.getElementById('btn-add-task');btn.disabled=true;
-  try{
-    const res=await api({action:'task_add',name,ref_code,priority});
-    const nt=Array.isArray(res.data)?res.data[0]:res.data;
-    allTasks.unshift(nt);renderTasks();
-    document.getElementById('t-name').value='';document.getElementById('t-ref').value='';
+function renderFiles() {
+  const grid = document.getElementById('file-grid');
+  const list = fileFilter==='all' ? allFiles : allFiles.filter(f=>f.tag===fileFilter);
+  if (!list.length) {
+    grid.innerHTML='<div class="empty-state">Chưa có file nào'+(fileFilter!=='all'?' trong nhóm này':'')+'.<br>Thêm link Drive ở thanh phía trên.</div>';
+    return;
+  }
+  grid.innerHTML = list.map(f=>`
+    <div class="file-card">
+      <div class="fc-top">
+        <span class="tag ${TAG_CLS[f.tag]||'tag-other'}">${TAG_LABEL[f.tag]||f.tag}</span>
+        <button class="icon-btn" onclick="delFile(${f.id})" title="Xóa">✕</button>
+      </div>
+      <div class="fc-name">${esc(f.name)}</div>
+      ${f.note ? `<div class="fc-desc">${esc(f.note)}</div>` : ''}
+      ${f.url ? `<a class="fc-link" href="${esc(f.url)}" target="_blank">↗ Mở Drive</a>` : '<span class="fc-desc">Chưa có link</span>'}
+    </div>
+  `).join('');
+}
+
+// ── TASKS ─────────────────────────────────────────────────────
+async function addTask() {
+  const name     = document.getElementById('t-name').value.trim();
+  const ref_code = document.getElementById('t-ref').value.trim();
+  const priority = document.getElementById('t-priority').value;
+  if (!name) { document.getElementById('t-name').focus(); return; }
+  const btn = document.getElementById('btn-add-task');
+  btn.disabled = true;
+  try {
+    const res = await api({action:'task_add',name,ref_code,priority});
+    const nt = Array.isArray(res.data) ? res.data[0] : res.data;
+    if (nt && nt.id) allTasks.unshift(nt);
+    renderTasks();
+    document.getElementById('t-name').value='';
+    document.getElementById('t-ref').value='';
     showToast('Đã thêm task ✓');
-  }catch(_){}finally{btn.disabled=false;}
+  } catch(_) {} finally { btn.disabled=false; }
 }
 
-async function toggleTask(id){
-  try{const res=await api({action:'task_toggle',id});const u=Array.isArray(res.data)?res.data[0]:res.data;const t=allTasks.find(t=>t.id==id);if(t&&u)t.status=u.status;renderTasks();}catch(_){}
+async function toggleTask(id) {
+  try {
+    const res = await api({action:'task_toggle',id});
+    const u = Array.isArray(res.data) ? res.data[0] : res.data;
+    const t = allTasks.find(t=>t.id==id);
+    if (t && u && u.status) t.status = u.status;
+    renderTasks();
+  } catch(_) {}
 }
 
-async function delTask(id){
-  if(!confirm('Xóa task này?'))return;
-  try{await api({action:'task_delete',id});allTasks=allTasks.filter(t=>t.id!=id);renderTasks();showToast('Đã xóa');}catch(_){}
+async function delTask(id) {
+  if (!confirm('Xóa task này?')) return;
+  try {
+    await api({action:'task_delete',id});
+    allTasks = allTasks.filter(t=>t.id!=id);
+    renderTasks();
+    showToast('Đã xóa');
+  } catch(_) {}
 }
 
-function filterTasks(val,el){taskFilter=val;document.querySelectorAll('#task-filter-row .chip').forEach(c=>c.classList.remove('active'));el.classList.add('active');renderTasks();}
+function filterTasks(val,el) {
+  taskFilter=val;
+  document.querySelectorAll('#task-filter-row .chip').forEach(c=>c.classList.remove('active'));
+  el.classList.add('active');
+  renderTasks();
+}
 
-function renderTasks(){
-  const total=allTasks.length,open=allTasks.filter(t=>t.status==='open').length,done=allTasks.filter(t=>t.status==='done').length;
+function renderTasks() {
+  const total = allTasks.length;
+  const open  = allTasks.filter(t=>t.status==='open').length;
+  const done  = allTasks.filter(t=>t.status==='done').length;
   document.getElementById('s-total').textContent=total;
   document.getElementById('s-open').textContent=open;
   document.getElementById('s-done').textContent=done;
-  const list=document.getElementById('task-list');
-  let filtered=taskFilter==='open'?allTasks.filter(t=>t.status==='open'):taskFilter==='done'?allTasks.filter(t=>t.status==='done'):allTasks;
-  if(!filtered.length){list.innerHTML='<div class="empty-state">Không có task nào'+(taskFilter!=='all'?' ở trạng thái này':'')+'.</div>';return;}
+
+  const list = document.getElementById('task-list');
+  let filtered = taskFilter==='open' ? allTasks.filter(t=>t.status==='open')
+               : taskFilter==='done' ? allTasks.filter(t=>t.status==='done')
+               : allTasks;
+
+  if (!filtered.length) {
+    list.innerHTML='<div class="empty-state">Không có task nào'+(taskFilter!=='all'?' ở trạng thái này':'')+'.</div>';
+    return;
+  }
+
   const pO={high:0,mid:1,low:2};
-  const sorted=[...filtered].sort((a,b)=>{if(a.status!==b.status)return a.status==='done'?1:-1;return(pO[a.priority]||1)-(pO[b.priority]||1);});
-  list.innerHTML=sorted.map(t=>`<div class="task-item ${t.status==='done'?'done':''}"><input type="checkbox" ${t.status==='done'?'checked':''} onchange="toggleTask(${t.id})" /><div class="task-body"><div class="task-name ${t.status==='done'?'done':''}">${esc(t.name)}</div><div class="task-meta">${t.ref_code?`<span class="task-ref">${esc(t.ref_code)}</span>`:''}<span class="prio ${PRIO_CLS[t.priority]||'prio-mid'}">${PRIO_LABEL[t.priority]||t.priority}</span>${t.added?`<span class="task-date">Thêm ${t.added}</span>`:''}</div></div><button class="icon-btn" onclick="delTask(${t.id})">✕</button></div>`).join('');
+  const sorted=[...filtered].sort((a,b)=>{
+    if (a.status!==b.status) return a.status==='done'?1:-1;
+    return (pO[a.priority]||1)-(pO[b.priority]||1);
+  });
+
+  list.innerHTML = sorted.map(t=>`
+    <div class="task-item ${t.status==='done'?'done':''}">
+      <input type="checkbox" ${t.status==='done'?'checked':''} onchange="toggleTask(${t.id})" />
+      <div class="task-body">
+        <div class="task-name ${t.status==='done'?'done':''}">${esc(t.name)}</div>
+        <div class="task-meta">
+          ${t.ref_code ? `<span class="task-ref">${esc(t.ref_code)}</span>` : ''}
+          <span class="prio ${PRIO_CLS[t.priority]||'prio-mid'}">${PRIO_LABEL[t.priority]||t.priority}</span>
+          ${t.added ? `<span class="task-date">Thêm ${t.added}</span>` : ''}
+        </div>
+      </div>
+      <button class="icon-btn" onclick="delTask(${t.id})" title="Xóa">✕</button>
+    </div>
+  `).join('');
 }
 
-['f-name','f-url','f-note'].forEach(id=>document.getElementById(id).addEventListener('keydown',e=>{if(e.key==='Enter')addFile();}));
-['t-name','t-ref'].forEach(id=>document.getElementById(id).addEventListener('keydown',e=>{if(e.key==='Enter')addTask();}));
+['f-name','f-url','f-note'].forEach(id=>
+  document.getElementById(id).addEventListener('keydown',e=>{ if(e.key==='Enter') addFile(); })
+);
+['t-name','t-ref'].forEach(id=>
+  document.getElementById(id).addEventListener('keydown',e=>{ if(e.key==='Enter') addTask(); })
+);
 </script>
 </body>
 </html>
