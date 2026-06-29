@@ -199,11 +199,20 @@ header {
   width:16px; height:16px; cursor:pointer; margin-top:2px;
   flex-shrink:0; accent-color:var(--red);
 }
-.task-body { flex:1; min-width:0; }
-.task-name { font-size:13px; font-weight:600; color:var(--dark); }
+.task-body { flex:1; min-width:0; display:grid; grid-template-columns:1fr auto; gap:0 16px; align-items:start; }
+.task-name { font-size:13px; font-weight:600; color:var(--dark); grid-column:1; }
 .task-name.done { text-decoration:line-through; color:var(--gray); }
-.task-meta { display:flex; gap:8px; margin-top:4px; align-items:center; flex-wrap:wrap; }
-.task-ref { font-size:10px; color:var(--gray); font-family:'DM Mono',monospace; }
+.task-meta { display:flex; gap:8px; margin-top:4px; align-items:center; flex-wrap:wrap; grid-column:1; }
+.task-ref-col { grid-column:2; grid-row:1/3; display:flex; align-items:center; min-width:0; max-width:260px; }
+.task-ref {
+  font-size:10px; font-family:'DM Mono',monospace;
+  color:var(--navy); text-decoration:none; font-weight:500;
+  white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+  max-width:260px; display:block;
+}
+.task-ref:hover { color:var(--red); text-decoration:underline; }
+.task-ref.plain { color:var(--gray); cursor:default; }
+.task-ref.plain:hover { color:var(--gray); text-decoration:none; }
 .prio-badge {
   font-size:8px; font-weight:800; padding:2px 7px; border-radius:3px;
   text-transform:uppercase; letter-spacing:.5px; font-family:'DM Mono',monospace;
@@ -424,6 +433,20 @@ function showToast(msg, type='ok') {
 function esc(s) {
   return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
+function isUrl(s) {
+  return /^https?:\/\//i.test(String(s||''));
+}
+function shortUrl(s) {
+  try {
+    const u = new URL(s);
+    // Lấy phần path cuối, bỏ trailing slash
+    const parts = u.pathname.replace(/\/+$/,'').split('/').filter(Boolean);
+    const last = parts[parts.length-1] || u.hostname;
+    // Nếu là Bitrix task view → hiện task ID
+    if (u.pathname.includes('task/view/')) return 'Task #' + last;
+    return last.length > 24 ? last.slice(0,24)+'…' : last;
+  } catch { return String(s).slice(0,28)+'…'; }
+}
 
 // ── SKELETON ──────────────────────────────────────────────────
 function showSkeleton(id, count, type) {
@@ -586,10 +609,13 @@ function renderTasks() {
       <div class="task-body">
         <div class="task-name ${t.status==='done'?'done':''}">${esc(t.name)}</div>
         <div class="task-meta">
-          ${t.ref_code ? `<span class="task-ref">${esc(t.ref_code)}</span>` : ''}
           <span class="prio-badge ${PRIO_BCLS[t.priority]||'pb-mid'}">${PRIO_LABEL[t.priority]||t.priority}</span>
           ${t.added ? `<span class="task-date">+ ${t.added}</span>` : ''}
         </div>
+        ${t.ref_code ? `<div class="task-ref-col">${isUrl(t.ref_code)
+          ? `<a class="task-ref" href="${esc(t.ref_code)}" target="_blank" title="${esc(t.ref_code)}">↗ ${esc(shortUrl(t.ref_code))}</a>`
+          : `<span class="task-ref plain" title="${esc(t.ref_code)}">${esc(t.ref_code)}</span>`
+        }</div>` : ''}
       </div>
       <button class="icon-btn" onclick="delTask(${t.id})" title="Xóa">✕</button>
     </div>
