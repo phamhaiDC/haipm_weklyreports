@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>Weekly Report W27 — Phạm Minh Hải</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800;900&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#003087; --gold:#E8B84B; --red:#e30613;
+    --black:#111318; --white:#ffffff; --gray:#727171;
+    --bg:#f0f2f5; --dark:#0d1b3d; --tabs:#0a1530;
+    --amber:#d97706; --green:#16a34a; --blue:#2563eb;
+    --radius:10px; --shadow:0 1px 6px rgba(0,0,0,.08);
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{font-family:'Montserrat',sans-serif; background:var(--bg); color:var(--black); font-size:13px;}
+  .mono{font-family:'DM Mono',monospace;}
+
+  /* Header */
+  .header{position:sticky; top:0; z-index:100; background:var(--dark); color:#fff;
+    display:grid; grid-template-columns:auto 1fr auto; align-items:center; gap:14px; padding:12px 20px;}
+  .logo{height:38px; width:38px; border-radius:6px; background:var(--gold); color:var(--navy);
+    display:flex; align-items:center; justify-content:center; font-weight:900; font-size:14px;}
+  .header-center{text-align:center;}
+  .header-title{font-size:13px; font-weight:800; letter-spacing:1px;}
+  .header-sub{font-size:10px; color:#b9c4e0; margin-top:2px;}
+  .header-right{text-align:right; font-family:'DM Mono',monospace;}
+  .badge-week{background:var(--gold); color:var(--navy); font-weight:800; padding:3px 10px;
+    border-radius:20px; font-size:11px; display:inline-block;}
+  .header-date{font-size:10px; color:#b9c4e0; margin-top:4px;}
+
+  /* Tabs */
+  .tabs{position:sticky; top:62px; z-index:99; background:var(--tabs); display:flex;
+    overflow-x:auto; padding:0 12px;}
+  .nav-tab{background:none; border:none; color:#9aa5c4; padding:12px 14px; font-size:11px;
+    font-weight:700; cursor:pointer; white-space:nowrap; border-bottom:2px solid transparent; font-family:'Montserrat',sans-serif;}
+  .nav-tab.active{color:var(--gold); border-bottom:2px solid var(--gold);}
+
+  .tab-content{display:none; padding:20px; max-width:1100px; margin:0 auto;}
+  .tab-content.active{display:block;}
+
+  /* Section title */
+  .section-title{font-size:9px; text-transform:uppercase; font-weight:800; letter-spacing:1.5px;
+    color:var(--gray); margin:22px 0 10px;}
+  .section-title:first-child{margin-top:0;}
+
+  /* KPI cards */
+  .kpi-grid{display:grid; grid-template-columns:repeat(5,1fr); gap:12px;}
+  .kpi-card{background:var(--white); border-radius:var(--radius); box-shadow:var(--shadow);
+    padding:14px; border-top:3px solid var(--navy);}
+  .kpi-card.c-amber{border-top-color:var(--amber);}
+  .kpi-card.c-red{border-top-color:var(--red);}
+  .kpi-card.c-green{border-top-color:var(--green);}
+  .kpi-card.c-gray{border-top-color:var(--gray);}
+  .kpi-label{font-size:9px; text-transform:uppercase; font-weight:700; letter-spacing:1px; color:var(--gray);}
+  .kpi-value{font-family:'DM Mono',monospace; font-weight:900; font-size:26px; margin-top:6px;}
+  .kpi-sub{font-size:9px; color:var(--gray); margin-top:4px;}
+
+  /* Table */
+  table{width:100%; border-collapse:collapse; background:var(--white); border-radius:var(--radius);
+    overflow:hidden; box-shadow:var(--shadow);}
+  th{background:var(--navy); color:#fff; text-align:left; padding:10px 12px; font-size:10px;
+    text-transform:uppercase; letter-spacing:.5px;}
+  td{padding:10px 12px; font-size:11.5px; border-bottom:1px solid #eef0f4; vertical-align:top;}
+  tr:last-child td{border-bottom:none;}
+
+  /* Tags */
+  .tag{display:inline-block; padding:3px 8px; border-radius:6px; font-size:8px; font-weight:800;
+    text-transform:uppercase; letter-spacing:.5px; font-family:'DM Mono',monospace;}
+  .tag-block{background:#fde3e3; color:var(--red);}
+  .tag-warn{background:#fef1dc; color:var(--amber);}
+  .tag-late{background:#fff5cc; color:#a16207;}
+  .tag-done{background:#dbeafe; color:var(--blue);}
+  .tag-ok{background:#dcfce7; color:var(--green);}
+  .tag-ip{background:#e6ecfb; color:var(--navy);}
+  .tag-new{background:#ede9fe; color:#7c3aed;}
+  .tag-gray{background:#eceef1; color:var(--gray);}
+
+  .badge-src{display:inline-block; padding:2px 6px; border-radius:5px; font-size:8px; font-weight:800;
+    font-family:'DM Mono',monospace; margin-right:4px;}
+  .badge-bitrix{background:#dbeafe; color:var(--blue);}
+  .badge-clickup{background:#ede9fe; color:#7c3aed;}
+  .badge-email{background:#dcfce7; color:var(--green);}
+  .badge-int{background:#eceef1; color:var(--gray);}
+  .badge-vendor{background:#fde3e3; color:var(--red);}
+
+  /* Highlight banner */
+  .hl-banner{display:flex; gap:12px; background:var(--white); border-radius:var(--radius);
+    box-shadow:var(--shadow); padding:14px; margin-bottom:10px; border-left:4px solid var(--gold);}
+  .hl-icon{font-size:20px;}
+  .hl-title{font-weight:800; font-size:12px; margin-bottom:4px;}
+  .hl-body{font-size:11.5px; color:#333; line-height:1.5;}
+
+  /* Item */
+  .item{display:flex; align-items:center; gap:10px; background:var(--white); border-radius:8px;
+    box-shadow:var(--shadow); padding:10px 12px; margin-bottom:8px;}
+  .dot{width:8px; height:8px; border-radius:50%; flex-shrink:0;}
+  .dot.red{background:var(--red);} .dot.amber{background:var(--amber);}
+  .dot.green{background:var(--green);} .dot.gray{background:var(--gray);} .dot.blue{background:var(--blue);}
+  .item-body{flex:1;}
+  .item-name{font-weight:700; font-size:11.5px;}
+  .item-meta{font-size:9.5px; color:var(--gray); font-family:'DM Mono',monospace; margin-top:2px;}
+
+  /* Plan item */
+  .plan-item{display:flex; gap:12px; background:var(--white); border-radius:8px; box-shadow:var(--shadow);
+    padding:12px; margin-bottom:8px; align-items:center;}
+  .plan-num{width:24px; height:24px; border-radius:50%; background:var(--navy); color:#fff;
+    display:flex; align-items:center; justify-content:center; font-weight:800; font-size:11px; flex-shrink:0;}
+  .plan-body{flex:1; display:flex; justify-content:space-between; align-items:center; gap:10px;}
+  .plan-text{font-weight:700; font-size:11.5px;}
+  .plan-sub{font-size:9.5px; color:var(--gray); font-family:'DM Mono',monospace; margin-top:2px;}
+
+  .bitrix-box{background:#0d1b3d; color:#d8e0f5; border-radius:var(--radius); padding:16px;
+    font-family:'DM Mono',monospace; font-size:11px; white-space:pre-wrap; line-height:1.6;}
+  .copy-btn{background:var(--gold); color:var(--navy); border:none; padding:6px 14px; border-radius:6px;
+    font-weight:800; font-size:10px; cursor:pointer; margin-bottom:10px; font-family:'Montserrat',sans-serif;}
+
+  .note-box{background:#fff8e6; border:1px solid #f0d998; border-radius:8px; padding:12px 14px;
+    font-size:11px; color:#7a5c00; margin-bottom:14px;}
+
+  .footer{background:var(--dark); color:#9aa5c4; display:flex; justify-content:space-between;
+    padding:14px 20px; font-size:10px; font-family:'DM Mono',monospace;}
+  .footer strong{color:#fff;}
+
+  @media(max-width:800px){ .kpi-grid{grid-template-columns:repeat(2,1fr);} }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="logo">D'C</div>
+  <div class="header-center">
+    <div class="header-title">WEEKLY REPORT — CORE TECHNOLOGY</div>
+    <div class="header-sub">Dcorp Technology Corporation · Phạm Minh Hải (Trưởng phòng) → CEO</div>
+  </div>
+  <div class="header-right">
+    <span class="badge-week">W27 · 2026</span>
+    <div class="header-date">29/06 – 03/07/2026</div>
+  </div>
+</div>
+
+<div class="tabs">
+  <button class="nav-tab active" onclick="switchTab('w27', this)">📊 W27 Báo cáo tuần</button>
+  <button class="nav-tab" onclick="switchTab('email', this)">📧 Email tuần</button>
+  <button class="nav-tab" onclick="switchTab('longtask', this)">⏳ Task tồn lâu ngày</button>
+  <button class="nav-tab" onclick="switchTab('backlog', this)">📦 Backlog / Carry-over</button>
+  <button class="nav-tab" onclick="switchTab('plan', this)">📅 Kế hoạch tuần tới</button>
+  <button class="nav-tab" onclick="switchTab('process', this)">⚙️ Quy trình</button>
+</div>
+
+<!-- TAB 1: W27 BÁO CÁO TUẦN -->
+<div id="tab-w27" class="tab-content active">
+
+  <div class="section-title">Tổng quan tuần</div>
+  <div class="kpi-grid">
+    <div class="kpi-card c-gray">
+      <div class="kpi-label">Tổng đầu việc</div>
+      <div class="kpi-value">7</div>
+      <div class="kpi-sub">Đầu việc có hoạt động tuần này</div>
+    </div>
+    <div class="kpi-card c-green">
+      <div class="kpi-label">Hoàn thành</div>
+      <div class="kpi-value">0</div>
+      <div class="kpi-sub">Không có đầu việc chốt xong trong tuần</div>
+    </div>
+    <div class="kpi-card c-amber">
+      <div class="kpi-label">Đang xử lý</div>
+      <div class="kpi-value">5</div>
+      <div class="kpi-sub">Master-Slave, JumpServer, monitor, 93251</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Chờ / Pending</div>
+      <div class="kpi-value">1</div>
+      <div class="kpi-sub">BIR Philippine — chờ thảo luận lại</div>
+    </div>
+    <div class="kpi-card c-red">
+      <div class="kpi-label">Chưa bắt đầu</div>
+      <div class="kpi-value">1</div>
+      <div class="kpi-sub">93274 — quá hạn, cần xác nhận lý do</div>
+    </div>
+  </div>
+
+  <div class="section-title">Điểm cần lưu ý</div>
+  <div class="hl-banner">
+    <div class="hl-icon">🔴</div>
+    <div>
+      <div class="hl-title">93274 (The Street) quá hạn 6 ngày — chưa rõ lý do</div>
+      <div class="hl-body">Task "Hỗ trợ NAT port server cloud" deadline 28/06 nhưng vẫn ở trạng thái "Chờ thực hiện". Cần xác nhận nguyên nhân trễ để tránh escalate quá 2 tuần.</div>
+    </div>
+  </div>
+  <div class="hl-banner">
+    <div class="hl-icon">🟡</div>
+    <div>
+      <div class="hl-title">BIR Philippine (Supreme Vietnamese Coffee) bị từ chối accreditation</div>
+      <div class="hl-body">RDO 043 từ chối hồ sơ do chưa đáp ứng RMO 24-2023. Chưa có kế hoạch cụ thể — team sẽ thảo luận lại trong W28.</div>
+    </div>
+  </div>
+  <div class="hl-banner">
+    <div class="hl-icon">🔵</div>
+    <div>
+      <div class="hl-title">93251 (HLC/UCS-RK7 tổng hợp) đến deadline đúng hôm nay 03/07</div>
+      <div class="hl-body">Cần chốt trạng thái hoàn thành hoặc dời deadline sang tuần sau.</div>
+    </div>
+  </div>
+
+  <div class="section-title">Chi tiết công việc trong tuần</div>
+  <table>
+    <tr><th>MasterTask</th><th>Task ID</th><th>Kết quả thực hiện</th><th>Khó khăn</th><th>Đề xuất / Next</th><th>Trạng thái</th></tr>
+    <tr>
+      <td>VTI Philippine</td>
+      <td><span class="badge-src badge-email">EMAIL</span></td>
+      <td>Nhận thông báo BIR RDO 043 từ chối hồ sơ accreditation POS (Supreme Vietnamese Coffee) — chưa đáp ứng RMO 24-2023</td>
+      <td>Compliance / Vendor</td>
+      <td>Thảo luận lại phương án nộp lại trong W28</td>
+      <td><span class="tag tag-warn">Chờ xác nhận</span></td>
+    </tr>
+    <tr>
+      <td>VTI — Tối ưu hệ thống</td>
+      <td><span class="badge-src badge-int">NỘI BỘ</span></td>
+      <td>Test kịch bản Master-Slave</td>
+      <td>—</td>
+      <td>Hoàn thiện trong W27</td>
+      <td><span class="tag tag-ip">Đang xử lý</span></td>
+    </tr>
+    <tr>
+      <td>VTI — Tối ưu hệ thống</td>
+      <td><span class="badge-src badge-int">NỘI BỘ</span></td>
+      <td>Lên cấu hình Master-Slave gửi VTI</td>
+      <td>Phụ thuộc kết quả test</td>
+      <td>Gửi ngay sau khi test xong</td>
+      <td><span class="tag tag-ip">Đang xử lý</span></td>
+    </tr>
+    <tr>
+      <td>VTI — Tối ưu hệ thống</td>
+      <td><span class="badge-src badge-int">NỘI BỘ</span></td>
+      <td>Chuyển đổi hạ tầng sang JumpServer</td>
+      <td>—</td>
+      <td>Tiếp tục triển khai W28</td>
+      <td><span class="tag tag-ip">Đang xử lý</span></td>
+    </tr>
+    <tr>
+      <td>VTI — Tối ưu hệ thống</td>
+      <td><span class="badge-src badge-int">NỘI BỘ</span></td>
+      <td>Bổ sung monitor cho vtiinfo.dcorp.com.vn</td>
+      <td>—</td>
+      <td>Tiếp tục triển khai W28</td>
+      <td><span class="tag tag-ip">Đang xử lý</span></td>
+    </tr>
+    <tr>
+      <td>VTI</td>
+      <td><span class="badge-src badge-bitrix">93251</span></td>
+      <td>Tổng hợp task cần UCS/RK7 cải thiện cho HLC</td>
+      <td>Deadline đúng hôm nay 03/07</td>
+      <td>Xác nhận hoàn thành hoặc dời deadline</td>
+      <td><span class="tag tag-ip">Đang xử lý</span></td>
+    </tr>
+    <tr>
+      <td>Other</td>
+      <td><span class="badge-src badge-bitrix">93274</span></td>
+      <td>Hỗ trợ NAT port server cloud — The Street</td>
+      <td><span class="tag tag-block">Quá hạn 6 ngày</span></td>
+      <td>Xác nhận lý do trễ &amp; reschedule</td>
+      <td><span class="tag tag-block">Chưa bắt đầu</span></td>
+    </tr>
+  </table>
+
+  <div class="section-title">Text Bitrix (copy-paste)</div>
+  <button class="copy-btn" onclick="copyBitrix()">📋 Copy text</button>
+  <div class="bitrix-box" id="bitrixText">📋 HaiPM | W27 | [29.Jun–03.Jul.2026]
+
+✅ Hoàn thành:
+- (Không có đầu việc hoàn thành mới trong tuần)
+
+🔄 Đang xử lý:
+- (Nội bộ) Test kịch bản Master-Slave → cần hoàn thiện trong tuần
+- (Nội bộ) Lên cấu hình Master-Slave gửi VTI → chờ kết quả test
+- (Nội bộ) Chuyển đổi hạ tầng sang JumpServer → đang triển khai
+- (Nội bộ) Bổ sung monitor cho vtiinfo.dcorp.com.vn → đang triển khai
+- 93251: Tổng hợp task UCS/RK7 cho HLC → deadline hôm nay 03/07
+
+📧 Email / Vendor:
+- BIR RDO 043 (Philippines): từ chối hồ sơ accreditation POS → chờ thảo luận lại
+- UCS #203369: comment mới về DR Strategy &amp; License Handling (Reference Server)
+- UCS #204347, #204332: ticket mới đang chờ vendor xử lý
+- UCS #171645, #201978: đã hoàn thành (Выполнен)
+
+⏳ Chưa bắt đầu:
+- 93274 (The Street — NAT port server cloud) — quá hạn 6 ngày, cần xác nhận lý do trễ
+
+🔴 Blocker:
+- 93274: Nội bộ — chưa rõ lý do trễ, cần escalate nếu tiếp tục treo
+
+📅 Kế hoạch W28:
+- Thảo luận lại vấn đề BIR Philippine theo email
+- Tìm hiểu thêm phần export rk7log
+- Hoàn thiện &amp; gửi VTI cấu hình Master-Slave (carry-over)</div>
+</div>
+
+<!-- TAB 2: EMAIL TUẦN -->
+<div id="tab-email" class="tab-content">
+  <div class="section-title">🟢 Cần action</div>
+  <div class="item">
+    <div class="dot red"></div>
+    <div class="item-body">
+      <div class="item-name">BIR RDO 043 — Application for Accreditation Denied</div>
+      <div class="item-meta">01/07 · mclavel@supremevietnamesecoffee.com.ph · VTI Philippine</div>
+    </div>
+    <span class="tag tag-block">Chờ thảo luận W28</span>
+  </div>
+  <div class="item">
+    <div class="dot amber"></div>
+    <div class="item-body">
+      <div class="item-name">UCS ANKETA "FR-RK7-NOTIFY-01_UCS_DataChange_Notification"</div>
+      <div class="item-meta">01/07 · James Duong · cần hoàn thiện mô tả trước khi submit UCS Service Desk</div>
+    </div>
+    <span class="tag tag-warn">Cần hoàn thiện</span>
+  </div>
+  <div class="item">
+    <div class="dot blue"></div>
+    <div class="item-body">
+      <div class="item-name">POS Ops — tỷ lệ ticket cao, VTI hỏi tiến độ network process</div>
+      <div class="item-meta">03/07 · Mojtaba Akhbari (VTI) → Tuan</div>
+    </div>
+    <span class="tag tag-ip">Theo dõi</span>
+  </div>
+  <div class="item">
+    <div class="dot gray"></div>
+    <div class="item-body">
+      <div class="item-name">VTI Sarica ERP-POS Integration — daily standup &amp; meeting notes</div>
+      <div class="item-meta">29/06–02/07 · KPMG/VTI · thống nhất CR tích hợp API &amp; purchase unit ERP</div>
+    </div>
+    <span class="tag tag-ok">Đã ghi nhận</span>
+  </div>
+  <div class="item">
+    <div class="dot gray"></div>
+    <div class="item-body">
+      <div class="item-name">Tài liệu chia sẻ: GitLab CMDB &amp; HLC Improve Checklist v12</div>
+      <div class="item-meta">29/06, 03/07 · James Duong</div>
+    </div>
+    <span class="tag tag-gray">Thông tin</span>
+  </div>
+
+  <div class="section-title">🟣 Vendor ticket (UCS / rkeeper — sd@rkeeper.ru)</div>
+  <div class="item">
+    <div class="dot red"></div>
+    <div class="item-body">
+      <div class="item-name">#203369 — RK7 | DR Strategy &amp; License Handling cho Reference Server</div>
+      <div class="item-meta">02/07 · Comment mới — liên quan trực tiếp risk register DR VTI</div>
+    </div>
+    <span class="tag tag-warn">Theo dõi</span>
+  </div>
+  <div class="item">
+    <div class="dot amber"></div>
+    <div class="item-body">
+      <div class="item-name">#204347 — RK7 | Sync process khi dùng usedbsynch=1</div>
+      <div class="item-meta">03/07 · Đăng ký + comment mới</div>
+    </div>
+    <span class="tag tag-new">Mới</span>
+  </div>
+  <div class="item">
+    <div class="dot amber"></div>
+    <div class="item-body">
+      <div class="item-name">#204332 — CRMV7 | Localization new feature 7.15.6.100</div>
+      <div class="item-meta">03/07 · Đăng ký mới</div>
+    </div>
+    <span class="tag tag-new">Mới</span>
+  </div>
+  <div class="item">
+    <div class="dot green"></div>
+    <div class="item-body">
+      <div class="item-name">#171645 — RK7 | CRM Coupon Solution</div>
+      <div class="item-meta">03/07 · Đã hoàn thành (Выполнен)</div>
+    </div>
+    <span class="tag tag-done">Xong</span>
+  </div>
+  <div class="item">
+    <div class="dot green"></div>
+    <div class="item-body">
+      <div class="item-name">#201978 — Request tạo account Weblate</div>
+      <div class="item-meta">01/07 · Đã hoàn thành (Выполнен)</div>
+    </div>
+    <span class="tag tag-done">Xong</span>
+  </div>
+
+  <div class="section-title">🔵 Thông tin / ⚫ Bỏ qua</div>
+  <div class="item">
+    <div class="dot gray"></div>
+    <div class="item-body">
+      <div class="item-name">POS Daily Operations Report (29/06 – 02/07)</div>
+      <div class="item-meta">Tự động · d.ops.report@dcorp.com.vn</div>
+    </div>
+    <span class="tag tag-gray">Auto</span>
+  </div>
+  <div class="item">
+    <div class="dot gray"></div>
+    <div class="item-body">
+      <div class="item-name">LinkedIn, Vietnam Airlines, Artlist, cảnh báo bảo mật Google</div>
+      <div class="item-meta">Marketing / tự động — không đưa vào báo cáo</div>
+    </div>
+    <span class="tag tag-gray">Bỏ qua</span>
+  </div>
+</div>
+
+<!-- TAB 3: TASK TỒN LÂU NGÀY -->
+<div id="tab-longtask" class="tab-content">
+  <div class="note-box">⚠️ Danh sách dưới đây lấy từ các task Bitrix đang ở trạng thái "Chờ thực hiện" (active) với deadline đã quá &gt; 90 ngày tính đến 04/07/2026. Cần rà soát định kỳ để tránh tồn đọng vĩnh viễn.</div>
+  <table>
+    <tr><th>Task ID</th><th>Nội dung</th><th>Deadline</th><th>Số ngày quá hạn</th><th>Đề xuất</th></tr>
+    <tr>
+      <td class="mono">71901</td>
+      <td>[INT] Tổng hợp các issue SkyInventory</td>
+      <td class="mono">31/05/2024</td>
+      <td><span class="tag tag-block">764 ngày</span></td>
+      <td>Xem xét đóng hoặc archive nếu không còn phù hợp</td>
+    </tr>
+    <tr>
+      <td class="mono">92146</td>
+      <td>[INT] Tổng hợp tài liệu chuẩn bị show cho BIR</td>
+      <td class="mono">18/03/2026</td>
+      <td><span class="tag tag-late">108 ngày</span></td>
+      <td>Gộp chung vào kế hoạch reapply BIR (W28)</td>
+    </tr>
+    <tr>
+      <td class="mono">91922</td>
+      <td>INT | Thảo luận tích hợp Mini ERP với Amis</td>
+      <td class="mono">30/03/2026</td>
+      <td><span class="tag tag-late">96 ngày</span></td>
+      <td>Xác nhận còn ưu tiên hay tạm dừng</td>
+    </tr>
+    <tr>
+      <td class="mono">92340</td>
+      <td>INT | Rà soát lại script khách hàng lớn (tối ưu AI)</td>
+      <td class="mono">02/04/2026</td>
+      <td><span class="tag tag-late">93 ngày</span></td>
+      <td>Xác nhận còn ưu tiên hay tạm dừng</td>
+    </tr>
+  </table>
+</div>
+
+<!-- TAB 4: BACKLOG / CARRY-OVER -->
+<div id="tab-backlog" class="tab-content">
+  <div class="section-title">Carry-over sang W28</div>
+  <div class="item">
+    <div class="dot red"></div>
+    <div class="item-body">
+      <div class="item-name">93274 — Hỗ trợ NAT port server cloud (The Street)</div>
+      <div class="item-meta">Quá hạn 6 ngày · Nội bộ · chưa rõ lý do trễ</div>
+    </div>
+    <span class="tag tag-block">Cần escalate nếu tiếp tục treo</span>
+  </div>
+  <div class="item">
+    <div class="dot amber"></div>
+    <div class="item-body">
+      <div class="item-name">Test kịch bản Master-Slave (nếu chưa hoàn thiện xong trong W27)</div>
+      <div class="item-meta">Nội bộ · VTI — Tối ưu hệ thống</div>
+    </div>
+    <span class="tag tag-ip">Theo dõi</span>
+  </div>
+  <div class="item">
+    <div class="dot gray"></div>
+    <div class="item-body">
+      <div class="item-name">BIR Philippine — hồ sơ accreditation bị từ chối</div>
+      <div class="item-meta">Chờ thảo luận phương án reapply</div>
+    </div>
+    <span class="tag tag-warn">Chờ xác nhận</span>
+  </div>
+
+  <div class="section-title">Lịch sử hoàn thành gần đây</div>
+  <div class="note-box">Tuần W27 không ghi nhận đầu việc nào hoàn thành mới (ClickUp không có phát sinh, Bitrix không có task đóng trong tuần).</div>
+</div>
+
+<!-- TAB 5: KẾ HOẠCH TUẦN TỚI -->
+<div id="tab-plan" class="tab-content">
+  <div class="section-title">Kế hoạch W28 (06/07 – 10/07/2026)</div>
+  <div class="kpi-grid" style="grid-template-columns:repeat(3,1fr);">
+    <div class="kpi-card c-red">
+      <div class="kpi-label">Tổng kế hoạch</div>
+      <div class="kpi-value">4</div>
+    </div>
+    <div class="kpi-card c-amber">
+      <div class="kpi-label">High priority</div>
+      <div class="kpi-value">2</div>
+    </div>
+    <div class="kpi-card c-gray">
+      <div class="kpi-label">Carry-over từ W27</div>
+      <div class="kpi-value">2</div>
+    </div>
+  </div>
+
+  <div class="section-title">Danh sách</div>
+  <div class="plan-item">
+    <div class="plan-num">1</div>
+    <div class="plan-body">
+      <div>
+        <div class="plan-text">Thảo luận lại vấn đề BIR Philippine theo email</div>
+        <div class="plan-sub">VTI Philippine · Cần thống nhất hướng reapply RMO 24-2023</div>
+      </div>
+      <span class="tag tag-block">High</span>
+    </div>
+  </div>
+  <div class="plan-item">
+    <div class="plan-num">2</div>
+    <div class="plan-body">
+      <div>
+        <div class="plan-text">Tìm hiểu thêm phần export rk7log</div>
+        <div class="plan-sub">Nội bộ / RK7</div>
+      </div>
+      <span class="tag tag-ip">Normal</span>
+    </div>
+  </div>
+  <div class="plan-item">
+    <div class="plan-num">3</div>
+    <div class="plan-body">
+      <div>
+        <div class="plan-text">Hoàn thiện &amp; gửi VTI cấu hình Master-Slave (carry-over)</div>
+        <div class="plan-sub">VTI — Tối ưu hệ thống</div>
+      </div>
+      <span class="tag tag-warn">High</span>
+    </div>
+  </div>
+  <div class="plan-item">
+    <div class="plan-num">4</div>
+    <div class="plan-body">
+      <div>
+        <div class="plan-text">Xác nhận lý do trễ &amp; reschedule 93274 (The Street)</div>
+        <div class="plan-sub">Other · Carry-over</div>
+      </div>
+      <span class="tag tag-gray">Normal</span>
+    </div>
+  </div>
+</div>
+
+<!-- TAB 6: QUY TRÌNH -->
+<div id="tab-process" class="tab-content">
+  <div class="section-title">Workflow báo cáo tuần</div>
+  <div class="item"><div class="dot blue"></div><div class="item-body">
+    <div class="item-name">Bước 1 — Pull dữ liệu tự động</div>
+    <div class="item-meta">ClickUp (MCP) · Bitrix (PostgreSQL qua n8n sync 18:00 T2–T6) · Gmail (MCP)</div>
+  </div></div>
+  <div class="item"><div class="dot blue"></div><div class="item-body">
+    <div class="item-name">Bước 2 — Confirm danh sách với người dùng</div>
+    <div class="item-meta">Xác nhận task có hoạt động thực sự, email cần đưa vào, việc nội bộ bổ sung</div>
+  </div></div>
+  <div class="item"><div class="dot blue"></div><div class="item-body">
+    <div class="item-name">Bước 3 — Nhập bổ sung công việc phát sinh / kế hoạch tuần tới</div>
+    <div class="item-meta">Không có Task ID → phân loại theo MasterTask</div>
+  </div></div>
+  <div class="item"><div class="dot blue"></div><div class="item-body">
+    <div class="item-name">Bước 4 — Phân loại &amp; làm rõ trạng thái</div>
+    <div class="item-meta">Hoàn thành / Đang xử lý / Chờ xác nhận / Chưa bắt đầu / Blocker</div>
+  </div></div>
+  <div class="item"><div class="dot blue"></div><div class="item-body">
+    <div class="item-name">Bước 5 — Tạo 3 output</div>
+    <div class="item-meta">HTML Dashboard (6 tab) · Bảng báo cáo chuẩn · Text Bitrix copy-paste</div>
+  </div></div>
+
+  <div class="section-title">Lịch gửi báo cáo</div>
+  <div class="note-box">Deadline gửi báo cáo tuần: <strong>Thứ 6 trước 17:00</strong> lên CEO. Tuần làm việc: Thứ 2 → Thứ 6.</div>
+</div>
+
+<div class="footer">
+  <div><strong>Phạm Minh Hải</strong> · Trưởng phòng Core Technology</div>
+  <div>weekly_report_HaiPM v1 · Generated 04/07/2026</div>
+</div>
+
+<script>
+function switchTab(id, btn){
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('tab-' + id).classList.add('active');
+  if (btn) btn.classList.add('active');
+}
+function copyBitrix(){
+  const text = document.getElementById('bitrixText').innerText;
+  navigator.clipboard.writeText(text).then(() => {
+    const btn = document.querySelector('.copy-btn');
+    const old = btn.innerText;
+    btn.innerText = '✅ Đã copy!';
+    setTimeout(() => btn.innerText = old, 1500);
+  });
+}
+</script>
+
+</body>
+</html>
