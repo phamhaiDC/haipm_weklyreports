@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Danh sách tài liệu - PhamHai</title>
+<title>Weekly Reports - PhamHai</title>
 <style>
   * { box-sizing: border-box; }
   body {
@@ -64,24 +64,25 @@
     padding: 12px 16px;
     border-radius: 6px;
     border: 1px solid #ffcecb;
+    margin: 8px 0;
   }
 </style>
 </head>
 <body>
-<h1>📄 Danh sách tài liệu</h1>
+<h1>📄 Weekly Reports</h1>
 <div class="subtitle">Tự động cập nhật từ repo GitHub</div>
 <div id="file-list"><span id="status">Đang tải danh sách...</span></div>
 
 <script>
 const owner = "phamhaidc";
-const repo = "haipm_weklyreports";       // repo hiện tại chứa các file html
-const basePath = "";       // gốc của repo (vì Pages publish thẳng từ root repo "docs")
+const repo = "haipm_weklyreports";  // repo hiện tại
+const basePath = "";                // gốc repo (Pages publish thẳng từ root)
 
 async function listDir(path) {
   const url = `https://api.github.com/repos/${owner}/${repo}/contents/${path}`;
   const res = await fetch(url);
   if (!res.ok) {
-    throw new Error(`Không tải được thư mục "${path}" (HTTP ${res.status})`);
+    throw new Error(`Không tải được thư mục "${path || '/'}" (HTTP ${res.status})`);
   }
   return await res.json();
 }
@@ -91,10 +92,10 @@ async function renderDir(path, container) {
   try {
     items = await listDir(path);
   } catch (err) {
-    const li = document.createElement('div');
-    li.className = 'error';
-    li.textContent = err.message;
-    container.appendChild(li);
+    const div = document.createElement('div');
+    div.className = 'error';
+    div.textContent = err.message;
+    container.appendChild(div);
     return;
   }
 
@@ -107,7 +108,9 @@ async function renderDir(path, container) {
   const ul = document.createElement('ul');
 
   for (const item of items) {
-    if (item.name.startsWith('.')) continue; // bỏ qua .DS_Store, .git...
+    if (item.name.startsWith('.')) continue;        // bỏ .DS_Store, .git...
+    if (item.name === 'index.html') continue;         // không tự liệt kê chính nó
+    if (item.name.toLowerCase() === 'readme.md') continue;
 
     const li = document.createElement('li');
 
@@ -118,9 +121,8 @@ async function renderDir(path, container) {
       li.appendChild(label);
       await renderDir(item.path, li); // đệ quy vào thư mục con
     } else if (item.name.toLowerCase().endsWith('.html')) {
-      const relativePath = item.path; // vì basePath = "", path đã là đường dẫn tương đối đúng
       const a = document.createElement('a');
-      a.href = relativePath;
+      a.href = item.path; // path đã tương đối đúng vì basePath = ""
       a.target = '_blank';
       a.innerHTML = `<span class="icon">📄</span>${item.name}`;
       li.appendChild(a);
