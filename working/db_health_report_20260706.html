@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DB Health Report — RK7-DB-ECODE-SR — 2026-07-06</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800;900&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --red:    #e30613;
+  --black:  #000000;
+  --white:  #ffffff;
+  --gray:   #727171;
+  --bg:     #f0f2f5;
+  --dark:   #1a1f2e;
+  --tabs:   #131722;
+  --amber:  #d97706;
+  --green:  #16a34a;
+  --blue:   #2563eb;
+  --radius: 10px;
+  --shadow: 0 1px 6px rgba(0,0,0,.07);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Montserrat', sans-serif; background: var(--bg); color: var(--black); font-size: 13px; }
+
+/* HEADER */
+.header {
+  position: sticky; top: 0; z-index: 100;
+  background: var(--dark);
+  padding: 0 24px;
+  height: 62px;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 16px;
+}
+.header-logo {
+  width: 38px; height: 38px; border-radius: 6px;
+  background: var(--red);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 10px; font-weight: 900; color: white; letter-spacing: -0.5px;
+  line-height: 1.1; text-align: center;
+}
+.header-center { color: white; }
+.header-title { font-size: 13px; font-weight: 800; letter-spacing: 0.5px; }
+.header-sub { font-size: 9px; color: rgba(255,255,255,0.5); margin-top: 2px; font-family: 'DM Mono', monospace; }
+.header-right { display: flex; gap: 8px; align-items: center; }
+.hbadge {
+  font-family: 'DM Mono', monospace; font-size: 9px; font-weight: 500;
+  padding: 3px 8px; border-radius: 4px;
+  background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.75);
+}
+.hbadge.red { background: var(--red); color: white; }
+
+/* TABS */
+.tabs {
+  position: sticky; top: 62px; z-index: 99;
+  background: var(--tabs);
+  display: flex; gap: 0;
+  padding: 0 24px;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+.nav-tab {
+  padding: 14px 18px;
+  font-size: 11px; font-weight: 700; letter-spacing: 0.3px;
+  color: rgba(255,255,255,0.4);
+  cursor: pointer; border: none; background: none;
+  border-bottom: 2px solid transparent;
+  transition: all 0.2s;
+}
+.nav-tab:hover { color: rgba(255,255,255,0.7); }
+.nav-tab.active { color: var(--red); border-bottom-color: var(--red); }
+
+/* CONTENT */
+.tab-content { display: none; padding: 24px; max-width: 1200px; margin: 0 auto; }
+.tab-content.active { display: block; }
+
+/* SECTION */
+.section { margin-bottom: 24px; }
+.section-title {
+  font-size: 9px; font-weight: 800; text-transform: uppercase;
+  letter-spacing: 1.5px; color: var(--gray);
+  margin-bottom: 12px;
+  display: flex; align-items: center; gap: 8px;
+}
+.section-title::after {
+  content: ''; flex: 1; height: 1px; background: #e5e7eb;
+}
+
+/* KPI GRID */
+.kpi-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 12px; }
+.kpi-grid3 { display: grid; grid-template-columns: repeat(3,1fr); gap: 12px; }
+.kpi-grid2 { display: grid; grid-template-columns: repeat(2,1fr); gap: 12px; }
+.kpi-card {
+  background: var(--white); border-radius: var(--radius);
+  box-shadow: var(--shadow); padding: 16px;
+  border-top: 3px solid var(--gray);
+}
+.kpi-card.red   { border-top-color: var(--red); }
+.kpi-card.green { border-top-color: var(--green); }
+.kpi-card.amber { border-top-color: var(--amber); }
+.kpi-card.blue  { border-top-color: var(--blue); }
+.kpi-label { font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--gray); margin-bottom: 6px; }
+.kpi-value { font-family: 'DM Mono', monospace; font-size: 28px; font-weight: 900; line-height: 1; }
+.kpi-value.green { color: var(--green); }
+.kpi-value.amber { color: var(--amber); }
+.kpi-value.red   { color: var(--red); }
+.kpi-value.blue  { color: var(--blue); }
+.kpi-sub { font-size: 10px; color: var(--gray); margin-top: 4px; font-weight: 600; line-height: 1.4; }
+
+/* TABLE */
+.table-card {
+  background: var(--white); border-radius: var(--radius);
+  box-shadow: var(--shadow); overflow: hidden;
+}
+table { width: 100%; border-collapse: collapse; font-size: 12px; }
+th {
+  background: #f8f9fa; padding: 8px 12px;
+  text-align: left; font-size: 9px; font-weight: 800;
+  text-transform: uppercase; letter-spacing: 1px; color: var(--gray);
+  border-bottom: 1px solid #e5e7eb;
+}
+td { padding: 9px 12px; border-bottom: 1px solid #f3f4f6; vertical-align: middle; line-height: 1.4; }
+tr:last-child td { border-bottom: none; }
+tr:hover td { background: #fafafa; }
+.td-ok  { border-left: 3px solid var(--green); }
+.td-warn{ border-left: 3px solid var(--amber); }
+.td-red { border-left: 3px solid var(--red); }
+.td-blue{ border-left: 3px solid var(--blue); }
+
+/* BADGES */
+.badge {
+  display: inline-block; font-size: 9px; font-weight: 800;
+  text-transform: uppercase; letter-spacing: 0.5px;
+  padding: 2px 7px; border-radius: 4px;
+}
+.b-ok   { background: #dcfce7; color: #15803d; }
+.b-warn { background: #fef3c7; color: #92400e; }
+.b-red  { background: #fee2e2; color: #991b1b; }
+.b-blue { background: #dbeafe; color: #1d4ed8; }
+.b-gray { background: #f3f4f6; color: #6b7280; border: 1px solid #e5e7eb; }
+
+/* ALERT BANNERS */
+.alert {
+  border-radius: var(--radius); padding: 14px 16px;
+  font-size: 12px; line-height: 1.6; margin-bottom: 12px;
+  display: flex; gap: 10px; align-items: flex-start;
+}
+.alert-icon { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+.alert-ok     { background: #f0fdf4; border: 1px solid #bbf7d0; }
+.alert-warn   { background: #fffbeb; border: 1px solid #fde68a; }
+.alert-red    { background: #fef2f2; border: 1px solid #fecaca; }
+.alert-blue   { background: #eff6ff; border: 1px solid #bfdbfe; }
+.alert strong { font-weight: 700; }
+
+/* PROGRESS BAR */
+.progress-wrap { background: #e5e7eb; border-radius: 6px; height: 10px; overflow: hidden; margin-top: 6px; }
+.progress-fill { height: 100%; border-radius: 6px; background: linear-gradient(90deg, var(--green), var(--blue)); }
+
+/* PLAN ITEMS */
+.plan-list { background: var(--white); border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden; }
+.plan-item {
+  display: flex; gap: 12px; align-items: flex-start;
+  padding: 12px 16px; border-bottom: 1px solid #f3f4f6;
+}
+.plan-item:last-child { border-bottom: none; }
+.plan-num {
+  width: 26px; height: 26px; border-radius: 50%; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; font-weight: 800; color: white;
+}
+.num-red   { background: var(--red); }
+.num-amber { background: var(--amber); }
+.num-blue  { background: var(--blue); }
+.num-green { background: var(--green); }
+.plan-body { flex: 1; }
+.plan-text { font-size: 12px; font-weight: 700; }
+.plan-sub  { font-size: 10px; color: var(--gray); margin-top: 2px; font-weight: 600; }
+
+/* MONO VALUES */
+.mono { font-family: 'DM Mono', monospace; }
+
+/* FOOTER */
+.footer {
+  background: var(--dark); color: rgba(255,255,255,0.5);
+  padding: 16px 24px; margin-top: 24px;
+  display: flex; justify-content: space-between; align-items: center;
+  font-size: 10px; font-family: 'DM Mono', monospace;
+}
+.footer strong { color: white; }
+
+/* GRID 2 COL */
+.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+
+/* STATUS INDICATOR */
+.status-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 5px; }
+.dot-ok    { background: var(--green); }
+.dot-warn  { background: var(--amber); }
+.dot-red   { background: var(--red); }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-logo">DC<br>RP</div>
+  <div class="header-center">
+    <div class="header-title">DATABASE HEALTH REPORT — RK7-DB-ECODE-SR</div>
+    <div class="header-sub">Dcorp Technology Corporation · Platform. Empowering Growth. &nbsp;|&nbsp; From: Database Team → To: Management</div>
+  </div>
+  <div class="header-right">
+    <span class="hbadge">2026-07-06</span>
+    <span class="hbadge">21:00 ICT</span>
+    <span class="hbadge red">INCIDENT ACTIVE</span>
+  </div>
+</div>
+
+<!-- TABS -->
+<div class="tabs">
+  <button class="nav-tab active" onclick="switchTab('health',this)">📊 Health Check</button>
+  <button class="nav-tab" onclick="switchTab('delete',this)">🗑️ Delete Progress</button>
+  <button class="nav-tab" onclick="switchTab('plan',this)">📋 Kế Hoạch Night2</button>
+</div>
+
+<!-- ============================================================ -->
+<!-- TAB 1: HEALTH CHECK -->
+<!-- ============================================================ -->
+<div id="tab-health" class="tab-content active">
+
+  <div class="section">
+    <div class="section-title">Server Overview — RK7-DB-ECODE-SR · SQL Server 15.0.2000.5 Enterprise · Uptime 835h</div>
+    <div class="kpi-grid">
+      <div class="kpi-card green">
+        <div class="kpi-label">CPU SQL Server</div>
+        <div class="kpi-value green">0%</div>
+        <div class="kpi-sub">System idle 98% — rất nhàn</div>
+      </div>
+      <div class="kpi-card green">
+        <div class="kpi-label">PLE (Page Life Expectancy)</div>
+        <div class="kpi-value green mono">34,402s</div>
+        <div class="kpi-sub">573 phút — rất tốt (ngưỡng &gt;5,000s ✓)</div>
+      </div>
+      <div class="kpi-card green">
+        <div class="kpi-label">Blocking</div>
+        <div class="kpi-value green">0</div>
+        <div class="kpi-sub">Không có blocking session</div>
+      </div>
+      <div class="kpi-card amber">
+        <div class="kpi-label">RAM SQL Server</div>
+        <div class="kpi-value amber mono">53,377 MB</div>
+        <div class="kpi-sub">100% quota — đúng cấu hình max 52GB ✓</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Storage — Database Files</div>
+    <div class="table-card">
+      <table>
+        <tr><th>File / Filegroup</th><th>Size (GB)</th><th>Used (GB)</th><th>Free (GB)</th><th>Used %</th><th>Status</th></tr>
+        <tr><td class="td-ok">PRIMARY (.mdf)</td><td class="mono">449.94</td><td class="mono">306.89</td><td class="mono">143.05</td><td class="mono">68.2%</td><td><span class="badge b-ok">🟢 An toàn</span></td></tr>
+        <tr><td class="td-ok">ACCUMULATE_BLOB</td><td class="mono">85.10</td><td class="mono">51.76</td><td class="mono">33.34</td><td class="mono">60.8%</td><td><span class="badge b-ok">🟢 An toàn</span></td></tr>
+        <tr><td class="td-ok">ACCUMULATE</td><td class="mono">31.80</td><td class="mono">21.91</td><td class="mono">9.88</td><td class="mono">68.9%</td><td><span class="badge b-ok">🟢 An toàn</span></td></tr>
+        <tr><td class="td-ok">INDEX (_IDX + _IDX2)</td><td class="mono">39.25</td><td class="mono">6.63</td><td class="mono">32.62</td><td class="mono">16.9%</td><td><span class="badge b-ok">🟢 An toàn</span></td></tr>
+        <tr><td class="td-ok">Ổ D:\ (volume)</td><td class="mono">999.98</td><td class="mono">612.96</td><td class="mono">387.02</td><td class="mono">61.3%</td><td><span class="badge b-ok">🟢 An toàn</span></td></tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">SQL Agent Jobs — 12h qua</div>
+    <div class="table-card">
+      <table>
+        <tr><th>Job Name</th><th>Status</th><th>Thời điểm chạy</th><th>Duration</th><th>Ghi chú</th></tr>
+        <tr><td class="td-ok">syspolicy_purge_history</td><td><span class="badge b-ok">✅ Succeeded</span></td><td class="mono">2026-07-01 02:00</td><td class="mono">2s</td><td>—</td></tr>
+        <tr><td class="td-ok">Execute_UpdateFlags_Coupon_1lan1ngay</td><td><span class="badge b-ok">✅ Succeeded</span></td><td class="mono">2026-07-01 00:00</td><td class="mono">&lt;1s</td><td>—</td></tr>
+        <tr><td class="td-ok">RebuildStats_CARD_COUPONS</td><td><span class="badge b-ok">✅ Succeeded</span></td><td class="mono">2026-06-30 23:00</td><td class="mono">440s</td><td>Nhanh hơn 60% so với trước rebuild đêm 1</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Execution Plan — Trigger CARD_TRANSACTIONS_BI (Root Cause Lag POS)</div>
+    <div class="alert alert-red">
+      <span class="alert-icon">🔴</span>
+      <div>
+        <strong>Trigger max spike: 27,052ms (~27 giây)</strong> — Tăng từ 6,181ms lên 27,052ms so với lần check trước.<br>
+        Root cause: Lock contention trên CARD_COUPONS khi nhiều POS insert đồng thời. Thiếu covering index trên (COUPON_TYPE_ID + DATE_TO + FLAGS) → trigger phải scan thay vì seek → giữ lock lâu → POS lag.<br>
+        <strong>avg_ms = 4ms</strong> bình thường nhưng spike tạo ra UX tệ tại quầy thu ngân.
+      </div>
+    </div>
+    <div class="table-card">
+      <table>
+        <tr><th>Statement</th><th>Exec Count</th><th>Avg ms</th><th>Max ms</th><th>Avg Reads</th><th>Avg Phys</th><th>Đánh giá</th></tr>
+        <tr><td class="td-red">Trigger — statement chính (update coupon)</td><td class="mono">173,386</td><td class="mono">4</td><td class="mono"><strong>27,052</strong></td><td class="mono">23</td><td class="mono">6</td><td><span class="badge b-red">🔴 Spike</span></td></tr>
+        <tr><td class="td-warn">Trigger — statement phụ (lookup)</td><td class="mono">444,389</td><td class="mono">1</td><td class="mono">3,065</td><td class="mono">50</td><td class="mono">3</td><td><span class="badge b-warn">🟡 Theo dõi</span></td></tr>
+        <tr><td class="td-warn">GetCouponTypeInfo SP</td><td class="mono">29,096</td><td class="mono">1</td><td class="mono">2,656</td><td class="mono">13</td><td class="mono">4</td><td><span class="badge b-warn">🟡 Phys reads cao</span></td></tr>
+        <tr><td class="td-ok">Card_HasTime SP</td><td class="mono">5,584,601</td><td class="mono">0</td><td class="mono">34</td><td class="mono">4</td><td class="mono">0</td><td><span class="badge b-ok">🟢 Tốt</span></td></tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Fragmentation CARD_COUPONS — Sau Rebuild Đêm 1 (27/06)</div>
+    <div class="table-card">
+      <table>
+        <tr><th>Index</th><th>Frag sau rebuild</th><th>Frag hiện tại</th><th>Size (MB)</th><th>Xu hướng</th><th>Status</th></tr>
+        <tr><td class="td-ok">PK_CARD_COUPONS (CLUSTERED)</td><td class="mono">0.0%</td><td class="mono">0.0%</td><td class="mono">11,725</td><td>→ Ổn định</td><td><span class="badge b-ok">🟢</span></td></tr>
+        <tr><td class="td-ok">I_CARD_COUPONS_B</td><td class="mono">0.4%</td><td class="mono">0.4%</td><td class="mono">2,344</td><td>→ Ổn định</td><td><span class="badge b-ok">🟢</span></td></tr>
+        <tr><td class="td-ok">IX_CardCoup_CouponId</td><td class="mono">0.4%</td><td class="mono">0.4%</td><td class="mono">1,801</td><td>→ Ổn định</td><td><span class="badge b-ok">🟢</span></td></tr>
+        <tr><td class="td-warn">IX_CARD_COUPONS_TYPE_FLAGS</td><td class="mono">&lt;1%</td><td class="mono">5.7%</td><td class="mono">1,417</td><td>↑ Tăng nhẹ</td><td><span class="badge b-warn">🟡 Theo dõi</span></td></tr>
+        <tr><td class="td-warn">IX_CARD_COUPONS_FLAGS_DATE</td><td class="mono">&lt;1%</td><td class="mono">7.2%</td><td class="mono">1,381</td><td>↑ Tăng nhẹ</td><td><span class="badge b-warn">🟡 Theo dõi</span></td></tr>
+      </table>
+    </div>
+    <div class="alert alert-ok" style="margin-top:10px">
+      <span class="alert-icon">✓</span>
+      <div>Fragmentation vẫn trong ngưỡng tốt (&lt;10%). Tốc độ tăng bình thường với ~721K write/ngày. Chưa cần can thiệp.</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Bảng Điểm Tổng Hợp</div>
+    <div class="table-card">
+      <table>
+        <tr><th>Chỉ số</th><th>Giá trị</th><th>Ngưỡng</th><th>Status</th></tr>
+        <tr><td>CPU SQL Server</td><td class="mono">0%</td><td>&lt;60%</td><td><span class="badge b-ok">🟢 Tốt</span></td></tr>
+        <tr><td>PLE (Page Life Expectancy)</td><td class="mono">34,402s</td><td>&gt;5,000s</td><td><span class="badge b-ok">🟢 Tốt</span></td></tr>
+        <tr><td>Blocking sessions</td><td class="mono">0</td><td>= 0</td><td><span class="badge b-ok">🟢 Tốt</span></td></tr>
+        <tr><td>Agent Jobs (12h qua)</td><td class="mono">3/3 Succeeded</td><td>Tất cả Succeeded</td><td><span class="badge b-ok">🟢 Tốt</span></td></tr>
+        <tr><td>PRIMARY filegroup</td><td class="mono">68.2% used</td><td>&lt;80%</td><td><span class="badge b-ok">🟢 Tốt</span></td></tr>
+        <tr><td>INDEX filegroup</td><td class="mono">16.9% used</td><td>&lt;75%</td><td><span class="badge b-ok">🟢 Tốt</span></td></tr>
+        <tr><td>Ổ D:\ (volume)</td><td class="mono">61.3% used</td><td>&lt;75%</td><td><span class="badge b-ok">🟢 Tốt</span></td></tr>
+        <tr><td>Trigger avg_elapsed_ms</td><td class="mono">0–4 ms</td><td>&lt;5ms</td><td><span class="badge b-ok">🟢 Tốt</span></td></tr>
+        <tr><td><strong>Trigger max_elapsed_ms</strong></td><td class="mono"><strong>27,052 ms</strong></td><td>&lt;5,000ms</td><td><span class="badge b-red">🔴 Cần xử lý</span></td></tr>
+        <tr><td>GetCouponTypeInfo avg_phys_reads</td><td class="mono">4 reads</td><td>&lt;2</td><td><span class="badge b-warn">🟡 Theo dõi</span></td></tr>
+        <tr><td>Missing index CARD_COUPONS</td><td class="mono">0 suggestion</td><td>= 0</td><td><span class="badge b-ok">🟢 Tốt</span></td></tr>
+      </table>
+    </div>
+  </div>
+
+</div>
+
+<!-- ============================================================ -->
+<!-- TAB 2: DELETE PROGRESS -->
+<!-- ============================================================ -->
+<div id="tab-delete" class="tab-content">
+
+  <div class="section">
+    <div class="section-title">Tiến Độ Xóa Dữ Liệu — CARD_COUPON_CLIENTS</div>
+    <div class="kpi-grid">
+      <div class="kpi-card">
+        <div class="kpi-label">Tổng ban đầu</div>
+        <div class="kpi-value mono">2,000,546,609</div>
+        <div class="kpi-sub">~2 tỷ rows</div>
+      </div>
+      <div class="kpi-card green">
+        <div class="kpi-label">Đã xóa (3 đêm)</div>
+        <div class="kpi-value green mono">443,800,000</div>
+        <div class="kpi-sub">22.2% tổng bảng</div>
+      </div>
+      <div class="kpi-card amber">
+        <div class="kpi-label">Còn lại</div>
+        <div class="kpi-value amber mono">429,133,423</div>
+        <div class="kpi-sub">Đã xóa ~78.5% so với mục tiêu</div>
+      </div>
+      <div class="kpi-card blue">
+        <div class="kpi-label">Ước tính hoàn tất</div>
+        <div class="kpi-value blue">4–5</div>
+        <div class="kpi-sub">đêm nữa (tốc độ giảm dần)</div>
+      </div>
+    </div>
+
+    <div style="background:white;border-radius:var(--radius);box-shadow:var(--shadow);padding:16px;margin-top:12px">
+      <div style="font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:var(--gray);margin-bottom:8px">Tiến độ xóa tổng thể</div>
+      <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--gray);margin-bottom:4px;font-family:'DM Mono',monospace">
+        <span>0</span><span>429M còn lại</span><span>2,000M</span>
+      </div>
+      <div class="progress-wrap" style="height:14px">
+        <div class="progress-fill" style="width:78.5%"></div>
+      </div>
+      <div style="font-size:10px;color:var(--gray);margin-top:6px;font-family:'DM Mono',monospace">78.5% hoàn thành — còn 429,133,423 rows</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Tốc Độ Xóa Qua Từng Đêm — 22:30 đến 05:30 (7 giờ)</div>
+    <div class="table-card">
+      <table>
+        <tr><th>Đêm</th><th>Thời gian</th><th>Rows xóa</th><th>Tốc độ/giờ</th><th>So đêm trước</th><th>Nguyên nhân thay đổi</th></tr>
+        <tr><td class="td-ok"><strong>Đêm 1</strong></td><td class="mono">22:30–05:30</td><td class="mono">197,400,000</td><td class="mono">~28.2M/h</td><td>—</td><td>Rows dễ xóa nhất, frag thấp</td></tr>
+        <tr><td class="td-warn"><strong>Đêm 2</strong></td><td class="mono">22:30–05:30</td><td class="mono">147,000,000</td><td class="mono">~21.0M/h</td><td style="color:var(--amber)">↓ -25.5%</td><td>Frag bắt đầu tăng, ghost records</td></tr>
+        <tr><td class="td-warn"><strong>Đêm 3</strong></td><td class="mono">22:30–05:30</td><td class="mono">99,400,000</td><td class="mono">~14.2M/h</td><td style="color:var(--red)">↓ -32.4%</td><td>Frag cao, scatter page reads</td></tr>
+        <tr><td class="td-blue"><strong>Đêm 4 (dự kiến)</strong></td><td class="mono">22:30–05:30</td><td class="mono">~70–90M</td><td class="mono">~10–13M/h</td><td style="color:var(--amber)">↓ tiếp tục</td><td>Frag PK 88.2%, NCI 91.9%</td></tr>
+        <tr><td class="td-blue"><strong>Đêm 5–6 (dự kiến)</strong></td><td class="mono">22:30–05:30</td><td class="mono">~80–100M/đêm</td><td class="mono">~8–10M/h</td><td style="color:var(--gray)">Ổn định</td><td>Rows còn lại phức tạp hơn</td></tr>
+      </table>
+    </div>
+    <div class="alert alert-warn" style="margin-top:10px">
+      <span class="alert-icon">⚠</span>
+      <div><strong>Tốc độ xóa giảm mạnh do Fragmentation cao:</strong> PK_CARD_COUPON_CLIENTS frag <strong>88.2%</strong>, NCI frag <strong>91.9%</strong>. SQL Server phải đọc nhiều scattered pages để locate rows cần xóa → I/O tăng, throughput giảm. Đây là hành vi bình thường và không cần can thiệp — sẽ được xử lý sau khi xóa xong qua Rebuild Index.</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Storage — Tại Sao Space Không Giảm Sau Khi Xóa</div>
+    <div class="kpi-grid3">
+      <div class="kpi-card amber">
+        <div class="kpi-label">PRIMARY filegroup used</div>
+        <div class="kpi-value amber mono">306.89 GB</div>
+        <div class="kpi-sub">Không thay đổi dù đã xóa 443M rows</div>
+      </div>
+      <div class="kpi-card amber">
+        <div class="kpi-label">CARD_COUPON_CLIENTS allocated</div>
+        <div class="kpi-value amber mono">194.12 GB</div>
+        <div class="kpi-sub">Space chưa trả lại OS — ghost records</div>
+      </div>
+      <div class="kpi-card green">
+        <div class="kpi-label">D:\ free</div>
+        <div class="kpi-value green mono">387 GB</div>
+        <div class="kpi-sub">61.3% used — đủ cho rebuild sau này</div>
+      </div>
+    </div>
+    <div class="alert alert-blue" style="margin-top:10px">
+      <span class="alert-icon">ℹ</span>
+      <div>
+        <strong>Giải thích kỹ thuật:</strong> DELETE không trả space ngay — đây là hành vi bình thường của SQL Server.<br>
+        Pages sau khi xóa rows trở thành <em>ghost records</em> → background Ghost Cleanup Task dọn dần → pages empty được deallocated nhưng vẫn thuộc allocated extent của file .mdf.<br>
+        <strong>Space thực sự được thu hồi sau khi Rebuild clustered index</strong> — ước tính thu hồi <strong>80–100 GB</strong> trên PRIMARY filegroup sau khi rebuild PK_CARD_COUPON_CLIENTS hoàn tất.
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Fragmentation CARD_COUPON_CLIENTS — Hiện Tại</div>
+    <div class="table-card">
+      <table>
+        <tr><th>Index</th><th>Type</th><th>Fragmentation %</th><th>Size (MB)</th><th>Hành động cần làm</th></tr>
+        <tr><td class="td-red">PK_CARD_COUPON_CLIENTS</td><td>CLUSTERED</td><td class="mono" style="color:var(--red);font-weight:700">88.2%</td><td class="mono">157,459</td><td><span class="badge b-red">REBUILD sau khi xóa xong</span></td></tr>
+        <tr><td class="td-red">IX_CARD_COUPON_CLIENTS_COUPON_DELETED</td><td>NONCLUSTERED</td><td class="mono" style="color:var(--red);font-weight:700">91.9%</td><td class="mono">70,920</td><td><span class="badge b-red">REBUILD sau khi xóa xong</span></td></tr>
+      </table>
+    </div>
+  </div>
+
+</div>
+
+<!-- ============================================================ -->
+<!-- TAB 3: KẾ HOẠCH NIGHT2 -->
+<!-- ============================================================ -->
+<div id="tab-plan" class="tab-content">
+
+  <div class="section">
+    <div class="section-title">Quyết Định Night2 — Không Chạy Song Song Với Delete Job</div>
+    <div class="grid2">
+      <div class="alert alert-red">
+        <span class="alert-icon">🔴</span>
+        <div>
+          <strong>KHÔNG chạy Night2 trong thời gian delete job đang hoạt động</strong><br><br>
+          <strong>Lý do 1 — I/O Contention:</strong><br>
+          Delete job đang generate I/O nặng (frag 88–92%, scatter page reads). Night2 CREATE INDEX cần scan 107M rows CARD_COUPONS (~28GB read). Cả 2 tranh chấp D:\ cùng lúc → cả 2 đều chậm lại.<br><br>
+          <strong>Lý do 2 — Lock Risk:</strong><br>
+          CREATE INDEX ONLINE=ON vẫn cần Schema Stability Lock. Delete job tranh lock trên CARD_COUPON_CLIENTS (liên quan CARD_COUPONS qua FK) → risk deadlock tăng cao.<br><br>
+          <strong>Lý do 3 — Priority:</strong><br>
+          Delete job cần hoàn tất sớm để giải phóng space và giảm tải hệ thống. Ưu tiên delete xong trước.
+        </div>
+      </div>
+      <div class="alert alert-ok">
+        <span class="alert-icon">✅</span>
+        <div>
+          <strong>Thứ tự thực hiện tối ưu</strong><br><br>
+          <strong>Giai đoạn 1 — Đang làm:</strong><br>
+          Tiếp tục delete job mỗi đêm 22:30–05:30 cho đến khi xóa hết 429M rows.<br>
+          Ước tính: 4–5 đêm nữa.<br><br>
+          <strong>Giai đoạn 2 — Sau khi xóa xong:</strong><br>
+          → Rebuild PK_CARD_COUPON_CLIENTS (frag 88.2%)<br>
+          → Rebuild NCI (frag 91.9%)<br>
+          → Thu hồi ~80–100 GB space trên PRIMARY<br><br>
+          <strong>Giai đoạn 3 — Sau rebuild:</strong><br>
+          → CREATE index CLIENT_ID (deferred index đã lên kế hoạch)<br><br>
+          <strong>Giai đoạn 4 — Cuối cùng:</strong><br>
+          → Night2: CREATE 2 covering index mới trên CARD_COUPONS<br>
+          → Giải quyết spike 27,052ms trong trigger
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Kế Hoạch Chi Tiết Theo Giai Đoạn</div>
+    <div class="plan-list">
+      <div class="plan-item">
+        <div class="plan-num num-amber">1</div>
+        <div class="plan-body">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start">
+            <div>
+              <div class="plan-text">Tiếp tục Batch Delete CARD_COUPON_CLIENTS</div>
+              <div class="plan-sub">Mỗi đêm 22:30–05:30 · 429,133,423 rows còn lại · ~4–5 đêm nữa</div>
+              <div class="plan-sub" style="margin-top:4px">Monitor tốc độ xóa và job status mỗi sáng</div>
+            </div>
+            <span class="badge b-warn">ĐANG CHẠY</span>
+          </div>
+        </div>
+      </div>
+      <div class="plan-item">
+        <div class="plan-num num-red">2</div>
+        <div class="plan-body">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start">
+            <div>
+              <div class="plan-text">Rebuild PK_CARD_COUPON_CLIENTS + NCI</div>
+              <div class="plan-sub">Sau đêm xóa cuối · Frag 88.2% + 91.9% → &lt;1% · Thu hồi ~80–100 GB</div>
+              <div class="plan-sub" style="margin-top:4px">ONLINE=ON · MAXDOP=2 · PAGE compression · SORT_IN_TEMPDB=ON</div>
+            </div>
+            <span class="badge b-red">QUAN TRỌNG</span>
+          </div>
+        </div>
+      </div>
+      <div class="plan-item">
+        <div class="plan-num num-blue">3</div>
+        <div class="plan-body">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start">
+            <div>
+              <div class="plan-text">CREATE Index CLIENT_ID trên CARD_COUPON_CLIENTS</div>
+              <div class="plan-sub">Deferred index đã lên kế hoạch từ trước · Sau khi rebuild hoàn tất</div>
+              <div class="plan-sub" style="margin-top:4px">Phục vụ lookup theo CLIENT_ID · impact score cao trong missing index DMV</div>
+            </div>
+            <span class="badge b-blue">KẾ TIẾP</span>
+          </div>
+        </div>
+      </div>
+      <div class="plan-item">
+        <div class="plan-num num-green">4</div>
+        <div class="plan-body">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start">
+            <div>
+              <div class="plan-text">Night2 — CREATE 2 Covering Index mới trên CARD_COUPONS</div>
+              <div class="plan-sub">IX_CARD_COUPONS_TypeId_DateTo_Flags + IX_CARD_COUPONS_TypeId_Flags_DateTo</div>
+              <div class="plan-sub" style="margin-top:4px">Giải quyết trigger spike 27,052ms → dự kiến giảm xuống &lt;2,000ms</div>
+            </div>
+            <span class="badge b-gray">SAU CÙNG</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Timeline Ước Tính</div>
+    <div class="table-card">
+      <table>
+        <tr><th>Giai đoạn</th><th>Việc làm</th><th>Thời điểm ước tính</th><th>Ưu tiên</th><th>Tác động kỳ vọng</th></tr>
+        <tr><td class="td-warn">Đang thực hiện</td><td>Delete 429M rows còn lại</td><td class="mono">4–5 đêm tới</td><td><span class="badge b-warn">CAO</span></td><td>Giảm tải bảng 2 tỷ → ~100M rows</td></tr>
+        <tr><td class="td-red">Giai đoạn 2</td><td>Rebuild PK + NCI CARD_COUPON_CLIENTS</td><td class="mono">Đêm sau đêm xóa cuối</td><td><span class="badge b-red">BẮT BUỘC</span></td><td>Thu hồi 80–100 GB · frag 88% → 0%</td></tr>
+        <tr><td class="td-blue">Giai đoạn 3</td><td>CREATE index CLIENT_ID</td><td class="mono">Đêm kế tiếp</td><td><span class="badge b-blue">CAO</span></td><td>Cải thiện lookup performance</td></tr>
+        <tr><td class="td-ok">Giai đoạn 4</td><td>Night2: 2 index mới CARD_COUPONS</td><td class="mono">Sau giai đoạn 3</td><td><span class="badge b-ok">TRUNG BÌNH</span></td><td>Trigger spike 27s → &lt;2s</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Monitoring Hàng Ngày Trong Thời Gian Chờ</div>
+    <div class="alert alert-blue">
+      <span class="alert-icon">📋</span>
+      <div>
+        <strong>Chạy Daily Monitor mỗi sáng 08:00 (file: Daily_Monitor_CARD_COUPONS.sql):</strong><br>
+        • Trigger max_ms: nếu &gt;5,000ms xuất hiện liên tục 3 ngày → escalate ngay<br>
+        • Missing index DMV: nếu impact_score &gt;1,000,000 xuất hiện lại → đánh giá Night2<br>
+        • Delete job rows count: theo dõi tốc độ xóa, estimate ngày hoàn tất<br>
+        • INDEX filegroup free: cần &gt;10 GB trước khi chạy Night2 (hiện tại 32.6 GB ✓)
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- FOOTER -->
+<div class="footer">
+  <div><strong>Database Team</strong> — Dcorp Technology Corporation</div>
+  <div>db_health_report_Bảo v1 · Generated 2026-07-06 21:30 ICT</div>
+</div>
+
+<script>
+function switchTab(id, btn) {
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('tab-' + id).classList.add('active');
+  if (btn) btn.classList.add('active');
+}
+</script>
+
+</body>
+</html>
