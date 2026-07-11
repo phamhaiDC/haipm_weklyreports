@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HaiPM — Weekly Report W28 (06–10.Jul.2026)</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800;900&family=DM+Mono:wght@400;500&display=swap');
+:root{
+  --red:#e30613; --navy:#003087; --gold:#E8B84B; --black:#000; --white:#fff; --gray:#727171;
+  --bg:#f0f2f5; --dark:#1a1f2e; --tabs:#131722;
+  --amber:#d97706; --green:#16a34a; --blue:#2563eb; --purple:#7c3aed;
+  --radius:10px; --shadow:0 1px 6px rgba(0,0,0,.07);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Montserrat',sans-serif;background:var(--bg);color:var(--black);font-size:12px}
+.header{position:sticky;top:0;z-index:100;background:var(--dark);color:#fff;display:grid;grid-template-columns:auto 1fr auto;gap:14px;align-items:center;padding:10px 18px}
+.logo{height:38px;width:38px;border-radius:6px;background:var(--red);display:flex;align-items:center;justify-content:center;font-weight:900;font-size:13px;color:#fff}
+.h-title{font-weight:800;font-size:13px;letter-spacing:.5px}
+.h-sub{font-size:9px;color:#9aa3b2;font-family:'DM Mono',monospace;margin-top:2px}
+.h-right{text-align:right}
+.badge{display:inline-block;background:rgba(227,6,19,.15);border:1px solid var(--red);color:#ff8f96;font-family:'DM Mono',monospace;font-size:9px;padding:3px 8px;border-radius:4px;margin-left:6px}
+.badge.gold{background:rgba(232,184,75,.12);border-color:var(--gold);color:var(--gold)}
+.nav{position:sticky;top:58px;z-index:99;background:var(--tabs);display:flex;overflow-x:auto}
+.nav-tab{flex:0 0 auto;background:none;border:none;color:#8b93a5;font-family:'Montserrat',sans-serif;font-weight:700;font-size:10.5px;padding:11px 16px;cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap}
+.nav-tab.active{color:var(--red);border-bottom-color:var(--red)}
+.wrap{max-width:1180px;margin:0 auto;padding:16px}
+.tab-content{display:none}
+.tab-content.active{display:block}
+.stats{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:16px}
+.stat{background:#fff;border-radius:var(--radius);box-shadow:var(--shadow);padding:12px 14px;border-top:3px solid var(--gray)}
+.stat.red{border-top-color:var(--red)} .stat.green{border-top-color:var(--green)}
+.stat.amber{border-top-color:var(--amber)} .stat.blue{border-top-color:var(--blue)}
+.stat-label{font-size:9px;text-transform:uppercase;letter-spacing:1px;font-weight:700;color:var(--gray)}
+.stat-value{font-family:'DM Mono',monospace;font-weight:500;font-size:30px;margin-top:4px}
+.stat-sub{font-size:9px;color:var(--gray);font-family:'DM Mono',monospace}
+.section{background:#fff;border-radius:var(--radius);box-shadow:var(--shadow);margin-bottom:16px;overflow:hidden}
+.sec-head{background:var(--dark);color:#fff;padding:9px 14px;font-size:9px;text-transform:uppercase;letter-spacing:1.5px;font-weight:800}
+.sec-body{padding:14px}
+table{width:100%;border-collapse:collapse;font-size:11px}
+th{background:#f7f8fa;text-align:left;padding:8px 10px;font-size:9px;text-transform:uppercase;letter-spacing:.8px;color:var(--gray);border-bottom:2px solid #e6e8ec}
+td{padding:9px 10px;border-bottom:1px solid #eef0f3;vertical-align:top}
+tr:last-child td{border-bottom:none}
+.tag{display:inline-block;font-size:8px;font-weight:800;text-transform:uppercase;letter-spacing:.5px;padding:3px 7px;border-radius:4px;white-space:nowrap}
+.tag-done{background:#e8f1ff;color:var(--blue)}
+.tag-ok{background:#e7f6ec;color:var(--green)}
+.tag-ip{background:#eef4ff;color:#4f7cff}
+.tag-warn{background:#fdf0e0;color:var(--amber)}
+.tag-block{background:#fdeaec;color:var(--red)}
+.tag-new{background:#f1eafd;color:var(--purple)}
+.tag-gray{background:#eef0f3;color:var(--gray)}
+.src{display:inline-block;font-family:'DM Mono',monospace;font-size:9px;padding:2px 6px;border-radius:4px;margin-right:4px}
+.src-cu{background:#f1eafd;color:var(--purple)}
+.src-bx{background:#e8f1ff;color:var(--blue)}
+.src-int{background:#eef0f3;color:var(--gray)}
+.src-vd{background:#fdeaec;color:var(--red)}
+.hl{display:flex;gap:12px;background:#fffaf0;border:1px solid var(--gold);border-radius:var(--radius);padding:12px 14px;margin-bottom:10px}
+.hl.red{background:#fff5f5;border-color:#f3b3b8}
+.hl-icon{font-size:18px}
+.hl-title{font-weight:800;font-size:11.5px}
+.hl-body{font-size:11px;color:#444;margin-top:2px;line-height:1.5}
+.mono{font-family:'DM Mono',monospace}
+.note{font-size:10px;color:var(--gray);margin-top:8px;line-height:1.5}
+pre.bitrix{background:#0f1420;color:#dfe4ee;font-family:'DM Mono',monospace;font-size:11px;line-height:1.65;padding:16px;border-radius:8px;white-space:pre-wrap;position:relative}
+.copy-btn{position:absolute;top:10px;right:10px;background:var(--red);color:#fff;border:none;border-radius:5px;font-family:'Montserrat',sans-serif;font-weight:700;font-size:9px;padding:5px 10px;cursor:pointer}
+.plan-item{display:flex;gap:12px;align-items:flex-start;padding:10px 0;border-bottom:1px solid #eef0f3}
+.plan-item:last-child{border-bottom:none}
+.plan-num{width:22px;height:22px;border-radius:50%;background:var(--dark);color:#fff;display:flex;align-items:center;justify-content:center;font-family:'DM Mono',monospace;font-size:10px;flex:0 0 auto}
+.plan-text{font-weight:700;font-size:11.5px}
+.plan-sub{font-size:10px;color:var(--gray);margin-top:2px}
+.footer{display:flex;justify-content:space-between;padding:14px 18px;color:var(--gray);font-size:9.5px;font-family:'DM Mono',monospace}
+a{color:var(--blue);text-decoration:none}
+ul.qtr{margin-left:16px;line-height:1.8;font-size:11px}
+@media(max-width:760px){.stats{grid-template-columns:repeat(2,1fr)}}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="logo">D'C</div>
+  <div>
+    <div class="h-title">WEEKLY REPORT — CORE TECHNOLOGY</div>
+    <div class="h-sub">Dcorp Technology Corporation · From: Phạm Minh Hải (HaiPM) → To: CEO</div>
+  </div>
+  <div class="h-right">
+    <span class="badge">06 – 10.Jul.2026</span>
+    <span class="badge gold">TUẦN 28</span>
+  </div>
+</div>
+
+<div class="nav">
+  <button class="nav-tab active" onclick="switchTab('w28',this)">📊 W28 Báo cáo tuần</button>
+  <button class="nav-tab" onclick="switchTab('email',this)">📧 Email tuần W28</button>
+  <button class="nav-tab" onclick="switchTab('old',this)">🕰 Task tồn lâu ngày</button>
+  <button class="nav-tab" onclick="switchTab('backlog',this)">📦 Backlog & Carry-over</button>
+  <button class="nav-tab" onclick="switchTab('plan',this)">📅 Kế hoạch tuần tới</button>
+  <button class="nav-tab" onclick="switchTab('process',this)">⚙️ Quy trình</button>
+</div>
+
+<div class="wrap">
+
+<!-- ============ TAB 1: W28 ============ -->
+<div id="tab-w28" class="tab-content active">
+
+  <div class="stats">
+    <div class="stat"><div class="stat-label">Tổng đầu việc</div><div class="stat-value">5</div><div class="stat-sub">W28 · 06–10.Jul</div></div>
+    <div class="stat green"><div class="stat-label">Hoàn thành</div><div class="stat-value">2</div><div class="stat-sub">rkCRM DB · VM config</div></div>
+    <div class="stat blue"><div class="stat-label">Đang xử lý</div><div class="stat-value">2</div><div class="stat-sub">The Street KDS · Master-Slave</div></div>
+    <div class="stat amber"><div class="stat-label">Chờ / Pending</div><div class="stat-value">1</div><div class="stat-sub">KeyLess — chờ UCS</div></div>
+    <div class="stat red"><div class="stat-label">Note CEO</div><div class="stat-value">1</div><div class="stat-sub">Email Melly / BIR PH</div></div>
+  </div>
+
+  <div class="hl">
+    <div class="hl-icon">✅</div>
+    <div>
+      <div class="hl-title">Hoàn tất tối ưu database rkCRM (E-Code VTI)</div>
+      <div class="hl-body">Đã thực hiện xong toàn bộ các bước: clear <span class="mono">Card_Coupon_Clients</span>, rebuild index, bổ sung index mới. Kết thúc chuỗi tối ưu sau 2 incident tháng 5 (INC-001/INC-002). Tiếp tục theo dõi qua CB dashboard.</div>
+    </div>
+  </div>
+  <div class="hl red">
+    <div class="hl-icon">📌</div>
+    <div>
+      <div class="hl-title">Note CEO — Philippines / BIR</div>
+      <div class="hl-body">Cần trả lời email <strong>Melly M. Clavel</strong> (Compliance Head, Supreme Vietnamese Coffee — Philippines) về kế hoạch làm việc với BIR sau khi hồ sơ POS/CRM bị từ chối theo RMO 24-2023. Đề nghị CEO cho hướng phản hồi.</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="sec-head">Bảng báo cáo W28</div>
+    <div class="sec-body" style="padding:0">
+      <table>
+        <tr><th style="width:14%">MasterTask</th><th style="width:12%">Task ID</th><th>Kết quả thực hiện</th><th style="width:15%">Khó khăn</th><th style="width:16%">Đề xuất / Next</th><th style="width:10%">Trạng thái</th></tr>
+        <tr>
+          <td><strong>VTI — Tối ưu hệ thống</strong></td>
+          <td><span class="src src-int">Nội bộ</span></td>
+          <td>Kết thúc tối ưu database rkCRM: clear <span class="mono">Card_Coupon_Clients</span>, rebuild index, bổ sung index.</td>
+          <td>—</td>
+          <td>Monitor qua CB dashboard</td>
+          <td><span class="tag tag-ok">Hoàn thành</span></td>
+        </tr>
+        <tr>
+          <td><strong>VTI — Tối ưu hệ thống</strong></td>
+          <td><span class="src src-int">Nội bộ</span></td>
+          <td>Test và thảo luận mô hình backup <strong>Master-Slave</strong> cho server.</td>
+          <td>—</td>
+          <td>W29: chuẩn hoá &amp; áp dụng mô hình mới (nhiều REF cho một khách hàng để test)</td>
+          <td><span class="tag tag-ip">Đang xử lý</span></td>
+        </tr>
+        <tr>
+          <td><strong>VTI</strong></td>
+          <td><span class="src src-int">Nội bộ</span></td>
+          <td>Bổ sung cấu hình server (VM) và gửi cho VTI.</td>
+          <td>—</td>
+          <td>Chờ VTI phản hồi</td>
+          <td><span class="tag tag-ok">Hoàn thành</span></td>
+        </tr>
+        <tr>
+          <td><strong>VTI</strong></td>
+          <td><span class="src src-vd">Vendor</span></td>
+          <td>Test phiên bản <strong>KeyLess</strong> — vẫn còn lỗi; đã bổ sung thông tin để UCS tự test.</td>
+          <td><span class="tag tag-block">Vendor — UCS</span></td>
+          <td>Chờ kết quả test từ UCS</td>
+          <td><span class="tag tag-warn">Chờ xác nhận</span></td>
+        </tr>
+        <tr>
+          <td><strong>The Street</strong></td>
+          <td><span class="src src-cu">TECH-15505</span> <a href="https://app.clickup.com/t/86ey7q5xh" target="_blank">↗</a></td>
+          <td>Bổ sung tính năng KDS: task <em>shortening the Name</em> đã bị <strong>reject</strong>; task module design front đã chuyển thành yêu cầu phát triển mới — đã có file mô tả yêu cầu.</td>
+          <td><span class="tag tag-block">Vendor — hãng</span></td>
+          <td>Theo dõi tiến độ phát triển với hãng</td>
+          <td><span class="tag tag-ip">Đang xử lý</span></td>
+        </tr>
+      </table>
+      <div class="note" style="padding:10px 14px">Ghi chú: các task Bitrix thuộc MasterTask VTI (93200, 93073, 93072, 93016…) trong tuần chỉ ở chế độ <strong>theo dõi</strong>, không có cập nhật — chi tiết ở tab Backlog &amp; Carry-over.</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="sec-head">Text báo cáo Bitrix — copy &amp; paste</div>
+    <div class="sec-body">
+      <pre class="bitrix" id="bitrixText"><button class="copy-btn" onclick="copyBitrix()">COPY</button>📋 HaiPM | W28 | 06–10.Jul.2026
+
+✅ Hoàn thành:
+- Kết thúc tối ưu database rkCRM: clear Card_Coupon_Clients, rebuild index, bổ sung index. Tiếp tục monitor qua CB dashboard.
+- Bổ sung cấu hình server (VM) và gửi cho VTI.
+
+🔄 Đang xử lý:
+- Nội bộ: Test & thảo luận mô hình backup Master-Slave cho server → W29 chuẩn hoá và áp dụng mô hình mới.
+- TECH-15505 (The Street KDS): task shortening the Name bị reject; task module design front chuyển thành yêu cầu phát triển mới, đã có file mô tả yêu cầu.
+
+📧 Email / Vendor:
+- KeyLess: test còn lỗi, đã bổ sung thông tin cho UCS tự test → chờ kết quả.
+
+🔴 Note CEO:
+- Cần trả lời email Melly (Supreme Vietnamese Coffee — Philippines) về kế hoạch làm việc với BIR.
+
+📅 Kế hoạch W29:
+- Chuẩn hoá & áp dụng mô hình Master-Slave mới (nhiều REF cho một khách hàng để test).
+- Kiểm tra tool của kỹ thuật phát triển để backup Master-Slave.</pre>
+    </div>
+  </div>
+</div>
+
+<!-- ============ TAB 2: EMAIL ============ -->
+<div id="tab-email" class="tab-content">
+  <div class="hl red">
+    <div class="hl-icon">⚠️</div>
+    <div>
+      <div class="hl-title">Dữ liệu email W28 chưa pull được tự động</div>
+      <div class="hl-body">Gmail connector tuần này chỉ khả dụng tool đọc email đơn lẻ, không có tool search inbox — nên danh sách email 06–10.Jul chưa được tổng hợp tự động. Mục dưới đây là email quan trọng được xác nhận thủ công.</div>
+    </div>
+  </div>
+  <div class="section">
+    <div class="sec-head">🟢 Email cần action</div>
+    <div class="sec-body" style="padding:0">
+      <table>
+        <tr><th>Từ</th><th>Chủ đề / Nội dung</th><th>Action</th><th>Trạng thái</th></tr>
+        <tr>
+          <td>Melly M. Clavel<br><span class="mono" style="font-size:9px;color:var(--gray)">Supreme Vietnamese Coffee (PH)</span></td>
+          <td>Kế hoạch làm việc với BIR sau khi hồ sơ POS/CRM bị từ chối (RMO 24-2023, RDO 043)</td>
+          <td>Cần phản hồi — đã note CEO cho hướng trả lời</td>
+          <td><span class="tag tag-block">Chờ trả lời</span></td>
+        </tr>
+      </table>
+    </div>
+  </div>
+  <div class="section">
+    <div class="sec-head">🟣 Vendor ticket</div>
+    <div class="sec-body" style="padding:0">
+      <table>
+        <tr><th>Vendor</th><th>Nội dung</th><th>Trạng thái</th></tr>
+        <tr>
+          <td>UCS (sd@rkeeper.ru)</td>
+          <td>KeyLess version — test còn lỗi, đã gửi bổ sung thông tin để UCS tự test</td>
+          <td><span class="tag tag-warn">Chờ UCS</span></td>
+        </tr>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ============ TAB 3: TASK TỒN LÂU ============ -->
+<div id="tab-old" class="tab-content">
+  <div class="section">
+    <div class="sec-head">Task Bitrix tồn &gt; 3 tháng — nhóm ưu tiên xử lý</div>
+    <div class="sec-body" style="padding:0">
+      <table>
+        <tr><th style="width:10%">ID</th><th>Task</th><th style="width:12%">Deadline</th><th style="width:14%">Tuổi</th><th>Đề xuất</th></tr>
+        <tr><td><span class="src src-bx">92524</span></td><td>Hoàn thiện &amp; triển khai ostLauncher (Dcorp version)</td><td class="mono">13.Apr.26</td><td><span class="tag tag-warn">~3 tháng</span></td><td>Đặt lại deadline hoặc chuyển backlog Q3</td></tr>
+        <tr><td><span class="src src-bx">92518</span></td><td>Nghiên cứu triển khai OpenSearch cho Centralized Logs</td><td class="mono">13.Apr.26</td><td><span class="tag tag-warn">~3 tháng</span></td><td>Gộp với kế hoạch nâng cấp Graylog 7.1.2</td></tr>
+        <tr><td><span class="src src-bx">92580</span></td><td>VTI — Tối ưu hạ tầng VMW trên VNG Cloud (Main Task)</td><td class="mono">27.Apr.26</td><td><span class="tag tag-warn">~3 tháng</span></td><td>Main task — giữ mở, cập nhật tiến độ theo sizing W28</td></tr>
+        <tr><td><span class="src src-bx">92340</span></td><td>Rà soát script khách hàng lớn (tối ưu bằng AI)</td><td class="mono">02.Apr.26</td><td><span class="tag tag-warn">~3 tháng</span></td><td>Lên lịch cụ thể hoặc đóng</td></tr>
+        <tr><td><span class="src src-bx">92146</span></td><td>Tổng hợp tài liệu chuẩn bị show cho BIR (Philippines)</td><td class="mono">18.Mar.26</td><td><span class="tag tag-block">~4 tháng</span></td><td>Kích hoạt lại cùng kế hoạch reapply BIR</td></tr>
+        <tr><td><span class="src src-bx">82651</span></td><td>VTI — Kiểm tra &amp; chuẩn hoá ngôn ngữ trên SH5</td><td class="mono">15.Sep.24</td><td><span class="tag tag-block">&gt; 1.5 năm</span></td><td>High priority nhưng treo lâu — quyết định đóng hoặc re-scope</td></tr>
+        <tr><td><span class="src src-bx">91167</span></td><td>Training cài đặt &amp; config Zabbix + Grafana</td><td class="mono">03.Dec.25</td><td><span class="tag tag-block">&gt; 7 tháng</span></td><td>Lên lịch training nội bộ hoặc đóng</td></tr>
+      </table>
+      <div class="note" style="padding:10px 14px">Ngoài ra còn ~50 task Bitrix giai đoạn 2019–2024 (QSR, GGG, La Sirena, memo cũ…) không còn giá trị vận hành — đề xuất <strong>một đợt dọn dẹp đóng hàng loạt</strong> để danh sách phản ánh đúng workload thực tế.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ TAB 4: BACKLOG ============ -->
+<div id="tab-backlog" class="tab-content">
+  <div class="section">
+    <div class="sec-head">Carry-over — task đang mở, theo dõi (không cập nhật trong W28)</div>
+    <div class="sec-body" style="padding:0">
+      <table>
+        <tr><th style="width:12%">ID</th><th>Task</th><th style="width:12%">Deadline</th><th style="width:14%">Chờ ai</th><th style="width:14%">Trạng thái</th></tr>
+        <tr><td><span class="src src-bx">93274</span></td><td>The Street — Hỗ trợ NAT port server cloud</td><td class="mono">28.Jun</td><td>Nội bộ</td><td><span class="tag tag-block">Treo &gt; 2 tuần</span></td></tr>
+        <tr><td><span class="src src-bx">93251</span></td><td>Tổng hợp task cần UCS/RK7 cải thiện cho HLC</td><td class="mono">03.Jul</td><td>Nội bộ</td><td><span class="tag tag-warn">Quá hạn</span></td></tr>
+        <tr><td><span class="src src-bx">93218</span></td><td>INT — Master task: Test tính năng phần mềm của hãng (High)</td><td class="mono">09.Jul</td><td>Nội bộ</td><td><span class="tag tag-warn">Quá hạn trong W28</span></td></tr>
+        <tr><td><span class="src src-bx">93200</span></td><td>Thống kê API theo yêu cầu team hạ tầng VTI</td><td class="mono">08.Jul</td><td>Nội bộ</td><td><span class="tag tag-warn">Quá hạn trong W28</span></td></tr>
+        <tr><td><span class="src src-bx">93227</span></td><td>VTI — Viết lại script, kịch bản promotion campaign</td><td class="mono">25.Jun</td><td>Nội bộ</td><td><span class="tag tag-warn">Quá hạn</span></td></tr>
+        <tr><td><span class="src src-bx">93073</span></td><td>VTI — Review hạ tầng VNG &amp; lên cấu hình sizing</td><td class="mono">21.Jun</td><td>Nội bộ / VTI</td><td><span class="tag tag-ip">Liên quan VM config đã gửi W28</span></td></tr>
+        <tr><td><span class="src src-bx">93072</span></td><td>Tổng hợp với VTI các service không sử dụng nữa</td><td class="mono">21.Jun</td><td>VTI</td><td><span class="tag tag-warn">Chờ VTI</span></td></tr>
+        <tr><td><span class="src src-bx">93016</span></td><td>Tổng hợp sự cố E-Code VTI → Build KB</td><td class="mono">07.Jun</td><td>Nội bộ</td><td><span class="tag tag-ip">KB v1.1 đã có — cần chốt đóng task</span></td></tr>
+        <tr><td><span class="src src-cu">TECH-14884</span></td><td>QSR — Dữ liệu RK &amp; trung gian Deadlock gây sale SAP về chậm</td><td class="mono">—</td><td>Nội bộ</td><td><span class="tag tag-ip">In progress</span></td></tr>
+      </table>
+    </div>
+  </div>
+  <div class="section">
+    <div class="sec-head">Hoàn thành gần đây (tham chiếu)</div>
+    <div class="sec-body">
+      <ul class="qtr">
+        <li><span class="src src-cu">TECH-3630</span> VTI — File mô tả tham số, setup, config in/out app — complete 05.Jul (tính vào tuần trước theo xác nhận).</li>
+        <li>W27: RK7 DR stress-test 3-chain, VNG Cloud billing May–Jun comparison, E-Code KB v1.1.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ============ TAB 5: KẾ HOẠCH ============ -->
+<div id="tab-plan" class="tab-content">
+  <div class="stats" style="grid-template-columns:repeat(3,1fr)">
+    <div class="stat"><div class="stat-label">Tổng kế hoạch</div><div class="stat-value">3</div><div class="stat-sub">W29 · 13–17.Jul</div></div>
+    <div class="stat red"><div class="stat-label">High priority</div><div class="stat-value">2</div><div class="stat-sub">Master-Slave · BIR</div></div>
+    <div class="stat amber"><div class="stat-label">Carry-over từ W28</div><div class="stat-value">1</div><div class="stat-sub">KeyLess — chờ UCS</div></div>
+  </div>
+  <div class="section">
+    <div class="sec-head">Kế hoạch tuần W29 (13–17.Jul.2026)</div>
+    <div class="sec-body">
+      <div class="plan-item">
+        <div class="plan-num">1</div>
+        <div style="flex:1;display:flex;justify-content:space-between;gap:10px">
+          <div><div class="plan-text">Chuẩn hoá &amp; áp dụng mô hình Master-Slave mới</div>
+          <div class="plan-sub">VTI — Tối ưu hệ thống · Nhiều REF cho một khách hàng để test</div></div>
+          <span class="tag tag-block">HIGH</span>
+        </div>
+      </div>
+      <div class="plan-item">
+        <div class="plan-num">2</div>
+        <div style="flex:1;display:flex;justify-content:space-between;gap:10px">
+          <div><div class="plan-text">Kiểm tra tool của kỹ thuật phát triển để backup Master-Slave</div>
+          <div class="plan-sub">VTI — Tối ưu hệ thống · Đánh giá tool trước khi đưa vào SOP</div></div>
+          <span class="tag tag-warn">NORMAL</span>
+        </div>
+      </div>
+      <div class="plan-item">
+        <div class="plan-num">3</div>
+        <div style="flex:1;display:flex;justify-content:space-between;gap:10px">
+          <div><div class="plan-text">Trả lời email Melly — kế hoạch làm việc với BIR (Philippines)</div>
+          <div class="plan-sub">VTI Philippine · Chờ CEO cho hướng phản hồi</div></div>
+          <span class="tag tag-block">HIGH · NOTE CEO</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ TAB 6: QUY TRÌNH ============ -->
+<div id="tab-process" class="tab-content">
+  <div class="section">
+    <div class="sec-head">Workflow báo cáo tuần</div>
+    <div class="sec-body">
+      <ul class="qtr">
+        <li><strong>Nguồn dữ liệu:</strong> ClickUp (MCP, assignee 89477225) · Bitrix24 (n8n sync 18:00 → PostgreSQL <span class="mono">weekly_report.tasks</span>) · Gmail (MCP) · công việc nội bộ do HaiPM bổ sung.</li>
+        <li><strong>Quy trình 5 bước:</strong> Pull dữ liệu → Confirm danh sách với HaiPM → Nhập bổ sung công việc phát sinh &amp; kế hoạch → Phân loại (MasterTask, trạng thái, Vendor/Nội bộ) → Xuất 3 output (HTML 6 tab · bảng báo cáo · text Bitrix).</li>
+        <li><strong>Deadline:</strong> Gửi CEO trước 17:00 thứ Sáu hàng tuần.</li>
+        <li><strong>Quy tắc:</strong> Không suy diễn — chỉ ghi việc đã confirm; tách rõ blocker Vendor vs Nội bộ; task chưa bắt đầu bắt buộc có lý do; GGG loại khỏi báo cáo tuần.</li>
+        <li><strong>File:</strong> <span class="mono">HaiPM_W[xx]_[dates].html</span> — lưu trữ trên GitHub Pages / Drive.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+</div>
+
+<div class="footer">
+  <div><strong>Phạm Minh Hải</strong> · Core Technology</div>
+  <div>HaiPM_W28_06-10.Jul.2026 · Generated 11/07/2026</div>
+</div>
+
+<script>
+function switchTab(id, btn){
+  document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('tab-'+id).classList.add('active');
+  if(btn) btn.classList.add('active');
+}
+function copyBitrix(){
+  const el=document.getElementById('bitrixText');
+  const txt=el.innerText.replace(/^COPY\s*/,'');
+  navigator.clipboard.writeText(txt).then(()=>{
+    const b=el.querySelector('.copy-btn'); b.textContent='COPIED ✓';
+    setTimeout(()=>b.textContent='COPY',1500);
+  });
+}
+</script>
+</body>
+</html>
