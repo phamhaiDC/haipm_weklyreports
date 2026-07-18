@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HaiPM — Weekly Report W29 (13–17/07/2026)</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800;900&family=DM+Mono:wght@400;500&display=swap');
+:root{
+  --red:#e30613; --navy:#003087; --gold:#E8B84B;
+  --black:#141824; --white:#fff; --gray:#727171;
+  --bg:#f0f2f5; --dark:#1a1f2e; --tabs:#131722;
+  --amber:#d97706; --green:#16a34a; --blue:#2563eb;
+  --radius:10px; --shadow:0 1px 6px rgba(0,0,0,.07);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Montserrat',sans-serif;background:var(--bg);color:var(--black);font-size:13px;line-height:1.5}
+.mono{font-family:'DM Mono',monospace}
+
+/* Header */
+.header{position:sticky;top:0;z-index:100;background:var(--dark);color:#fff;
+  display:grid;grid-template-columns:auto 1fr auto;gap:16px;align-items:center;
+  padding:12px 22px;box-shadow:0 2px 10px rgba(0,0,0,.25)}
+.logo{height:40px;width:40px;border-radius:7px;background:var(--red);color:#fff;
+  display:flex;align-items:center;justify-content:center;font-weight:900;font-size:16px;letter-spacing:.5px}
+.h-title{font-size:14px;font-weight:800;letter-spacing:.5px}
+.h-sub{font-size:9px;color:#aab;letter-spacing:.5px;margin-top:2px;text-transform:uppercase}
+.h-route{font-size:9px;color:#8b93a7;margin-top:3px;font-family:'DM Mono',monospace}
+.h-right{text-align:right;display:flex;flex-direction:column;gap:4px;align-items:flex-end}
+.badge{font-family:'DM Mono',monospace;font-size:9px;padding:3px 9px;border-radius:20px;font-weight:500}
+.badge-week{background:var(--red);color:#fff;font-weight:600}
+.badge-date{background:rgba(255,255,255,.1);color:#dde}
+.badge-ver{font-size:8px;color:#7a8299}
+
+/* Tabs */
+.tabs{position:sticky;top:64px;z-index:99;background:var(--tabs);display:flex;
+  overflow-x:auto;padding:0 12px;box-shadow:0 2px 6px rgba(0,0,0,.2)}
+.nav-tab{background:none;border:none;color:#9aa2b5;font-family:'Montserrat',sans-serif;
+  font-size:11px;font-weight:700;padding:12px 15px;cursor:pointer;white-space:nowrap;
+  border-bottom:2px solid transparent;transition:.15s}
+.nav-tab:hover{color:#dde}
+.nav-tab.active{color:var(--red);border-bottom-color:var(--red)}
+
+/* Layout */
+.wrap{max-width:1080px;margin:0 auto;padding:22px 18px 60px}
+.tab-content{display:none;animation:fade .2s}
+.tab-content.active{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+.sec-title{font-size:9px;text-transform:uppercase;font-weight:800;letter-spacing:1.5px;
+  color:var(--gray);margin:22px 0 10px;display:flex;align-items:center;gap:8px}
+.sec-title::before{content:'';width:20px;height:2px;background:var(--red)}
+
+/* KPI cards */
+.kpis{display:grid;grid-template-columns:repeat(5,1fr);gap:12px}
+.kpi{background:#fff;border-radius:var(--radius);padding:14px 14px 12px;box-shadow:var(--shadow);border-top:3px solid var(--gray)}
+.kpi.k-red{border-top-color:var(--red)} .kpi.k-green{border-top-color:var(--green)}
+.kpi.k-amber{border-top-color:var(--amber)} .kpi.k-blue{border-top-color:var(--blue)} .kpi.k-navy{border-top-color:var(--navy)}
+.kpi-label{font-size:9px;text-transform:uppercase;font-weight:700;letter-spacing:1px;color:var(--gray)}
+.kpi-val{font-family:'DM Mono',monospace;font-size:30px;font-weight:500;line-height:1.1;margin:4px 0 2px}
+.kpi-sub{font-size:9px;color:var(--gray)}
+
+/* Banner */
+.hl-banner{display:flex;gap:12px;background:#fff;border-radius:var(--radius);padding:14px 16px;
+  box-shadow:var(--shadow);border-left:4px solid var(--red);margin-bottom:10px}
+.hl-banner.b-amber{border-left-color:var(--amber)} .hl-banner.b-green{border-left-color:var(--green)}
+.hl-banner.b-navy{border-left-color:var(--navy)}
+.hl-icon{font-size:20px}
+.hl-title{font-weight:800;font-size:12px;margin-bottom:2px}
+.hl-body{font-size:11.5px;color:#333}
+
+/* Table */
+.tbl{width:100%;border-collapse:collapse;background:#fff;border-radius:var(--radius);
+  overflow:hidden;box-shadow:var(--shadow);font-size:11.5px}
+.tbl th{background:var(--navy);color:#fff;text-align:left;padding:9px 11px;font-size:9px;
+  text-transform:uppercase;letter-spacing:.6px;font-weight:700}
+.tbl td{padding:10px 11px;border-top:1px solid #eef0f3;vertical-align:top}
+.tbl tr:nth-child(even) td{background:#fafbfc}
+.mtag{font-family:'DM Mono',monospace;font-size:9px;font-weight:500;padding:2px 7px;border-radius:5px;
+  background:#eef1f6;color:var(--navy);white-space:nowrap}
+
+/* Tags */
+.tag{font-size:8px;text-transform:uppercase;font-weight:800;letter-spacing:.4px;
+  padding:2px 7px;border-radius:5px;white-space:nowrap;display:inline-block}
+.tag-ip{background:#e0f2fe;color:#0369a1} .tag-done{background:#dbeafe;color:#1e40af}
+.tag-block{background:#fee2e2;color:#b91c1c} .tag-warn{background:#fef3c7;color:#92400e}
+.tag-new{background:#ede9fe;color:#6d28d9} .tag-ok{background:#dcfce7;color:#15803d}
+.tag-none{background:#f1f5f9;color:#64748b}
+
+/* Blocker box */
+.blk{background:#fff5f5;border:1px solid #fecaca;border-radius:var(--radius);padding:13px 15px;margin-top:6px}
+.blk-title{color:var(--red);font-weight:800;font-size:11px;text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px}
+.blk-body{font-size:11.5px;color:#333}
+
+/* Bitrix / code block */
+.codebox{background:#0f1420;color:#d5dae6;border-radius:var(--radius);padding:15px 17px;
+  font-family:'DM Mono',monospace;font-size:11px;line-height:1.7;white-space:pre-wrap;position:relative}
+.copy-btn{position:absolute;top:10px;right:10px;background:var(--red);color:#fff;border:none;
+  font-family:'DM Mono',monospace;font-size:9px;padding:5px 10px;border-radius:5px;cursor:pointer}
+.copy-btn:active{transform:scale(.95)}
+
+/* Plan item */
+.plan-item{display:flex;gap:12px;background:#fff;border-radius:var(--radius);padding:12px 14px;
+  box-shadow:var(--shadow);margin-bottom:9px;align-items:flex-start}
+.plan-num{font-family:'DM Mono',monospace;font-weight:500;background:var(--navy);color:#fff;
+  width:24px;height:24px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0}
+.plan-text{font-weight:700;font-size:12px}
+.plan-sub{font-size:10px;color:var(--gray);margin-top:2px}
+.plan-row{flex:1;display:flex;justify-content:space-between;gap:10px;align-items:flex-start}
+
+/* Info note */
+.note{background:#fff;border-radius:var(--radius);padding:13px 15px;box-shadow:var(--shadow);
+  font-size:11.5px;color:#444;border-left:4px solid var(--blue);margin-bottom:10px}
+.note.n-gray{border-left-color:var(--gray)}
+.note strong{color:var(--navy)}
+
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+ul.clean{list-style:none;margin-top:4px}
+ul.clean li{padding:6px 0 6px 16px;position:relative;font-size:11.5px;border-bottom:1px solid #f0f2f5}
+ul.clean li::before{content:'▹';position:absolute;left:0;color:var(--red)}
+ul.clean li:last-child{border-bottom:none}
+
+/* Footer */
+.footer{background:var(--dark);color:#9aa2b5;display:flex;justify-content:space-between;
+  padding:13px 22px;font-size:9px;font-family:'DM Mono',monospace;margin-top:30px}
+.footer strong{color:#fff}
+@media(max-width:720px){.kpis{grid-template-columns:repeat(2,1fr)}.two-col{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="logo">DC</div>
+  <div>
+    <div class="h-title">WEEKLY REPORT — CORE TECHNOLOGY</div>
+    <div class="h-sub">Dcorp Technology Corporation · Platform. Empowering Growth.</div>
+    <div class="h-route">From: Phạm Minh Hải (Trưởng phòng Core Technology) → To: CEO</div>
+  </div>
+  <div class="h-right">
+    <span class="badge badge-week">W29 · 2026</span>
+    <span class="badge badge-date">13/07 – 17/07/2026</span>
+    <span class="badge badge-ver">weekly_report_HaiPM v1</span>
+  </div>
+</div>
+
+<div class="tabs">
+  <button class="nav-tab active" onclick="switchTab('report',this)">📊 W29 Báo cáo tuần</button>
+  <button class="nav-tab" onclick="switchTab('email',this)">📧 Email tuần</button>
+  <button class="nav-tab" onclick="switchTab('stale',this)">🕒 Task tồn lâu ngày</button>
+  <button class="nav-tab" onclick="switchTab('backlog',this)">📦 Backlog & Carry-over</button>
+  <button class="nav-tab" onclick="switchTab('plan',this)">📅 Kế hoạch W30</button>
+  <button class="nav-tab" onclick="switchTab('flow',this)">⚙️ Quy trình</button>
+</div>
+
+<div class="wrap">
+
+<!-- TAB 1: REPORT -->
+<div id="tab-report" class="tab-content active">
+  <div class="note">
+    <strong>Tóm tắt tuần:</strong> Đây là tuần trọng tâm <strong>Nghiên cứu (R&amp;D)</strong> — không phát sinh task ClickUp mới, không có email công việc mới. Hoạt động chính: nghiên cứu <strong>cloudflared</strong> và <strong>Apache Superset</strong>; tiếp tục xử lý các task cũ trên Bitrix.
+  </div>
+
+  <div class="sec-title">Chỉ số hoạt động tuần</div>
+  <div class="kpis">
+    <div class="kpi k-navy"><div class="kpi-label">Tổng đầu việc</div><div class="kpi-val">3</div><div class="kpi-sub">Việc có hoạt động tuần này</div></div>
+    <div class="kpi k-green"><div class="kpi-label">Hoàn thành</div><div class="kpi-val">0</div><div class="kpi-sub">Tuần R&amp;D, chưa chốt</div></div>
+    <div class="kpi k-amber"><div class="kpi-label">Đang xử lý</div><div class="kpi-val">3</div><div class="kpi-sub">Cloudflared · Superset · Bitrix</div></div>
+    <div class="kpi k-blue"><div class="kpi-label">Chờ / Pending</div><div class="kpi-val">1</div><div class="kpi-sub">Chờ CEO duyệt mua Pro</div></div>
+    <div class="kpi k-red"><div class="kpi-label">Blocker</div><div class="kpi-val">1</div><div class="kpi-sub">Cloudflare Pro (chi phí)</div></div>
+  </div>
+
+  <div class="sec-title">Nổi bật</div>
+  <div class="hl-banner">
+    <div class="hl-icon">🚀</div>
+    <div>
+      <div class="hl-title">Cloudflared — đã ra mô hình cơ bản kết nối chuỗi cửa hàng VTI</div>
+      <div class="hl-body">Đã đăng ký domain và test nhiều tình huống. Kết luận: <strong>khả thi</strong> áp dụng cho các cửa hàng VTI. Cần <strong>double-check thêm 1 lần</strong> trước khi chốt mô hình.</div>
+    </div>
+  </div>
+  <div class="hl-banner b-green">
+    <div class="hl-icon">📊</div>
+    <div>
+      <div class="hl-title">Apache Superset — tiềm năng cho Webreport &amp; thị trường nước ngoài</div>
+      <div class="hl-body">Nghiên cứu Superset phục vụ <strong>Webreport</strong>; đánh giá bước đầu có thể <strong>phát triển cho khách hàng nước ngoài</strong>.</div>
+    </div>
+  </div>
+
+  <div class="sec-title">Chi tiết công việc</div>
+  <table class="tbl">
+    <thead><tr><th>MasterTask</th><th>Nguồn</th><th>Kết quả thực hiện</th><th>Khó khăn</th><th>Đề xuất / Next</th><th>Trạng thái</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><span class="mtag">VTI — Tối ưu hệ thống</span></td>
+        <td>Nội bộ / R&amp;D</td>
+        <td><strong>Nghiên cứu cloudflared:</strong> đăng ký domain, test nhiều tình huống. Ra được mô hình cơ bản kết nối cho chuỗi cửa hàng VTI.</td>
+        <td><span class="tag tag-block">Cần mua Cloudflare Pro</span> — bản free vướng giới hạn virtual network</td>
+        <td>Double-check mô hình 1 lần nữa (W30); trình CEO duyệt mua Pro</td>
+        <td><span class="tag tag-ip">Đang xử lý</span></td>
+      </tr>
+      <tr>
+        <td><span class="mtag">VTI — Tối ưu hệ thống</span></td>
+        <td>Nội bộ / R&amp;D</td>
+        <td><strong>Nghiên cứu Apache Superset</strong> phục vụ Webreport; đánh giá tiềm năng phát triển cho thị trường nước ngoài.</td>
+        <td><span class="tag tag-none">Không</span></td>
+        <td>Tiếp tục đánh giá sâu (W30)</td>
+        <td><span class="tag tag-ip">Đang xử lý</span></td>
+      </tr>
+      <tr>
+        <td><span class="mtag">VTI</span></td>
+        <td>Bitrix</td>
+        <td>Tiếp tục xử lý các <strong>task cũ</strong> trên Bitrix (hệ thống ghi nhận 2 task có hoạt động trong tuần).</td>
+        <td><span class="tag tag-none">Không</span></td>
+        <td>—</td>
+        <td><span class="tag tag-ip">Đang xử lý</span></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="blk">
+    <div class="blk-title">🔴 Blocker / Cần CEO quyết định</div>
+    <div class="blk-body"><strong>Phê duyệt mua tài khoản Cloudflare Pro.</strong> Là điều kiện để triển khai mô hình cloudflared cho các cửa hàng VTI — bản miễn phí bị giới hạn bởi virtual network nên không đáp ứng được yêu cầu vận hành.</div>
+  </div>
+
+  <div class="sec-title">Text Bitrix (copy-paste)</div>
+  <div class="codebox" id="bitrix-text">📋 HaiPM | W29 | 13–17.Jul.2026
+
+✅ Hoàn thành:
+- (Tuần R&D — không có hạng mục chốt hoàn thành)
+
+🔄 Đang xử lý:
+- Cloudflared: đăng ký domain, test tình huống → ra mô hình cơ bản cho chuỗi VTI, cần double-check thêm
+- Superset: nghiên cứu phục vụ Webreport, tiềm năng cho thị trường nước ngoài
+- Bitrix: tiếp tục xử lý các task cũ
+
+📧 Email / Vendor:
+- Không phát sinh trong tuần
+
+🔴 Blocker:
+- Cloudflared cần mua tài khoản Cloudflare Pro (free vướng giới hạn virtual network) → chờ CEO duyệt
+
+📅 Kế hoạch W30:
+- Double-check mô hình cloudflared; tiếp tục đánh giá Superset cho Webreport
+    <button class="copy-btn" onclick="copyBitrix()">COPY</button>
+  </div>
+</div>
+
+<!-- TAB 2: EMAIL -->
+<div id="tab-email" class="tab-content">
+  <div class="sec-title">Email công việc — W29</div>
+  <div class="note n-gray">
+    <strong>Không có email công việc phát sinh trong tuần 13–17/07/2026.</strong><br>
+    Ghi chú kỹ thuật: kỳ báo cáo này công cụ tìm kiếm Gmail (search) không khả dụng trong phiên — chỉ truy xuất được theo message ID. Kết luận "không phát sinh" dựa trên xác nhận trực tiếp của anh Hải, không phải do quét inbox tự động.
+  </div>
+</div>
+
+<!-- TAB 3: STALE -->
+<div id="tab-stale" class="tab-content">
+  <div class="sec-title">Task tồn lâu ngày — quan sát từ ClickUp</div>
+  <div class="note">
+    Tuần này không thực hiện rà soát chuyên sâu task tồn. Dưới đây là một số task <strong>đang mở nhưng lâu không cập nhật</strong>, quan sát trực tiếp từ dữ liệu ClickUp (đã loại toàn bộ task GGG/Golden Gate). Danh sách mang tính tham khảo, <strong>chưa audit đầy đủ</strong> — đề xuất dành 1 buổi rà soát &amp; đóng/gộp trong W30.
+  </div>
+  <table class="tbl">
+    <thead><tr><th>Task ID</th><th>Nội dung</th><th>Cập nhật cuối (quan sát)</th><th>Trạng thái</th></tr></thead>
+    <tbody>
+      <tr><td><span class="mtag">TECH-1563</span></td><td>Madame Lân — Tư vấn phát triển chức năng trên Skymenu</td><td>~11/2024</td><td><span class="tag tag-ip">in progress</span></td></tr>
+      <tr><td><span class="mtag">TECH-4564</span></td><td>Mộc BBQ — Thêm tính năng phiếu trừ hàng SkyInventory</td><td>~03/2025</td><td><span class="tag tag-warn">to do</span></td></tr>
+      <tr><td><span class="mtag">TECH-5042</span></td><td>VFBS — TransporterServer kẹt file filesync, nuốt dữ liệu chậm</td><td>~03/2025</td><td><span class="tag tag-block">pending</span></td></tr>
+      <tr><td><span class="mtag">TECH-5561</span></td><td>Newpearl — Voucher không ghi nhận coupon payment trên CRM</td><td>~2025</td><td><span class="tag tag-block">pending</span></td></tr>
+      <tr><td><span class="mtag">TECH-5683</span></td><td>Newpearl — Bill ngày cũ xuất hiện trong ngày hiện tại (CKK Tân Phú)</td><td>~2025</td><td><span class="tag tag-block">pending</span></td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- TAB 4: BACKLOG -->
+<div id="tab-backlog" class="tab-content">
+  <div class="sec-title">Backlog &amp; Carry-over sang W30</div>
+  <table class="tbl">
+    <thead><tr><th>Hạng mục</th><th>Trạng thái hiện tại</th><th>Xử lý tiếp</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Mô hình cloudflared cho VTI</strong></td><td><span class="tag tag-ip">Đang xử lý</span> — đã ra mô hình cơ bản</td><td>Double-check 1 lần nữa + trình duyệt Cloudflare Pro</td></tr>
+      <tr><td><strong>Nghiên cứu Superset (Webreport)</strong></td><td><span class="tag tag-ip">Đang xử lý</span> — đánh giá bước đầu</td><td>Tiếp tục đánh giá; khảo sát khả năng cho thị trường nước ngoài</td></tr>
+      <tr><td><strong>Bitrix — 2 task cũ</strong></td><td><span class="tag tag-ip">Đang xử lý</span></td><td>Kéo lại chi tiết sau khi restart connector <span class="mono">haipmwlreport</span></td></tr>
+    </tbody>
+  </table>
+  <div class="note n-gray" style="margin-top:12px">
+    <strong>Ghi chú dữ liệu:</strong> connector Bitrix (PostgreSQL <span class="mono">haipmwlreport</span>) đếm được 2 task có hoạt động trong tuần nhưng chưa truy xuất được tiêu đề chi tiết (MCP mất ổn định sau vài truy vấn). Cần restart để bổ sung ở báo cáo sau nếu muốn nêu đích danh.
+  </div>
+</div>
+
+<!-- TAB 5: PLAN -->
+<div id="tab-plan" class="tab-content">
+  <div class="sec-title">Kế hoạch tuần tới — W30</div>
+  <div class="kpis" style="grid-template-columns:repeat(3,1fr);margin-bottom:16px">
+    <div class="kpi k-navy"><div class="kpi-label">Tổng kế hoạch</div><div class="kpi-val">3</div><div class="kpi-sub">Hạng mục dự kiến</div></div>
+    <div class="kpi k-red"><div class="kpi-label">High priority</div><div class="kpi-val">2</div><div class="kpi-sub">Cloudflared + duyệt Pro</div></div>
+    <div class="kpi k-amber"><div class="kpi-label">Carry-over</div><div class="kpi-val">2</div><div class="kpi-sub">Từ W29</div></div>
+  </div>
+
+  <div class="plan-item">
+    <div class="plan-num">1</div>
+    <div class="plan-row">
+      <div><div class="plan-text">Double-check mô hình cloudflared cho chuỗi VTI</div>
+      <div class="plan-sub">Xác nhận lại các tình huống test · chốt mô hình trước khi triển khai</div></div>
+      <span class="tag tag-block">HIGH</span>
+    </div>
+  </div>
+  <div class="plan-item">
+    <div class="plan-num">2</div>
+    <div class="plan-row">
+      <div><div class="plan-text">Trình CEO phê duyệt mua Cloudflare Pro</div>
+      <div class="plan-sub">Điều kiện triển khai · nêu rõ giới hạn bản free (virtual network)</div></div>
+      <span class="tag tag-block">HIGH</span>
+    </div>
+  </div>
+  <div class="plan-item">
+    <div class="plan-num">3</div>
+    <div class="plan-row">
+      <div><div class="plan-text">Tiếp tục đánh giá Apache Superset cho Webreport</div>
+      <div class="plan-sub">Khảo sát khả năng phát triển cho khách hàng nước ngoài</div></div>
+      <span class="tag tag-warn">NORMAL</span>
+    </div>
+  </div>
+</div>
+
+<!-- TAB 6: FLOW -->
+<div id="tab-flow" class="tab-content">
+  <div class="sec-title">Quy trình làm báo cáo tuần</div>
+  <div class="two-col">
+    <div>
+      <div class="note"><strong>Nguồn dữ liệu</strong>
+        <ul class="clean">
+          <li>ClickUp — task kỹ thuật (TECH-xxxxx), qua MCP</li>
+          <li>Bitrix24 — task KH/nội bộ, sync 18:00 → PostgreSQL</li>
+          <li>Gmail — email công việc tuần, qua MCP</li>
+          <li>Việc ngoài / R&amp;D — anh Hải nhập bổ sung</li>
+        </ul>
+      </div>
+      <div class="note n-gray"><strong>Nguyên tắc</strong>
+        <ul class="clean">
+          <li>Không tự suy diễn → hỏi trước khi đưa vào</li>
+          <li>Chỉ build báo cáo sau khi anh Hải xác nhận đủ</li>
+          <li>Tách Vendor vs Nội bộ trong blocker</li>
+          <li>Task GGG (Golden Gate) — loại hoàn toàn khỏi báo cáo</li>
+        </ul>
+      </div>
+    </div>
+    <div>
+      <div class="note"><strong>Lịch &amp; output</strong>
+        <ul class="clean">
+          <li>Deadline gửi: Thứ 6 trước 17:00</li>
+          <li>Output 1 — HTML dashboard 6 tab</li>
+          <li>Output 2 — Bảng báo cáo chuẩn (chat)</li>
+          <li>Output 3 — Text Bitrix copy-paste</li>
+        </ul>
+      </div>
+      <div class="note n-gray"><strong>Ghi chú nhãn tuần</strong>
+        <ul class="clean">
+          <li>Nhãn tuần theo cách gọi của anh Hải: <strong>W29 = 13–17/07/2026</strong></li>
+          <li>DB <span class="mono">haipmwlreport</span> gắn nhãn lệch ~1 tuần → luôn xác nhận thủ công</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div>
+
+<div class="footer">
+  <div><strong>Phạm Minh Hải</strong> · Core Technology · Dcorp Technology Corporation</div>
+  <div>weekly_report_HaiPM v1 · Generated 18/07/2026</div>
+</div>
+
+<script>
+function switchTab(id, btn){
+  document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('tab-'+id).classList.add('active');
+  if(btn) btn.classList.add('active');
+}
+function copyBitrix(){
+  const el=document.getElementById('bitrix-text');
+  const txt=el.innerText.replace(/COPY\s*$/,'').trim();
+  navigator.clipboard.writeText(txt).then(()=>{
+    const b=el.querySelector('.copy-btn'); b.textContent='ĐÃ COPY ✓';
+    setTimeout(()=>b.textContent='COPY',1500);
+  });
+}
+</script>
+</body>
+</html>
