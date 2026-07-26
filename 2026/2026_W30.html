@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Weekly Report W30 — HaiPM | Core Technology</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800;900&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --red:#e30613; --navy:#003087; --black:#1a1f2e; --white:#fff; --gray:#727171;
+  --bg:#f0f2f5; --dark:#1a1f2e; --tabs:#131722;
+  --amber:#d97706; --green:#16a34a; --blue:#2563eb; --purple:#7c3aed;
+  --radius:10px; --shadow:0 1px 6px rgba(0,0,0,.07);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Montserrat',sans-serif;background:var(--bg);color:var(--black);font-size:13px;line-height:1.5}
+.mono{font-family:'DM Mono',monospace}
+
+/* Header */
+.header{position:sticky;top:0;z-index:100;background:var(--dark);color:#fff;
+  display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:16px;padding:11px 22px}
+.logo{height:38px;width:38px;border-radius:6px;background:var(--red);color:#fff;
+  display:flex;align-items:center;justify-content:center;font-weight:900;font-size:11px;letter-spacing:.5px;flex-direction:column;line-height:1}
+.logo small{font-size:6px;font-weight:700;opacity:.85;margin-top:2px}
+.h-center .h-title{font-size:13px;font-weight:800;letter-spacing:.3px}
+.h-center .h-sub{font-size:9px;color:#9aa4b2;margin-top:2px}
+.h-center .h-route{font-size:9px;color:#cbd3dd;margin-top:3px}
+.h-route b{color:var(--red)}
+.h-right{text-align:right;display:flex;flex-direction:column;gap:4px;align-items:flex-end}
+.badge{font-family:'DM Mono',monospace;font-size:9px;font-weight:500;padding:3px 9px;border-radius:20px;letter-spacing:.5px}
+.badge-week{background:var(--red);color:#fff;font-weight:700}
+.badge-date{background:#2a3142;color:#cbd3dd}
+.badge-ver{font-size:8px;color:#7b8394}
+
+/* Tabs */
+.tabs{position:sticky;top:60px;z-index:99;background:var(--tabs);display:flex;overflow-x:auto;padding:0 12px}
+.tab{background:none;border:none;color:#8b93a1;font-family:'Montserrat',sans-serif;font-size:11px;font-weight:700;
+  padding:12px 15px;cursor:pointer;white-space:nowrap;border-bottom:2px solid transparent;transition:.15s}
+.tab:hover{color:#cbd3dd}
+.tab.active{color:var(--red);border-bottom-color:var(--red)}
+
+/* Layout */
+.wrap{max-width:1080px;margin:0 auto;padding:20px 22px 60px}
+.tab-content{display:none;animation:fade .25s}
+.tab-content.active{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+.sec-title{font-size:9px;text-transform:uppercase;font-weight:800;letter-spacing:1.5px;color:var(--gray);margin:22px 0 10px}
+.sec-title:first-child{margin-top:0}
+
+/* KPI cards */
+.kpis{display:grid;grid-template-columns:repeat(5,1fr);gap:12px}
+.kpi{background:#fff;border-radius:var(--radius);box-shadow:var(--shadow);padding:14px 15px;border-top:3px solid var(--gray)}
+.kpi.red{border-top-color:var(--red)} .kpi.green{border-top-color:var(--green)}
+.kpi.amber{border-top-color:var(--amber)} .kpi.blue{border-top-color:var(--blue)} .kpi.gray{border-top-color:var(--gray)}
+.kpi-label{font-size:9px;text-transform:uppercase;font-weight:700;letter-spacing:.8px;color:var(--gray)}
+.kpi-val{font-family:'DM Mono',monospace;font-size:30px;font-weight:500;margin-top:6px;line-height:1}
+.kpi-sub{font-size:9px;color:var(--gray);margin-top:4px}
+
+/* Table */
+.card{background:#fff;border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden;margin-bottom:6px}
+table{width:100%;border-collapse:collapse}
+th{background:#f7f8fa;text-align:left;font-size:8.5px;text-transform:uppercase;letter-spacing:.6px;color:var(--gray);
+  font-weight:800;padding:9px 12px;border-bottom:1px solid #eceef1}
+td{padding:10px 12px;border-bottom:1px solid #f2f3f5;font-size:11.5px;vertical-align:top}
+tr:last-child td{border-bottom:none}
+.tid{font-family:'DM Mono',monospace;font-size:10px;color:var(--purple);font-weight:500;white-space:nowrap}
+.tid.ext{color:var(--gray)}
+.mt{font-weight:700;white-space:nowrap}
+
+/* Tags */
+.tag{display:inline-block;font-family:'DM Mono',monospace;font-size:8px;text-transform:uppercase;font-weight:500;
+  letter-spacing:.4px;padding:3px 7px;border-radius:5px;white-space:nowrap}
+.tag-done{background:#dcfce7;color:#15803d} .tag-ip{background:#dbeafe;color:#1d4ed8}
+.tag-todo{background:#f1f5f9;color:#64748b} .tag-none{background:#fef3c7;color:#b45309}
+.tag-block{background:#fee2e2;color:#b91c1c} .tag-purple{background:#ede9fe;color:#6d28d9}
+.tag-green{background:#dcfce7;color:#15803d} .tag-gray{background:#f1f5f9;color:#64748b}
+
+/* Banners */
+.note{border-radius:var(--radius);padding:13px 15px;font-size:11.5px;display:flex;gap:10px;align-items:flex-start;margin-bottom:6px}
+.note-icon{font-size:15px;line-height:1.3}
+.note-info{background:#eff6ff;border-left:3px solid var(--blue)}
+.note-warn{background:#fffbeb;border-left:3px solid var(--amber)}
+.note-ok{background:#f0fdf4;border-left:3px solid var(--green)}
+.note b{font-weight:800}
+.note .n-title{font-weight:800;margin-bottom:2px}
+
+/* Bitrix text block */
+.bitrix{background:#0f1420;color:#d7dde6;border-radius:var(--radius);padding:16px 18px;
+  font-family:'DM Mono',monospace;font-size:11px;line-height:1.75;white-space:pre-wrap;position:relative}
+.bitrix .copy-hint{position:absolute;top:10px;right:14px;font-size:8px;color:#5c6675;text-transform:uppercase;letter-spacing:.5px}
+
+/* Plan items */
+.plan{display:flex;gap:12px;align-items:flex-start;background:#fff;border-radius:var(--radius);
+  box-shadow:var(--shadow);padding:13px 15px;margin-bottom:8px}
+.plan-num{width:24px;height:24px;border-radius:6px;background:var(--navy);color:#fff;font-family:'DM Mono',monospace;
+  font-size:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-weight:500}
+.plan-text{font-weight:700;font-size:12px}
+.plan-sub{font-size:10px;color:var(--gray);margin-top:2px}
+
+ul.clean{list-style:none;padding:0} ul.clean li{padding:6px 0;border-bottom:1px solid #f2f3f5;font-size:11.5px}
+ul.clean li:last-child{border:none}
+ul.clean li b{color:var(--navy)}
+.age{font-family:'DM Mono',monospace;font-size:10px;font-weight:500}
+.age.crit{color:var(--red)} .age.warn{color:var(--amber)}
+
+/* Footer */
+.footer{max-width:1080px;margin:0 auto;padding:16px 22px;display:flex;justify-content:space-between;
+  align-items:center;border-top:1px solid #e3e6ea;font-size:9px;color:var(--gray)}
+.footer b{color:var(--black)}
+@media(max-width:760px){.kpis{grid-template-columns:repeat(2,1fr)}.h-center .h-title{font-size:11px}}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="logo">D'CORP<small>R-KEEPER</small></div>
+  <div class="h-center">
+    <div class="h-title">WEEKLY REPORT — CORE TECHNOLOGY</div>
+    <div class="h-sub">Dcorp Technology Corporation · Platform. Empowering Growth.</div>
+    <div class="h-route">From: <b>Phạm Minh Hải (HaiPM)</b> → To: CEO</div>
+  </div>
+  <div class="h-right">
+    <span class="badge badge-week">TUẦN W30</span>
+    <span class="badge badge-date">20 – 24 / 07 / 2026</span>
+    <span class="badge badge-ver">weekly_report_HaiPM v1</span>
+  </div>
+</div>
+
+<div class="tabs">
+  <button class="tab active" onclick="sw('w30',this)">📊 W30 Báo cáo tuần</button>
+  <button class="tab" onclick="sw('email',this)">📧 Email tuần</button>
+  <button class="tab" onclick="sw('aged',this)">⏳ Task tồn lâu ngày</button>
+  <button class="tab" onclick="sw('backlog',this)">📦 Backlog & Carry-over</button>
+  <button class="tab" onclick="sw('plan',this)">📅 Kế hoạch tuần tới</button>
+  <button class="tab" onclick="sw('flow',this)">⚙️ Quy trình</button>
+</div>
+
+<div class="wrap">
+
+<!-- ============ TAB 1: W30 ============ -->
+<div id="tab-w30" class="tab-content active">
+  <div class="sec-title">Tổng quan hoạt động tuần</div>
+  <div class="kpis">
+    <div class="kpi gray"><div class="kpi-label">Tổng đầu việc</div><div class="kpi-val">8</div><div class="kpi-sub">Có hoạt động thực trong tuần</div></div>
+    <div class="kpi green"><div class="kpi-label">Hoàn thành</div><div class="kpi-val">4</div><div class="kpi-sub">Đã xử lý / lên product</div></div>
+    <div class="kpi blue"><div class="kpi-label">Đang xử lý</div><div class="kpi-val">2</div><div class="kpi-sub">The Street KDS · Cloudflare</div></div>
+    <div class="kpi amber"><div class="kpi-label">Chờ / Pending</div><div class="kpi-val">0</div><div class="kpi-sub">Không có mục chờ duyệt</div></div>
+    <div class="kpi red"><div class="kpi-label">Chưa bắt đầu</div><div class="kpi-val">2</div><div class="kpi-sub">Có lý do — xem bảng</div></div>
+  </div>
+
+  <div class="sec-title">Chi tiết công việc</div>
+  <div class="card">
+  <table>
+    <thead><tr><th>MasterTask</th><th>Task ID</th><th>Kết quả thực hiện</th><th>Đề xuất / Next</th><th>Trạng thái</th></tr></thead>
+    <tbody>
+      <tr>
+        <td class="mt">QSR</td>
+        <td class="tid">TECH-14884</td>
+        <td>RK & Trung gian Deadlock gây sale SAP về chậm — <b>đã xử lý xong</b>.</td>
+        <td>Theo dõi ổn định sau xử lý.</td>
+        <td><span class="tag tag-done">Hoàn thành</span></td>
+      </tr>
+      <tr>
+        <td class="mt">NewPearl</td>
+        <td class="tid">TECH-14260</td>
+        <td>KDS thường xuyên mất Activation Code — <b>đã xử lý xong</b>.</td>
+        <td>Monitor tái phát.</td>
+        <td><span class="tag tag-done">Hoàn thành</span></td>
+      </tr>
+      <tr>
+        <td class="mt">La Sirena</td>
+        <td class="tid">TECH-5864</td>
+        <td>SkyInventory: item đã tắt vẫn hiện & chọn được — <b>đã xử lý xong</b>.</td>
+        <td>Đóng task.</td>
+        <td><span class="tag tag-done">Hoàn thành</span></td>
+      </tr>
+      <tr>
+        <td class="mt">Vibe Code</td>
+        <td class="tid ext">Việc ngoài</td>
+        <td>Bổ sung <b>change log cho script RK7</b> — <b>đã lên môi trường product</b>.</td>
+        <td>Chuyển tiếp sang phần <i>usage</i> (kế hoạch W31).</td>
+        <td><span class="tag tag-done">Hoàn thành</span></td>
+      </tr>
+      <tr>
+        <td class="mt">The Street</td>
+        <td class="tid">TECH-15505</td>
+        <td>Bổ sung tính năng KDS (dự án The Street – Quang Trung) — đang triển khai.</td>
+        <td>Tiếp tục W31.</td>
+        <td><span class="tag tag-ip">Đang xử lý</span></td>
+      </tr>
+      <tr>
+        <td class="mt">Cloudflare / Infra</td>
+        <td class="tid ext">Việc ngoài</td>
+        <td>Làm việc với <b>Bách</b> dựng <b>Cloudflare Manager site</b> cho Dcorp — đã xem demo.</td>
+        <td>Chờ Bách cài lên product → chạy thử <span class="mono">cfman.dcorp.com.vn</span>.</td>
+        <td><span class="tag tag-ip">Đang xử lý</span></td>
+      </tr>
+      <tr>
+        <td class="mt">NewPearl</td>
+        <td class="tid">TECH-15788</td>
+        <td>CKK – máy chủ tự khôi phục coupon về FLAG=49 (task vừa nhận 24/07).</td>
+        <td>Bắt đầu điều tra nguyên nhân trong W31.</td>
+        <td><span class="tag tag-none">Chưa bắt đầu</span></td>
+      </tr>
+      <tr>
+        <td class="mt">The Street</td>
+        <td class="tid">TECH-15809</td>
+        <td>KDS – yêu cầu tính năng mới ghi nhận ngày 24/07 (mới phát sinh).</td>
+        <td>Làm rõ scope, gộp cùng TECH-15505.</td>
+        <td><span class="tag tag-none">Chưa bắt đầu</span></td>
+      </tr>
+    </tbody>
+  </table>
+  </div>
+
+  <div class="sec-title">Blocker & Ghi chú</div>
+  <div class="note note-ok">
+    <div class="note-icon">✅</div>
+    <div><div class="n-title">Không có blocker cứng cần escalate CEO.</div>
+    Mục Cloudflare Manager đang ở trạng thái carry-over — <b>chờ nội bộ (Bách)</b> cài lên product, không phải chờ vendor.</div>
+  </div>
+  <div class="note note-warn">
+    <div class="note-icon">ℹ️</div>
+    <div><div class="n-title">Bitrix: không có hoạt động trong tuần.</div>
+    DB đã đồng bộ nhưng không có task Bitrix nào của HaiPM phát sinh thay đổi trong 20–24/07. Báo cáo trung thực theo dữ liệu thực tế.</div>
+  </div>
+
+  <div class="sec-title">Text Bitrix (copy-paste)</div>
+  <div class="bitrix"><span class="copy-hint">bôi đen để copy</span>📋 HaiPM | W30 | 20–24.Jul.2026
+
+✅ Hoàn thành:
+- QSR (TECH-14884): RK & Trung gian Deadlock gây sale SAP chậm → đã xử lý
+- NewPearl (TECH-14260): KDS mất Activation Code → đã xử lý
+- La Sirena (TECH-5864): SkyInventory item đã tắt vẫn hiện → đã xử lý
+- Vibe Code: Bổ sung change log script RK7 → đã lên product
+
+🔄 Đang xử lý:
+- The Street (TECH-15505): Bổ sung tính năng KDS
+- Cloudflare Manager (cùng Bách): đã xem demo, chờ cài lên product
+
+⏳ Chưa bắt đầu:
+- NewPearl/CKK (TECH-15788): coupon tự khôi phục FLAG=49 — task mới nhận 24/07
+- The Street (TECH-15809): KDS yêu cầu tính năng mới — mới phát sinh 24/07
+
+📧 Email / Vendor: không có
+🔴 Blocker: không có (Cloudflare chờ nội bộ – Bách)
+
+📅 Kế hoạch W31:
+- Vibe Code: phần usage quản trị usage RK7
+- Chạy thử web Cloudflare Manager cfman.dcorp.com.vn</div>
+</div>
+
+<!-- ============ TAB 2: EMAIL ============ -->
+<div id="tab-email" class="tab-content">
+  <div class="sec-title">Email công việc tuần W30</div>
+  <div class="note note-info">
+    <div class="note-icon">📭</div>
+    <div><div class="n-title">Không có email cần đưa vào báo cáo tuần này.</div>
+    HaiPM đã xác nhận không có email KH / vendor / meeting cần ghi nhận cho W30.</div>
+  </div>
+  <div class="note note-warn">
+    <div class="note-icon">⚙️</div>
+    <div><div class="n-title">Ghi chú kỹ thuật.</div>
+    Phiên tổng hợp này không có công cụ quét inbox tự động (Gmail <span class="mono">search_threads</span> không khả dụng). Dữ liệu email dựa trên xác nhận thủ công của HaiPM.</div>
+  </div>
+</div>
+
+<!-- ============ TAB 3: AGED ============ -->
+<div id="tab-aged" class="tab-content">
+  <div class="sec-title">Task tồn lâu ngày (&gt; 3 tháng, còn open)</div>
+  <div class="note note-warn">
+    <div class="note-icon">🔎</div>
+    <div><div class="n-title">Danh sách quan sát tự động từ ClickUp — cần HaiPM review.</div>
+    Đây là các task còn mở nhưng không cập nhật &gt; 3 tháng, <b>không nằm trong phạm vi công việc W30</b>. Đưa vào để rà soát dọn backlog. Golden Gate đã loại theo quy tắc.</div>
+  </div>
+  <div class="card">
+  <table>
+    <thead><tr><th>Task ID</th><th>Nội dung</th><th>Cập nhật cuối</th><th>Tuổi</th><th>Trạng thái</th><th>Đề xuất</th></tr></thead>
+    <tbody>
+      <tr><td class="tid">TECH-1563</td><td>Madame Lân – tư vấn phát triển Skymenu</td><td class="mono">25/11/2024</td><td class="age crit">~20 tháng</td><td><span class="tag tag-ip">in progress</span></td><td>Đóng nếu KH không còn nhu cầu</td></tr>
+      <tr><td class="tid">TECH-3632</td><td>VTI – thông báo thanh toán visa/online sai chính tả</td><td class="mono">17/01/2025</td><td class="age crit">~18 tháng</td><td><span class="tag tag-ip">in progress</span></td><td>Xác nhận còn hiệu lực với VTI</td></tr>
+      <tr><td class="tid">TECH-3646</td><td>VTI – màn QMS tự chuyển về trang chủ</td><td class="mono">11/02/2025</td><td class="age crit">~17 tháng</td><td><span class="tag tag-ip">in progress</span></td><td>Kiểm tra đã fix ngầm chưa</td></tr>
+      <tr><td class="tid">TECH-4051</td><td>VTI – script chặn huỷ HĐ sau khi xuất GTGT</td><td class="mono">17/02/2025</td><td class="age crit">~17 tháng</td><td><span class="tag tag-ip">in progress</span></td><td>Rà lại cùng nhóm compliance VTI</td></tr>
+      <tr><td class="tid">TECH-4564</td><td>Mộc BBQ – phiếu trừ hàng SkyInventory</td><td class="mono">17/03/2025</td><td class="age warn">~16 tháng</td><td><span class="tag tag-todo">to do</span></td><td>Xác nhận scope hoặc đóng</td></tr>
+      <tr><td class="tid">TECH-5042</td><td>VFBS – TransporterServer kẹt file filesync</td><td class="mono">28/03/2025</td><td class="age warn">~16 tháng</td><td><span class="tag tag-none">pending</span></td><td>Kiểm tra tình trạng hiện tại</td></tr>
+      <tr><td class="tid">TECH-5522</td><td>Elgaucho – thêm chức năng SkyTab</td><td class="mono">26/04/2025</td><td class="age warn">~15 tháng</td><td><span class="tag tag-todo">to do</span></td><td>Xác nhận nhu cầu KH</td></tr>
+      <tr><td class="tid">TECH-5801</td><td>Mộc BBQ – cập nhật báo cáo bán hàng SkyInventory</td><td class="mono">31/05/2025</td><td class="age warn">~14 tháng</td><td><span class="tag tag-todo">to do</span></td><td>Gộp cùng TECH-4564 nếu cùng KH</td></tr>
+      <tr><td class="tid">TECH-5839</td><td>Quê Nhà – font view bill Zalo OA</td><td class="mono">16/06/2025</td><td class="age warn">~13 tháng</td><td><span class="tag tag-todo">to do</span></td><td>Task nhỏ — xử lý dứt điểm hoặc đóng</td></tr>
+    </tbody>
+  </table>
+  </div>
+</div>
+
+<!-- ============ TAB 4: BACKLOG ============ -->
+<div id="tab-backlog" class="tab-content">
+  <div class="sec-title">Backlog & Carry-over sang W31</div>
+  <div class="card">
+  <table>
+    <thead><tr><th>MasterTask</th><th>Task ID</th><th>Nội dung</th><th>Loại carry-over</th><th>Trạng thái</th></tr></thead>
+    <tbody>
+      <tr><td class="mt">The Street</td><td class="tid">TECH-15505</td><td>Bổ sung tính năng KDS</td><td>Đang làm dở — tiếp tục W31</td><td><span class="tag tag-ip">Đang xử lý</span></td></tr>
+      <tr><td class="mt">The Street</td><td class="tid">TECH-15809</td><td>KDS – yêu cầu tính năng mới 24/07</td><td>Mới phát sinh — làm rõ scope W31</td><td><span class="tag tag-none">Chưa bắt đầu</span></td></tr>
+      <tr><td class="mt">NewPearl</td><td class="tid">TECH-15788</td><td>CKK – coupon tự khôi phục FLAG=49</td><td>Mới nhận 24/07 — điều tra W31</td><td><span class="tag tag-none">Chưa bắt đầu</span></td></tr>
+      <tr><td class="mt">Cloudflare / Infra</td><td class="tid ext">Việc ngoài</td><td>Cloudflare Manager site Dcorp</td><td>Chờ nội bộ (Bách) cài product</td><td><span class="tag tag-ip">Đang xử lý</span></td></tr>
+    </tbody>
+  </table>
+  </div>
+  <div class="sec-title">Đã hoàn thành trong W30 (đóng backlog)</div>
+  <ul class="clean">
+    <li><b>TECH-14884</b> — QSR Deadlock SAP · <b>TECH-14260</b> — NewPearl KDS Activation · <b>TECH-5864</b> — La Sirena SkyInventory</li>
+    <li><b>Vibe Code</b> — Change log script RK7 đã lên product</li>
+  </ul>
+</div>
+
+<!-- ============ TAB 5: PLAN ============ -->
+<div id="tab-plan" class="tab-content">
+  <div class="sec-title">Kế hoạch tuần tới (W31)</div>
+  <div class="plan">
+    <div class="plan-num">1</div>
+    <div>
+      <div class="plan-text">Vibe Code — phần <i>usage</i> để quản trị usage của RK7</div>
+      <div class="plan-sub">Tiếp nối change log RK7 vừa lên product · Ưu tiên: <b>High</b></div>
+    </div>
+    <span class="tag tag-purple" style="margin-left:auto">HIGH</span>
+  </div>
+  <div class="plan">
+    <div class="plan-num">2</div>
+    <div>
+      <div class="plan-text">Chạy thử web Cloudflare Manager — <span class="mono">cfman.dcorp.com.vn</span></div>
+      <div class="plan-sub">Sau khi Bách cài lên product · Carry-over từ W30 · Ưu tiên: <b>Normal</b></div>
+    </div>
+    <span class="tag tag-ip" style="margin-left:auto">NORMAL</span>
+  </div>
+
+  <div class="sec-title">Carry-over cần bám (từ W30)</div>
+  <ul class="clean">
+    <li><b>TECH-15505 / TECH-15809</b> — The Street KDS (tiếp tục + làm rõ scope)</li>
+    <li><b>TECH-15788</b> — NewPearl/CKK coupon FLAG=49 (bắt đầu điều tra)</li>
+  </ul>
+</div>
+
+<!-- ============ TAB 6: FLOW ============ -->
+<div id="tab-flow" class="tab-content">
+  <div class="sec-title">Quy trình báo cáo tuần</div>
+  <div class="card"><table>
+    <thead><tr><th>Bước</th><th>Nội dung</th><th>Nguồn</th></tr></thead>
+    <tbody>
+      <tr><td class="mono">1</td><td>Kéo dữ liệu tự động</td><td>ClickUp (MCP) · Bitrix (PostgreSQL) · Gmail (MCP)</td></tr>
+      <tr><td class="mono">2</td><td>Confirm danh sách task + email với HaiPM</td><td>—</td></tr>
+      <tr><td class="mono">3</td><td>Bổ sung việc ngoài + kế hoạch tuần tới</td><td>HaiPM nhập</td></tr>
+      <tr><td class="mono">4</td><td>Phân loại MasterTask, trạng thái, blocker</td><td>—</td></tr>
+      <tr><td class="mono">5</td><td>Xuất 3 output: HTML + bảng + text Bitrix</td><td>Sau khi HaiPM chốt "đủ, làm đi"</td></tr>
+    </tbody>
+  </table></div>
+
+  <div class="sec-title">Quy tắc cố định</div>
+  <ul class="clean">
+    <li>🚫 <b>Golden Gate (GGG)</b> — luôn loại khỏi weekly report.</li>
+    <li>🏷️ <b>Nhãn tuần</b> — dùng nhãn ISO do HaiPM xác nhận (W30). DB Bitrix gán lệch ~1 tuần, không dùng trực tiếp.</li>
+    <li>✋ <b>Confirm-before-build</b> — chỉ dựng báo cáo sau tín hiệu "đủ, làm đi".</li>
+    <li>🎯 <b>Không suy diễn</b> — thiếu thông tin thì hỏi, không bịa kết quả/số liệu.</li>
+    <li>📤 <b>Deadline</b> — gửi báo cáo Thứ 6 trước 17:00.</li>
+  </ul>
+</div>
+
+</div>
+
+<div class="footer">
+  <div><b>Phạm Minh Hải</b> · Trưởng phòng Core Technology · Dcorp Technology Corporation</div>
+  <div class="mono">weekly_report_HaiPM v1 · Generated 26/07/2026</div>
+</div>
+
+<script>
+function sw(id,btn){
+  document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('tab-'+id).classList.add('active');
+  if(btn)btn.classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+</script>
+</body>
+</html>
