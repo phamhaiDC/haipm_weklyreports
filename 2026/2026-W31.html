@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Weekly Report W31-2026 — Phạm Minh Hải</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800;900&family=DM+Mono:wght@400;500&display=swap');
+:root{
+  --red:#e30613; --black:#000000; --white:#ffffff; --gray:#727171;
+  --bg:#f0f2f5; --dark:#1a1f2e; --tabs:#131722;
+  --amber:#d97706; --green:#16a34a; --blue:#2563eb;
+  --radius:10px; --shadow:0 1px 6px rgba(0,0,0,.07);
+}
+*{box-sizing:border-box; margin:0; padding:0;}
+body{font-family:'Montserrat',sans-serif; background:var(--bg); color:var(--black); font-size:12px;}
+.mono{font-family:'DM Mono',monospace;}
+
+.header{position:sticky; top:0; z-index:100; background:var(--dark); color:#fff; display:grid; grid-template-columns:auto 1fr auto; align-items:center; gap:14px; padding:10px 18px;}
+.logo{height:38px; width:38px; border-radius:6px; background:var(--red); display:flex; align-items:center; justify-content:center; font-weight:900; font-size:13px; letter-spacing:-0.5px;}
+.header-center .title{font-size:12px; font-weight:800; letter-spacing:1px; text-transform:uppercase;}
+.header-center .company{font-size:9px; color:#9aa3b5; margin-top:2px;}
+.header-center .route{font-size:9px; color:#9aa3b5; margin-top:1px;}
+.header-right{text-align:right; display:flex; flex-direction:column; gap:3px; align-items:flex-end;}
+.badge{font-family:'DM Mono',monospace; font-size:9px; font-weight:700; background:var(--red); color:#fff; padding:3px 8px; border-radius:20px;}
+.badge.alt{background:#2a3145;}
+
+.tabs{position:sticky; top:58px; z-index:99; background:var(--tabs); display:flex; overflow-x:auto;}
+.nav-tab{background:none; border:none; color:#9aa3b5; padding:11px 16px; font-family:'Montserrat',sans-serif; font-size:10px; font-weight:700; letter-spacing:0.5px; cursor:pointer; white-space:nowrap; border-bottom:2px solid transparent;}
+.nav-tab.active{color:var(--red); border-bottom:2px solid var(--red);}
+
+.wrap{max-width:1180px; margin:0 auto; padding:18px;}
+.tab-content{display:none;}
+.tab-content.active{display:block;}
+
+.section-title{font-size:9px; font-weight:800; letter-spacing:1.5px; text-transform:uppercase; color:var(--gray); margin:22px 0 10px;}
+.section-title:first-child{margin-top:0;}
+
+.kpi-grid{display:grid; grid-template-columns:repeat(5,1fr); gap:12px;}
+.kpi-card{background:var(--white); border-radius:var(--radius); box-shadow:var(--shadow); border-top:3px solid var(--gray); padding:14px;}
+.kpi-card.c-red{border-top-color:var(--red);}
+.kpi-card.c-green{border-top-color:var(--green);}
+.kpi-card.c-amber{border-top-color:var(--amber);}
+.kpi-card.c-blue{border-top-color:var(--blue);}
+.kpi-label{font-size:9px; font-weight:700; text-transform:uppercase; letter-spacing:1px; color:var(--gray);}
+.kpi-value{font-family:'DM Mono',monospace; font-weight:900; font-size:28px; margin-top:4px;}
+.kpi-sub{font-size:9px; color:var(--gray); margin-top:2px;}
+
+.card{background:var(--white); border-radius:var(--radius); box-shadow:var(--shadow); padding:16px; margin-bottom:14px;}
+
+table{width:100%; border-collapse:collapse; font-size:11px;}
+th{text-align:left; font-size:9px; text-transform:uppercase; letter-spacing:0.5px; color:var(--gray); font-weight:800; padding:8px 10px; border-bottom:2px solid var(--bg);}
+td{padding:9px 10px; border-bottom:1px solid var(--bg); vertical-align:top;}
+tr:last-child td{border-bottom:none;}
+
+.tag{display:inline-block; font-size:8px; font-weight:800; text-transform:uppercase; letter-spacing:0.5px; padding:3px 7px; border-radius:20px; white-space:nowrap;}
+.tag-done{background:#dbeafe; color:#1d4ed8;}
+.tag-ip{background:#e0f2fe; color:#0369a1;}
+.tag-warn{background:#fef3c7; color:#92400e;}
+.tag-block{background:#fee2e2; color:#b91c1c;}
+.tag-ok{background:#dcfce7; color:#15803d;}
+.tag-new{background:#f3e8ff; color:#7e22ce;}
+.tag-gray{background:#e5e7eb; color:#4b5563;}
+
+.badge-src{display:inline-block; font-family:'DM Mono',monospace; font-size:8px; font-weight:700; padding:2px 6px; border-radius:4px; margin-right:4px;}
+.badge-clickup{background:#ede9fe; color:#6d28d9;}
+.badge-bitrix{background:#dcfce7; color:#15803d;}
+.badge-internal{background:#e5e7eb; color:#4b5563;}
+.badge-vendor{background:#fee2e2; color:#b91c1c;}
+
+.item-name{font-weight:700; font-size:11.5px;}
+.item-meta{font-size:9.5px; color:var(--gray); margin-top:2px;}
+
+.hl-banner{display:flex; gap:12px; background:#fff7ed; border:1px solid #fed7aa; border-radius:8px; padding:12px 14px; margin-bottom:10px;}
+.hl-banner.red{background:#fef2f2; border-color:#fecaca;}
+.hl-icon{font-size:18px;}
+.hl-title{font-weight:800; font-size:11.5px;}
+.hl-body{font-size:10.5px; color:#3f3f46; margin-top:2px; line-height:1.5;}
+
+.bitrix-box{background:#0d1117; color:#c9d1d9; font-family:'DM Mono',monospace; font-size:10.5px; line-height:1.7; padding:16px; border-radius:8px; white-space:pre-wrap; position:relative;}
+.copy-btn{position:absolute; top:10px; right:10px; background:var(--red); color:#fff; border:none; padding:5px 10px; font-size:9px; font-weight:700; border-radius:5px; cursor:pointer; font-family:'Montserrat',sans-serif;}
+.copy-btn:hover{opacity:0.85;}
+
+.note{font-size:10px; color:var(--gray); background:#f8f9fb; border:1px dashed #d1d5db; border-radius:6px; padding:10px 12px; margin-top:8px;}
+
+.footer{display:flex; justify-content:space-between; padding:18px; font-size:9.5px; color:var(--gray); border-top:1px solid #e5e7eb; margin-top:20px;}
+
+@media(max-width:800px){ .kpi-grid{grid-template-columns:repeat(2,1fr);} }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="logo">D'C</div>
+  <div class="header-center">
+    <div class="title">Weekly Report — Core Technology</div>
+    <div class="company">Dcorp Technology Corporation · Platform. Empowering Growth.</div>
+    <div class="route">From: Phạm Minh Hải (Trưởng phòng Core Technology) → To: CEO</div>
+  </div>
+  <div class="header-right">
+    <span class="badge">27–31/07/2026</span>
+    <span class="badge alt">TUẦN 31 · 2026</span>
+  </div>
+</div>
+
+<div class="tabs">
+  <button class="nav-tab active" onclick="switchTab('w31', this)">📊 W31 Báo cáo tuần</button>
+  <button class="nav-tab" onclick="switchTab('email', this)">📧 Email tuần W31</button>
+  <button class="nav-tab" onclick="switchTab('longstanding', this)">⏳ Task tồn lâu ngày</button>
+  <button class="nav-tab" onclick="switchTab('backlog', this)">🔄 Backlog & Carry-over</button>
+  <button class="nav-tab" onclick="switchTab('plan', this)">📅 Kế hoạch tuần tới</button>
+  <button class="nav-tab" onclick="switchTab('process', this)">⚙️ Quy trình</button>
+</div>
+
+<div class="wrap">
+
+  <!-- TAB 1: W31 BAO CAO TUAN -->
+  <div class="tab-content active" id="tab-w31">
+    <div class="kpi-grid">
+      <div class="kpi-card c-red"><div class="kpi-label">Tổng đầu việc</div><div class="kpi-value">7</div><div class="kpi-sub">ClickUp + nội bộ tuần này</div></div>
+      <div class="kpi-card c-green"><div class="kpi-label">Hoàn thành</div><div class="kpi-value">2</div><div class="kpi-sub">TECH-15788, Vibe Code vtiinfo</div></div>
+      <div class="kpi-card c-blue"><div class="kpi-label">Đang xử lý</div><div class="kpi-value">4</div><div class="kpi-sub">CC webreport, cfman, SkyStorehouse, Keyless UCS</div></div>
+      <div class="kpi-card c-amber"><div class="kpi-label">Chờ / Pending</div><div class="kpi-value">1</div><div class="kpi-sub">TECH-15505 chờ dev nội bộ</div></div>
+      <div class="kpi-card"><div class="kpi-label">Chưa bắt đầu</div><div class="kpi-value">0</div><div class="kpi-sub">—</div></div>
+    </div>
+
+    <div class="section-title">Highlights</div>
+    <div class="card" style="padding:0; background:transparent; box-shadow:none;">
+      <div class="hl-banner">
+        <div class="hl-icon">✅</div>
+        <div><div class="hl-title">cfman.dcorp.com.vn triển khai thành công tại 3 location VTI</div>
+        <div class="hl-body">Hệ thống hoạt động ổn định. Đang chờ VTI cấp thêm VM để mở rộng triển khai sang các location còn lại.</div></div>
+      </div>
+      <div class="hl-banner">
+        <div class="hl-icon">🛠️</div>
+        <div><div class="hl-title">Vibe Code — vtiinfo cập nhật loạt tính năng mới</div>
+        <div class="hl-body">Bổ sung tính năng check Ecode + lịch sử sử dụng Ecode, và kiểm tra sơ đồ sử dụng của tất cả đối tượng.</div></div>
+      </div>
+      <div class="hl-banner red">
+        <div class="hl-icon">⚠️</div>
+        <div><div class="hl-title">Keyless UCS — kết quả test lệch giữa UCS và Dcorp</div>
+        <div class="hl-body">Đang test tính năng Keyless của UCS, phát hiện sai khác kết quả giữa môi trường test của UCS và của Dcorp. Kế hoạch retest lại trong tuần W32.</div></div>
+      </div>
+    </div>
+
+    <div class="section-title">Bảng báo cáo chuẩn</div>
+    <div class="card">
+      <table>
+        <tr><th>MasterTask</th><th>Task ID</th><th>Kết quả thực hiện</th><th>Khó khăn</th><th>Đề xuất / Next</th><th>Trạng thái</th></tr>
+        <tr>
+          <td>The Street</td>
+          <td><span class="badge-src badge-clickup">CLICKUP</span>TECH-15505</td>
+          <td>MH | The Street _ Bổ sung tính năng KDS — đã tạo task nội bộ, đang chờ team dev triển khai.</td>
+          <td><span class="badge-src badge-internal">NỘI BỘ</span>Chờ team dev nội bộ</td>
+          <td>Theo dõi tiến độ dev, dự kiến hoàn thành W32</td>
+          <td><span class="tag tag-warn">CHỜ XÁC NHẬN</span></td>
+        </tr>
+        <tr>
+          <td>Chang Kang Kung</td>
+          <td><span class="badge-src badge-clickup">CLICKUP</span>TECH-15788</td>
+          <td>Kiểm tra trường hợp máy chủ tự động khôi phục coupon về FLAG=49 — đã đề nghị nâng cấp.</td>
+          <td>—</td>
+          <td>Theo dõi kết quả sau khi nâng cấp</td>
+          <td><span class="tag tag-done">HOÀN THÀNH</span></td>
+        </tr>
+        <tr>
+          <td>Vibe Code</td>
+          <td><span class="badge-src badge-internal">NỘI BỘ</span></td>
+          <td>Cập nhật loạt tính năng web vtiinfo: bổ sung check Ecode + lịch sử sử dụng Ecode, bổ sung kiểm tra sơ đồ sử dụng của tất cả đối tượng.</td>
+          <td>—</td>
+          <td>—</td>
+          <td><span class="tag tag-done">HOÀN THÀNH</span></td>
+        </tr>
+        <tr>
+          <td>Vibe Code</td>
+          <td><span class="badge-src badge-internal">NỘI BỘ</span></td>
+          <td>Kiểm tra Vibe Code webreport của team CC — dev hiện khá chậm, chưa đưa vào product được.</td>
+          <td><span class="badge-src badge-internal">NỘI BỘ</span>Team CC dev chậm tiến độ</td>
+          <td>Đôn đốc team CC đẩy nhanh tiến độ</td>
+          <td><span class="tag tag-ip">ĐANG XỬ LÝ</span></td>
+        </tr>
+        <tr>
+          <td>VTI — Tối ưu hệ thống</td>
+          <td><span class="badge-src badge-internal">NỘI BỘ</span></td>
+          <td>Triển khai thành công cfman.dcorp.com.vn tại 3 location của VTI, hoạt động ổn định.</td>
+          <td><span class="badge-src badge-internal">NỘI BỘ</span>Chờ VTI cấp thêm VM để mở rộng</td>
+          <td>Đề xuất VTI cấp VM để triển khai thêm location, dự kiến W32</td>
+          <td><span class="tag tag-ip">ĐANG XỬ LÝ</span></td>
+        </tr>
+        <tr>
+          <td>The Street</td>
+          <td><span class="badge-src badge-internal">NỘI BỘ</span></td>
+          <td>Hỗ trợ API cho team dev để triển khai SkyStorehouse cho The Street.</td>
+          <td>—</td>
+          <td>Tiếp tục hỗ trợ theo tiến độ dev</td>
+          <td><span class="tag tag-ip">ĐANG XỬ LÝ</span></td>
+        </tr>
+        <tr>
+          <td>VTI</td>
+          <td><span class="badge-src badge-internal">NỘI BỘ</span></td>
+          <td>Test tính năng Keyless của UCS — phát hiện kết quả lệch giữa UCS test và Dcorp test.</td>
+          <td><span class="badge-src badge-vendor">VENDOR</span>UCS — kết quả test không khớp</td>
+          <td>Retest lại trong tuần W32 để xác định nguyên nhân lệch</td>
+          <td><span class="tag tag-ip">ĐANG XỬ LÝ</span></td>
+        </tr>
+      </table>
+      <div class="note">Bitrix (RESPONSIBLE_ID=8): hệ thống ghi nhận 1 task thay đổi trạng thái trong tuần (MH | GGG _ Máy POS bị đứng "In Hóa Đơn"), nhưng đã xác nhận <strong>không có xử lý thực tế</strong> trong tuần này → không đưa vào báo cáo hoạt động, giữ nguyên ở backlog.</div>
+    </div>
+
+    <div class="section-title">Khó khăn / Blocker cần lưu ý</div>
+    <div class="card">
+      <div class="item"><div class="item-name">TECH-15505 — The Street KDS</div><div class="item-meta">Nội bộ · chờ team dev triển khai tính năng</div></div>
+      <div class="item" style="margin-top:10px;"><div class="item-name">Vibe Code — CC webreport</div><div class="item-meta">Nội bộ · team CC phát triển chậm, chưa lên product</div></div>
+      <div class="item" style="margin-top:10px;"><div class="item-name">cfman.dcorp.com.vn — mở rộng triển khai</div><div class="item-meta">Chờ đối tác (VTI) · chưa được cấp VM</div></div>
+      <div class="item" style="margin-top:10px;"><div class="item-name">Keyless UCS</div><div class="item-meta">Vendor (UCS) · kết quả test lệch giữa 2 môi trường, đang retest</div></div>
+    </div>
+
+    <div class="section-title">Text Bitrix (copy nhanh)</div>
+    <div class="bitrix-box" id="bitrixText"><button class="copy-btn" onclick="copyBitrix()">Copy</button>📋 HaiPM | W31 | 27–31.Jul.2026
+
+✅ Hoàn thành:
+- TECH-15788: Chang Kang Kung _ Kiểm tra máy chủ tự khôi phục coupon FLAG=49 → đã đề nghị nâng cấp
+- Vibe Code: vtiinfo cập nhật check Ecode + lịch sử sử dụng Ecode + kiểm tra sơ đồ sử dụng đối tượng
+
+🔄 Đang xử lý:
+- Vibe Code CC webreport: dev chậm, chưa đưa vào product
+- VTI — Tối ưu hệ thống: cfman.dcorp.com.vn live 3 location VTI, chờ cấp VM để mở rộng
+- The Street: hỗ trợ API cho team dev triển khai SkyStorehouse
+- VTI: test Keyless UCS, kết quả lệch giữa UCS và Dcorp
+
+📧 Email / Vendor:
+- Chưa tổng hợp được (giới hạn công cụ truy cập Gmail tuần này)
+
+⏳ Chờ xác nhận:
+- TECH-15505: The Street KDS — đã có task nội bộ, đang chờ team dev triển khai
+
+🔴 Blocker:
+- cfman.dcorp.com.vn: Nội bộ/Đối tác — chờ VTI cấp VM
+- Keyless UCS: Vendor — kết quả test UCS vs Dcorp không khớp
+
+📅 Kế hoạch W32:
+- VTI: Retest lại Keyless UCS để đối chiếu kết quả
+- The Street: theo dõi tiến độ dev nội bộ TECH-15505
+- VTI — Tối ưu hệ thống: theo dõi VTI cấp VM cho cfman.dcorp.com.vn</div>
+    </div>
+  </div>
+
+  <!-- TAB 2: EMAIL -->
+  <div class="tab-content" id="tab-email">
+    <div class="section-title">Email tuần W31</div>
+    <div class="card">
+      <div class="note">Chưa tổng hợp được dữ liệu email tuần này. Gmail MCP trong phiên hiện tại chỉ hỗ trợ đọc 1 email theo Message ID cụ thể (không có tool tìm kiếm/liệt kê theo khoảng ngày), nên không thể tự động lọc email tuần 27–31/7. Theo xác nhận của anh Hải, tab này để trống cho tuần W31 — sẽ bổ sung khi connector Gmail đầy đủ (search_threads) được kích hoạt trong phiên làm việc.</div>
+    </div>
+  </div>
+
+  <!-- TAB 3: TASK TON LAU NGAY -->
+  <div class="tab-content" id="tab-longstanding">
+    <div class="section-title">Task Bitrix tồn lâu ngày (RESPONSIBLE_ID = HaiPM)</div>
+    <div class="card">
+      <div class="kpi-grid" style="grid-template-columns:repeat(3,1fr); margin-bottom:14px;">
+        <div class="kpi-card c-red"><div class="kpi-label">Tổng task Bitrix active</div><div class="kpi-value">142</div><div class="kpi-sub">Đang mở, gán cho HaiPM</div></div>
+        <div class="kpi-card c-amber"><div class="kpi-label">Không đổi từ W20-2026</div><div class="kpi-value">~30+</div><div class="kpi-sub">Mẫu kiểm tra (weeks_open=11)</div></div>
+        <div class="kpi-card c-blue"><div class="kpi-label">Deadline cũ nhất</div><div class="kpi-value mono" style="font-size:16px;">2019</div><div class="kpi-sub">Một số task deadline đã qua nhiều năm</div></div>
+      </div>
+      <div class="note">Lưu ý: hệ thống theo dõi (weekly_report DB) mới bắt đầu snapshot từ W20-2026, nên "weeks_open" chỉ phản ánh số tuần theo dõi được, không phải tuổi thật của task — nhiều task có deadline gốc từ 2019–2024 cho thấy tồn đọng lâu hơn nhiều. Cần rà soát và đóng/huỷ các task không còn liên quan.</div>
+      <table style="margin-top:12px;">
+        <tr><th>Task</th><th>MasterTask</th><th>Deadline gốc</th><th>Trạng thái</th><th>Đề xuất</th></tr>
+        <tr><td>[QSR] Database: tư vấn master data</td><td>Other</td><td class="mono">—</td><td><span class="tag tag-warn">Chờ thực hiện</span></td><td>Đóng nếu không còn cần thiết</td></tr>
+        <tr><td>Upgrade To version 7.6.4.241</td><td>Other</td><td class="mono">09/11/2019</td><td><span class="tag tag-block">Quá hạn 6+ năm</span></td><td>Rà soát, huỷ nếu đã thay thế</td></tr>
+        <tr><td>Hỗ trợ đăng ký sở hữu trí tuệ phần mềm Sky</td><td>Other</td><td class="mono">14/05/2022</td><td><span class="tag tag-block">Quá hạn</span></td><td>Xác nhận còn hiệu lực hay đóng</td></tr>
+        <tr><td>MH | GGG _ Máy POS bị đứng "In Hóa Đơn"</td><td>Other</td><td class="mono">08/12/2025</td><td><span class="tag tag-warn">Chờ thực hiện</span></td><td>Chưa xử lý thực tế trong W31, cần escalate nếu còn ưu tiên</td></tr>
+        <tr><td>MH | GGG _ Máy POS không vào được thường xuyên</td><td>Other</td><td class="mono">05/12/2025</td><td><span class="tag tag-warn">Chờ thực hiện</span></td><td>Gộp xử lý cùng đợt với GGG POS ở trên</td></tr>
+        <tr><td>Training & config Zabbix + Grafana</td><td>AI Công ty</td><td class="mono">03/12/2025</td><td><span class="tag tag-warn">Chờ thực hiện</span></td><td>Sắp xếp lịch training</td></tr>
+        <tr><td>Tối ưu hạ tầng VMW của VTI trên VNG Cloud (Main Task)</td><td>VTI — Tối ưu hệ thống</td><td class="mono">27/04/2026</td><td><span class="tag tag-warn">Chờ thực hiện</span></td><td>Liên quan trực tiếp cfman.dcorp.com.vn — ưu tiên xử lý cùng</td></tr>
+      </table>
+      <div class="note" style="margin-top:10px;">Danh sách trên là mẫu tiêu biểu (7/142). Cần buổi rà soát riêng để phân loại: còn hiệu lực / đóng do lỗi thời / gộp vào task khác.</div>
+    </div>
+  </div>
+
+  <!-- TAB 4: BACKLOG -->
+  <div class="tab-content" id="tab-backlog">
+    <div class="section-title">Backlog & Carry-over sang W32</div>
+    <div class="card">
+      <table>
+        <tr><th>MasterTask</th><th>Task</th><th>Lý do carry-over</th><th>Trạng thái</th></tr>
+        <tr>
+          <td>The Street</td>
+          <td>TECH-15505 — Bổ sung tính năng KDS</td>
+          <td>Chờ team dev nội bộ triển khai</td>
+          <td><span class="tag tag-warn">CHỜ NỘI BỘ</span></td>
+        </tr>
+        <tr>
+          <td>VTI — Tối ưu hệ thống</td>
+          <td>Mở rộng triển khai cfman.dcorp.com.vn</td>
+          <td>Chờ VTI cấp thêm VM</td>
+          <td><span class="tag tag-block">CHỜ ĐỐI TÁC</span></td>
+        </tr>
+        <tr>
+          <td>VTI</td>
+          <td>Keyless UCS</td>
+          <td>Kết quả test lệch giữa UCS và Dcorp, cần retest</td>
+          <td><span class="tag tag-ip">ĐANG TEST</span></td>
+        </tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- TAB 5: KE HOACH TUAN TOI -->
+  <div class="tab-content" id="tab-plan">
+    <div class="section-title">Kế hoạch tuần tới — W32 (03–07/08/2026)</div>
+    <div class="kpi-grid" style="grid-template-columns:repeat(3,1fr); margin-bottom:14px;">
+      <div class="kpi-card c-red"><div class="kpi-label">Tổng kế hoạch</div><div class="kpi-value">3</div><div class="kpi-sub">Mục kế hoạch W32</div></div>
+      <div class="kpi-card c-amber"><div class="kpi-label">High priority</div><div class="kpi-value">1</div><div class="kpi-sub">Retest Keyless UCS</div></div>
+      <div class="kpi-card c-blue"><div class="kpi-label">Carry-over từ W31</div><div class="kpi-value">2</div><div class="kpi-sub">The Street, cfman VTI</div></div>
+    </div>
+    <div class="card">
+      <table>
+        <tr><th>MasterTask</th><th>Nội dung kế hoạch</th><th>Ưu tiên</th><th>Ghi chú</th></tr>
+        <tr>
+          <td>VTI</td>
+          <td>Retest lại tính năng Keyless của UCS để đối chiếu kết quả với môi trường UCS</td>
+          <td><span class="tag tag-block">HIGH</span></td>
+          <td>Xác định nguyên nhân lệch kết quả giữa UCS test và Dcorp test</td>
+        </tr>
+        <tr>
+          <td>The Street</td>
+          <td>Theo dõi tiến độ team dev nội bộ triển khai tính năng KDS (TECH-15505)</td>
+          <td><span class="tag tag-gray">NORMAL</span></td>
+          <td>Carry-over từ W31</td>
+        </tr>
+        <tr>
+          <td>VTI — Tối ưu hệ thống</td>
+          <td>Theo dõi VTI cấp VM để mở rộng triển khai cfman.dcorp.com.vn ra các location còn lại</td>
+          <td><span class="tag tag-gray">NORMAL</span></td>
+          <td>Carry-over từ W31, chờ đối tác</td>
+        </tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- TAB 6: QUY TRINH -->
+  <div class="tab-content" id="tab-process">
+    <div class="section-title">Quy trình báo cáo tuần</div>
+    <div class="card">
+      <table>
+        <tr><th>Hệ thống</th><th>Vai trò</th><th>Cách lấy dữ liệu</th></tr>
+        <tr><td>ClickUp</td><td>Task kỹ thuật (TECH-xxxxx)</td><td>Claude MCP connector</td></tr>
+        <tr><td>Bitrix24</td><td>Task khách hàng, task nội bộ</td><td>n8n sync 18:00 hàng ngày (T2–T6) → PostgreSQL</td></tr>
+        <tr><td>Gmail</td><td>Email công việc tuần</td><td>Claude Gmail MCP connector <em>(hiện giới hạn — chỉ đọc theo Message ID)</em></td></tr>
+        <tr><td>PostgreSQL</td><td>Lưu trữ tổng hợp</td><td>Schema: weekly_report.tasks</td></tr>
+        <tr><td>Google Drive</td><td>Backup JSON mỗi tuần</td><td>Folder: Personal_working/WeeklyReport</td></tr>
+      </table>
+      <div class="section-title">Lịch gửi báo cáo</div>
+      <div class="note">Deadline gửi báo cáo: <strong>Thứ 6 trước 17:00</strong>. Tuần làm việc: Thứ 2 → Thứ 6. Báo cáo lên: CEO trực tiếp.</div>
+      <div class="section-title">Quy tắc quan trọng</div>
+      <div class="note">
+        1. Không tự suy diễn hoạt động của task → luôn xác nhận với người dùng.<br>
+        2. Tách rõ khó khăn Vendor vs Nội bộ trong blocker.<br>
+        3. Task "Chưa bắt đầu" bắt buộc có lý do.<br>
+        4. Luôn tạo đủ 3 output: HTML (6 tab) + bảng báo cáo + text Bitrix.<br>
+        5. Tuần không có task hoàn thành → báo cáo trung thực, không nguỵ tạo kết quả.
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="footer">
+  <div class="footer-l"><strong>Phạm Minh Hải</strong> · Core Technology, Dcorp Vietnam</div>
+  <div class="footer-r">weekly_report_haipm v1 · Generated 01/08/2026</div>
+</div>
+
+<script>
+function switchTab(id, btn){
+  document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('tab-'+id).classList.add('active');
+  if(btn) btn.classList.add('active');
+}
+function copyBitrix(){
+  const el = document.getElementById('bitrixText');
+  const text = el.innerText.replace('Copy','').trim();
+  navigator.clipboard.writeText(text).then(()=>{
+    const btn = el.querySelector('.copy-btn');
+    const old = btn.textContent;
+    btn.textContent = 'Đã copy!';
+    setTimeout(()=>{btn.textContent = old;}, 1500);
+  });
+}
+</script>
+
+</body>
+</html>
