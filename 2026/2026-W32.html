@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Weekly Report — HaiPM · W32 · 03–07/08/2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800;900&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --red:#e30613; --red2:#c01a1f; --black:#111111; --white:#ffffff; --gray:#727171;
+  --bg:#f0f2f5; --dark:#1a1f2e; --tabs:#131722;
+  --amber:#d97706; --green:#16a34a; --blue:#2563eb; --purple:#7c3aed;
+  --radius:10px; --shadow:0 1px 6px rgba(0,0,0,.07);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Montserrat',sans-serif;background:var(--bg);color:var(--black);font-size:13px;line-height:1.5}
+.mono{font-family:'DM Mono',monospace}
+
+/* Header */
+.header{position:sticky;top:0;z-index:100;background:var(--dark);color:#fff;
+  display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:18px;padding:12px 22px}
+.logo{height:40px;width:40px;border-radius:6px;background:var(--red);color:#fff;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1;
+  font-weight:900;letter-spacing:.5px;box-shadow:0 2px 8px rgba(0,0,0,.4)}
+.logo b{font-size:12px}.logo span{font-size:6px;font-weight:700;margin-top:2px;opacity:.9;letter-spacing:.3px}
+.h-center .h-title{font-size:15px;font-weight:800;letter-spacing:.4px}
+.h-center .h-co{font-size:10px;color:#c7cbd6;margin-top:2px}
+.h-center .h-route{font-size:10px;color:#9aa0b0;margin-top:1px}
+.h-right{text-align:right;display:flex;flex-direction:column;gap:4px;align-items:flex-end}
+.h-badge{font-family:'DM Mono',monospace;font-size:10px;background:rgba(255,255,255,.08);
+  border:1px solid rgba(255,255,255,.14);padding:3px 9px;border-radius:20px}
+.h-badge.red{background:var(--red);border-color:var(--red)}
+
+/* Tabs */
+.tabs{position:sticky;top:64px;z-index:99;background:var(--tabs);display:flex;overflow-x:auto;
+  padding:0 12px;border-bottom:1px solid rgba(255,255,255,.06)}
+.tab{background:none;border:none;color:#8b91a3;font-family:'Montserrat',sans-serif;font-weight:700;
+  font-size:11.5px;padding:12px 14px;cursor:pointer;white-space:nowrap;border-bottom:2px solid transparent}
+.tab:hover{color:#cfd3de}
+.tab.active{color:var(--red);border-bottom-color:var(--red)}
+
+/* Layout */
+.wrap{max-width:1180px;margin:0 auto;padding:20px 18px 60px}
+.tabc{display:none}.tabc.active{display:block}
+.sec-t{font-size:10px;text-transform:uppercase;font-weight:800;letter-spacing:1.5px;color:var(--gray);
+  margin:22px 0 10px;display:flex;align-items:center;gap:8px}
+.sec-t:first-child{margin-top:0}
+.sec-t::after{content:"";flex:1;height:1px;background:#dfe3ea}
+
+/* Callout */
+.callout{border-radius:var(--radius);padding:12px 14px;margin-bottom:12px;font-size:12px;box-shadow:var(--shadow);
+  display:flex;gap:10px;align-items:flex-start}
+.callout .ci{font-size:16px;line-height:1}
+.callout.warn{background:#fff8ec;border:1px solid #f4d799}
+.callout.info{background:#eef4ff;border:1px solid #c9dbff}
+.callout.ok{background:#eefaf1;border:1px solid #bfe8cc}
+.callout b{font-weight:800}
+
+/* KPI */
+.kpis{display:grid;grid-template-columns:repeat(5,1fr);gap:12px}
+.kpi{background:#fff;border-radius:var(--radius);box-shadow:var(--shadow);padding:14px;border-top:3px solid var(--gray)}
+.kpi.k-total{border-top-color:var(--dark)}.kpi.k-done{border-top-color:var(--green)}
+.kpi.k-ip{border-top-color:var(--amber)}.kpi.k-wait{border-top-color:var(--blue)}
+.kpi.k-not{border-top-color:var(--red)}
+.kpi .v{font-family:'DM Mono',monospace;font-size:30px;font-weight:500;line-height:1}
+.kpi .l{font-size:9px;text-transform:uppercase;font-weight:700;letter-spacing:.8px;color:var(--gray);margin-top:6px}
+.kpi .s{font-size:9px;color:#9aa0b0;margin-top:3px}
+
+/* Cards / tables */
+.card{background:#fff;border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden;margin-bottom:14px}
+.card-h{background:var(--dark);color:#fff;padding:9px 14px;font-size:11px;font-weight:800;letter-spacing:.5px;
+  display:flex;justify-content:space-between;align-items:center}
+.card-b{padding:6px 0}
+table{width:100%;border-collapse:collapse;font-size:11.5px}
+th{background:#f6f7f9;color:var(--gray);text-align:left;font-size:9px;text-transform:uppercase;
+  letter-spacing:.6px;padding:8px 12px;font-weight:800;border-bottom:1px solid #e6e9ef}
+td{padding:9px 12px;border-bottom:1px solid #eef0f4;vertical-align:top}
+tr:last-child td{border-bottom:none}
+.mt{font-weight:800;color:var(--red2);font-size:10px;text-transform:uppercase;letter-spacing:.4px}
+.mono-id{font-family:'DM Mono',monospace;font-size:10px;color:var(--blue)}
+
+/* tags */
+.tag{display:inline-block;font-family:'DM Mono',monospace;font-size:9px;font-weight:500;
+  padding:2px 7px;border-radius:20px;white-space:nowrap;text-transform:uppercase;letter-spacing:.3px}
+.t-done{background:#e7f6ec;color:#137a37}
+.t-ip{background:#fef3e2;color:#a85b06}
+.t-wait{background:#eaf1fe;color:#1a51c4}
+.t-not{background:#fdeaea;color:#b91c1c}
+.t-block{background:#111;color:#fff}
+.t-vendor{background:#f3e8ff;color:#6d28d9}
+.t-none{background:#eef0f4;color:#727171}
+
+/* item list */
+.item{display:flex;gap:10px;align-items:flex-start;padding:10px 14px;border-bottom:1px solid #eef0f4}
+.item:last-child{border-bottom:none}
+.dot{width:9px;height:9px;border-radius:50%;margin-top:4px;flex-shrink:0}
+.d-red{background:var(--red)}.d-amber{background:var(--amber)}.d-green{background:var(--green)}
+.d-blue{background:var(--blue)}.d-gray{background:var(--gray)}.d-purple{background:var(--purple)}
+.item-body{flex:1}
+.item-name{font-weight:700;font-size:12px}
+.item-meta{font-size:10px;color:var(--gray);margin-top:2px;font-family:'DM Mono',monospace}
+
+/* plan */
+.plan-item{display:flex;gap:12px;align-items:flex-start;padding:11px 14px;border-bottom:1px solid #eef0f4}
+.plan-item:last-child{border-bottom:none}
+.plan-num{width:22px;height:22px;border-radius:6px;background:var(--dark);color:#fff;
+  font-family:'DM Mono',monospace;font-size:11px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.plan-body{flex:1;display:flex;justify-content:space-between;gap:10px;align-items:flex-start}
+.plan-text{font-weight:700;font-size:12px}
+.plan-sub{font-size:10px;color:var(--gray);margin-top:2px;font-family:'DM Mono',monospace}
+
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.note{font-size:10px;color:var(--gray);padding:8px 14px;font-style:italic}
+
+/* footer */
+.footer{background:var(--dark);color:#c7cbd6;display:flex;justify-content:space-between;
+  padding:12px 22px;font-size:10px;font-family:'DM Mono',monospace;margin-top:24px}
+.footer b{color:#fff}
+@media(max-width:820px){.kpis{grid-template-columns:repeat(2,1fr)}.grid2{grid-template-columns:1fr}
+  .h-center .h-title{font-size:13px}}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="logo"><b>D'CORP</b><span>R-KEEPER</span></div>
+  <div class="h-center">
+    <div class="h-title">WEEKLY REPORT — CORE TECHNOLOGY</div>
+    <div class="h-co">Dcorp Technology Corporation · Platform. Empowering Growth.</div>
+    <div class="h-route">From: Phạm Minh Hải (Trưởng phòng Core Technology) → To: CEO</div>
+  </div>
+  <div class="h-right">
+    <div class="h-badge red">TUẦN W32</div>
+    <div class="h-badge">03–07/08/2026</div>
+    <div class="h-badge">weekly_report_HaiPM v1</div>
+  </div>
+</div>
+
+<div class="tabs">
+  <button class="tab active" onclick="sw('week',this)">📊 W32 Báo cáo tuần</button>
+  <button class="tab" onclick="sw('email',this)">📧 Email tuần W32</button>
+  <button class="tab" onclick="sw('old',this)">⏳ Task tồn lâu ngày</button>
+  <button class="tab" onclick="sw('backlog',this)">🔁 Backlog &amp; Carry-over</button>
+  <button class="tab" onclick="sw('plan',this)">📅 Kế hoạch W33</button>
+  <button class="tab" onclick="sw('flow',this)">⚙️ Quy trình</button>
+</div>
+
+<div class="wrap">
+
+<!-- ============ TAB 1: WEEK ============ -->
+<div id="tab-week" class="tabc active">
+
+  <div class="callout warn">
+    <div class="ci">⚠️</div>
+    <div><b>Ghi chú trung thực về dữ liệu tuần này:</b> ClickUp và Bitrix <b>không có công việc thực hiện</b> trong tuần W32 (0 task đóng, không cập nhật). Toàn bộ đầu việc tuần này là <b>công việc phát sinh ngoài hệ thống</b> (ad-hoc) được ghi nhận trực tiếp. Dữ liệu Bitrix trong DB mới sync đến 30/07 → phần backlog Bitrix chỉ mang tính tồn đọng, không phản ánh hoạt động tuần này.</div>
+  </div>
+
+  <div class="sec-t">Thống kê đầu việc tuần (ad-hoc)</div>
+  <div class="kpis">
+    <div class="kpi k-total"><div class="v">8</div><div class="l">Tổng đầu việc</div><div class="s">Phát sinh ngoài hệ thống</div></div>
+    <div class="kpi k-done"><div class="v">3</div><div class="l">Hoàn thành</div><div class="s">Đã xử lý xong</div></div>
+    <div class="kpi k-ip"><div class="v">3</div><div class="l">Đang xử lý</div><div class="s">Đang tiến hành</div></div>
+    <div class="kpi k-wait"><div class="v">1</div><div class="l">Chờ / Pending</div><div class="s">Chờ CEO confirm</div></div>
+    <div class="kpi k-not"><div class="v">1</div><div class="l">Chưa bắt đầu</div><div class="s">Cần làm (W33)</div></div>
+  </div>
+
+  <div class="sec-t">Điểm nổi bật</div>
+  <div class="callout info">
+    <div class="ci">🐞</div>
+    <div><b>Cửu Vân Long — tìm ra bug hệ thống Extend Table.</b> Đã xác định được nguyên nhân lỗi Extend Table và hướng dẫn dev test trên hệ thống Dev. Bug này tương ứng với 2 ticket đang mở với UCS/rkeeper (<b>#205955</b> &amp; <b>#206018</b>).</div>
+  </div>
+  <div class="callout warn">
+    <div class="ci">⏳</div>
+    <div><b>Flash Sale Thất Tịch (17–21/08) — đang chờ CEO.</b> Task được VTI (tuongvu) chuyển cho Hải handle thay Tuấn. Hiện <b>chờ CEO confirm nội dung để gửi đi</b>. Sự kiện diễn ra 17–21/08 → cần chốt sớm để kịp cấu hình.</div>
+  </div>
+
+  <div class="sec-t">Bảng công việc tuần W32</div>
+  <div class="card">
+    <div class="card-h"><span>ĐẦU VIỆC THEO MASTERTASK</span><span class="mono" style="font-weight:400;opacity:.7">8 mục</span></div>
+    <table>
+      <thead><tr><th style="width:14%">MasterTask</th><th style="width:40%">Kết quả thực hiện</th><th style="width:24%">Khó khăn / Ghi chú</th><th style="width:22%">Trạng thái</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><span class="mt">Cửu Vân Long</span></td>
+          <td>Tìm ra <b>bug hệ thống Extend Table</b> của Cửu Vân Long — xác định nguyên nhân.</td>
+          <td>Liên quan ticket hãng #205955 / #206018</td>
+          <td><span class="tag t-done">HOÀN THÀNH</span></td>
+        </tr>
+        <tr>
+          <td><span class="mt">Cửu Vân Long</span></td>
+          <td>Đang <b>phối hợp nâng cấp hệ thống CRM</b> của Cửu Vân Long.</td>
+          <td>—</td>
+          <td><span class="tag t-ip">ĐANG XỬ LÝ</span></td>
+        </tr>
+        <tr>
+          <td><span class="mt">Cửu Vân Long</span></td>
+          <td><b>Hướng dẫn dev thực hiện test</b> trên hệ thống Dev về Extend Table.</td>
+          <td>—</td>
+          <td><span class="tag t-done">HOÀN THÀNH</span></td>
+        </tr>
+        <tr>
+          <td><span class="mt">VTI</span></td>
+          <td>Đã <b>vẽ lại sơ đồ hoạt động hệ thống Zero Trust VTI</b> cho Mr. Việt (VTI).</td>
+          <td>—</td>
+          <td><span class="tag t-done">HOÀN THÀNH</span></td>
+        </tr>
+        <tr>
+          <td><span class="mt">VTI</span></td>
+          <td><b>Weekly POS project — recap W32</b> (email 06/08). Communication Agreement: DCORP phải reply/update status <b>mỗi thứ Tư</b> hàng tuần.</td>
+          <td>Quy trình định kỳ mới — cần duy trì</td>
+          <td><span class="tag t-ip">ĐANG XỬ LÝ</span></td>
+        </tr>
+        <tr>
+          <td><span class="mt">VTI</span></td>
+          <td><b>Flash Sale Thất Tịch 17–21/08</b> — VTI chuyển Hải handle thay Tuấn.</td>
+          <td><span class="tag t-block">CHỜ CEO</span> confirm nội dung để gửi</td>
+          <td><span class="tag t-wait">CHỜ / PENDING</span></td>
+        </tr>
+        <tr>
+          <td><span class="mt">The Street</span></td>
+          <td><b>Fix &amp; hỗ trợ vận hành SH5</b> của The Street.</td>
+          <td>—</td>
+          <td><span class="tag t-ip">ĐANG XỬ LÝ</span></td>
+        </tr>
+        <tr>
+          <td><span class="mt">VTI — Tối ưu HT</span></td>
+          <td><b>Vẽ lại quy trình Master-Slave</b> để gửi Mr. Vũ.</td>
+          <td>Chưa thực hiện — cần làm</td>
+          <td><span class="tag t-not">CHƯA BẮT ĐẦU</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="sec-t">🔴 Blocker cần chú ý</div>
+  <div class="card">
+    <div class="card-b">
+      <div class="item">
+        <div class="dot d-red"></div>
+        <div class="item-body">
+          <div class="item-name">Flash Sale Thất Tịch (17–21/08) — chờ CEO confirm nội dung</div>
+          <div class="item-meta">Nội bộ · CEO · Deadline sự kiện 17–21/08 → cần chốt sớm</div>
+        </div>
+        <span class="tag t-block">CEO</span>
+      </div>
+      <div class="item">
+        <div class="dot d-purple"></div>
+        <div class="item-body">
+          <div class="item-name">Ticket #203369 — RK7 Disaster Recovery Strategy &amp; License (Reference Server)</div>
+          <div class="item-meta">Vendor · UCS/rkeeper · Đang chờ Dcorp phản hồi (comment 03,06,07/08)</div>
+        </div>
+        <span class="tag t-vendor">VENDOR</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec-t">Text Bitrix (copy-paste)</div>
+  <div class="card">
+    <div class="card-h"><span>BITRIX UPDATE — W32</span></div>
+    <div class="card-b">
+      <pre class="mono" style="white-space:pre-wrap;padding:12px 14px;font-size:11px;line-height:1.6;margin:0">📋 HaiPM | W32 | 03–07/08/2026
+
+✅ Hoàn thành:
+- Cửu Vân Long: tìm ra bug hệ thống Extend Table
+- Cửu Vân Long: hướng dẫn dev test Extend Table trên hệ thống Dev
+- VTI: vẽ lại sơ đồ hoạt động hệ thống Zero Trust cho Mr. Việt
+
+🔄 Đang xử lý:
+- Cửu Vân Long: phối hợp nâng cấp hệ thống CRM
+- The Street: fix & hỗ trợ vận hành SH5
+- VTI: Weekly POS — Communication Agreement (reply/update mỗi thứ Tư)
+
+📧 Email / Vendor:
+- Weekly POS recap W32 (06/08): DCORP reply status mỗi thứ Tư
+- Vendor tickets UCS/rkeeper: #205955, #206018 (Extend Table), #203369 (DR), #205623, #205624, #205650 (KDS Pro)
+
+⏳ Chờ:
+- Flash Sale Thất Tịch 17–21/08 — chờ CEO confirm nội dung để gửi
+
+🔴 Blocker:
+- Flash Sale Thất Tịch: Nội bộ — chờ CEO
+- #203369 DR strategy: Vendor — chờ Dcorp phản hồi UCS
+
+⚪ Chưa thực hiện:
+- Vẽ lại quy trình Master-Slave gửi Mr. Vũ — cần thực hiện
+
+📅 Kế hoạch W33:
+- Vẽ lại quy trình Master-Slave → gửi Mr. Vũ (ưu tiên cao)
+- Tiếp tục nâng cấp CRM Cửu Vân Long & hỗ trợ SH5 The Street
+- Gửi Flash Sale Thất Tịch sau khi CEO confirm
+- Phản hồi vendor ticket #203369, #205955/#206018</pre>
+    </div>
+  </div>
+
+</div>
+
+<!-- ============ TAB 2: EMAIL ============ -->
+<div id="tab-email" class="tabc">
+  <div class="callout info"><div class="ci">📧</div><div>Đã lọc email tuần 03–07/08 (bỏ LinkedIn, marketing, newsletter, security/calendar tự động). Theo yêu cầu, tập trung <b>2 email cần action</b> + <b>6 vendor ticket</b> ghi nhận đầy đủ.</div></div>
+
+  <div class="sec-t">🟢 Email cần action (2)</div>
+  <div class="card">
+    <div class="card-b">
+      <div class="item">
+        <div class="dot d-green"></div>
+        <div class="item-body">
+          <div class="item-name">Weekly POS project — Recap W32 (Communication Agreement)</div>
+          <div class="item-meta">phuong.latieu@vtijs.com · 06/08 · DCORP phải reply/update status mỗi thứ Tư hàng tuần</div>
+        </div>
+        <span class="tag t-ip">VTI</span>
+      </div>
+      <div class="item">
+        <div class="dot d-red"></div>
+        <div class="item-body">
+          <div class="item-name">[FLASH SALE] Thất Tịch 17–21/08 — Hải handle thay Tuấn</div>
+          <div class="item-meta">tuongvu@vtijs.com · 05/08 · Đang chờ CEO confirm nội dung để gửi</div>
+        </div>
+        <span class="tag t-block">CHỜ CEO</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec-t">🟣 Vendor Ticket — UCS / rkeeper (6)</div>
+  <div class="card">
+    <div class="card-h"><span>sd@rkeeper.ru · ACTIVE TRONG TUẦN</span><span class="mono" style="font-weight:400;opacity:.7">6 tickets</span></div>
+    <table>
+      <thead><tr><th style="width:14%">Ticket</th><th style="width:52%">Chủ đề</th><th style="width:34%">Trạng thái tuần này</th></tr></thead>
+      <tbody>
+        <tr><td class="mono-id">#205955</td><td>Bug Report: Extra Table hiển thị sai Linked Table</td><td>Nhiều comment 04→07/08 (liên quan bug Extend Table CVL)</td></tr>
+        <tr><td class="mono-id">#206018</td><td>Extended Table không hiện khi linked table thuộc Hall Plan khác</td><td>Đăng ký mới 05/08 (liên quan #205955)</td></tr>
+        <tr><td class="mono-id">#203369</td><td>RK7 Disaster Recovery Strategy &amp; License (Reference Server)</td><td><span class="tag t-block">Chờ Dcorp phản hồi</span> (03,06,07/08)</td></tr>
+        <tr><td class="mono-id">#205623</td><td>[CR] KDSPro — Ad-hoc Classification Filter</td><td>Comment 04/08</td></tr>
+        <tr><td class="mono-id">#205624</td><td>[CR] KDSPro — Line Sorting by Cooking Time</td><td>Comment 04/08</td></tr>
+        <tr><td class="mono-id">#205650</td><td>KDS PRO — Don't print when change status (dish part)</td><td>Comment 04/08</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="sec-t">🔵 Thông tin / tự động (tham khảo)</div>
+  <div class="card"><div class="card-b">
+    <div class="note">POS Daily Operations Report (02,03,04,06/08) &amp; báo cáo doanh thu HLC 26 Đồng Khởi (05/08) chạy OK. Riêng 06/08 có 1 email "Daily report failed — ConnectionError SQL 180.93.183.182:1433" (job báo cáo doanh thu tự động fail do mất kết nối) — không đưa vào action theo yêu cầu, ghi nhận để theo dõi.</div>
+  </div></div>
+</div>
+
+<!-- ============ TAB 3: OLD TASKS ============ -->
+<div id="tab-old" class="tabc">
+  <div class="callout warn"><div class="ci">⏳</div><div>Danh sách task tồn đọng lâu ngày (không có hoạt động tuần này). Nhiều task quá hạn &gt; 3 tháng → nên rà soát để đóng/escalate. <b>Đã loại GGG/Golden Gate</b> theo quy ước báo cáo.</div></div>
+
+  <div class="sec-t">ClickUp — task mở tồn lâu (tiêu biểu)</div>
+  <div class="card">
+    <table>
+      <thead><tr><th style="width:16%">Task ID</th><th style="width:50%">Nội dung</th><th style="width:18%">Trạng thái</th><th style="width:16%">Ghi chú</th></tr></thead>
+      <tbody>
+        <tr><td class="mono-id">TECH-1563</td><td>Madame Lân — Tư vấn phát triển chức năng trên Skymenu</td><td><span class="tag t-ip">In progress</span></td><td>Tồn từ 2024</td></tr>
+        <tr><td class="mono-id">TECH-3646</td><td>VTI — QMS tự động chuyển về màn hình trang chủ</td><td><span class="tag t-ip">In progress</span></td><td>Quá hạn</td></tr>
+        <tr><td class="mono-id">TECH-4051</td><td>VTI — Script chặn hủy hóa đơn sau khi xuất HĐ GTGT</td><td><span class="tag t-ip">In progress</span></td><td>Quá hạn</td></tr>
+        <tr><td class="mono-id">TECH-5042</td><td>VFBS — TransporterServer kẹt file filesync, nuốt dữ liệu chậm</td><td><span class="tag t-wait">Pending</span></td><td>Quá hạn</td></tr>
+        <tr><td class="mono-id">TECH-5561</td><td>Newpearl — Voucher không ghi nhận coupon payment trên CRM</td><td><span class="tag t-wait">Pending</span></td><td>Urgent · quá hạn</td></tr>
+        <tr><td class="mono-id">TECH-5683</td><td>Newpearl — CKK Tân Phú bill ngày cũ hiện trong ngày hiện tại</td><td><span class="tag t-wait">Pending</span></td><td>Quá hạn</td></tr>
+        <tr><td class="mono-id">TECH-9625</td><td>Ngọc Sương — Cách tính NVL tiêu hao trong SkyInventory</td><td><span class="tag t-wait">Pending</span></td><td>High · quá hạn</td></tr>
+        <tr><td class="mono-id">TECH-8600</td><td>Cantyna — Giải thích luồng Stock Count &amp; Loading data</td><td><span class="tag t-ip">In progress</span></td><td>Urgent</td></tr>
+      </tbody>
+    </table>
+    <div class="note">Tổng ClickUp đang mở của HaiPM: 29 task. Trên đây là nhóm tồn lâu / cần rà soát tiêu biểu. Danh sách đầy đủ ở tab Backlog.</div>
+  </div>
+
+  <div class="sec-t">Bitrix — backlog (dữ liệu chưa sync tuần này)</div>
+  <div class="card"><div class="card-b">
+    <div class="note">Bitrix ghi nhận ~142 task ở trạng thái "Chờ thực hiện" và đều quá hạn, nhưng DB mới sync đến 30/07 → không đại diện cho hoạt động tuần này. Đề xuất: xác nhận n8n weekly sync trước khi dùng dữ liệu Bitrix cho báo cáo. Một số master task tồn đọng: "Master task - Tổng hợp VTI Task", "Tổng hợp sự cố E-Code VTI → Build KB", "Review hạ tầng VNG &amp; sizing", "Chuyển DB Postgres lên VNG".</div>
+  </div></div>
+</div>
+
+<!-- ============ TAB 4: BACKLOG ============ -->
+<div id="tab-backlog" class="tabc">
+  <div class="callout info"><div class="ci">🔁</div><div>Việc chưa hoàn tất, carry-over sang tuần sau. Vì ClickUp/Bitrix không có hoạt động tuần này, phần carry-over chủ yếu là các đầu việc ad-hoc đang tiến hành + việc chưa bắt đầu.</div></div>
+
+  <div class="sec-t">Carry-over sang W33</div>
+  <div class="card"><div class="card-b">
+    <div class="item"><div class="dot d-amber"></div><div class="item-body">
+      <div class="item-name">Nâng cấp hệ thống CRM Cửu Vân Long</div>
+      <div class="item-meta">Cửu Vân Long · Đang phối hợp · tiếp tục W33</div></div>
+      <span class="tag t-ip">ĐANG XỬ LÝ</span></div>
+    <div class="item"><div class="dot d-amber"></div><div class="item-body">
+      <div class="item-name">Fix &amp; hỗ trợ vận hành SH5 — The Street</div>
+      <div class="item-meta">The Street · Hỗ trợ vận hành liên tục</div></div>
+      <span class="tag t-ip">ĐANG XỬ LÝ</span></div>
+    <div class="item"><div class="dot d-red"></div><div class="item-body">
+      <div class="item-name">Vẽ lại quy trình Master-Slave → gửi Mr. Vũ</div>
+      <div class="item-meta">VTI — Tối ưu HT · Chưa bắt đầu · cần thực hiện W33</div></div>
+      <span class="tag t-not">CHƯA BẮT ĐẦU</span></div>
+    <div class="item"><div class="dot d-blue"></div><div class="item-body">
+      <div class="item-name">Weekly POS Communication Agreement — reply status mỗi thứ Tư</div>
+      <div class="item-meta">VTI · Quy trình định kỳ · duy trì hàng tuần</div></div>
+      <span class="tag t-ip">ĐỊNH KỲ</span></div>
+    <div class="item"><div class="dot d-purple"></div><div class="item-body">
+      <div class="item-name">Vendor tickets đang chờ Dcorp phản hồi</div>
+      <div class="item-meta">#203369 (DR) · #205955 / #206018 (Extend Table)</div></div>
+      <span class="tag t-vendor">VENDOR</span></div>
+  </div></div>
+
+  <div class="sec-t">Ghi chú backlog hệ thống</div>
+  <div class="card"><div class="card-b">
+    <div class="note">ClickUp: 29 task đang mở (nhiều task tồn &gt; 3 tháng, xem tab "Task tồn lâu ngày"). Bitrix: backlog ~142 task chờ thực hiện — cần xác nhận sync trước khi đưa vào báo cáo tuần.</div>
+  </div></div>
+</div>
+
+<!-- ============ TAB 5: PLAN ============ -->
+<div id="tab-plan" class="tabc">
+  <div class="sec-t">Kế hoạch tuần W33</div>
+  <div class="kpis" style="grid-template-columns:repeat(3,1fr)">
+    <div class="kpi k-total"><div class="v">6</div><div class="l">Tổng kế hoạch</div></div>
+    <div class="kpi k-not"><div class="v">2</div><div class="l">Ưu tiên cao</div></div>
+    <div class="kpi k-ip"><div class="v">3</div><div class="l">Carry-over</div></div>
+  </div>
+
+  <div class="card" style="margin-top:14px">
+    <div class="card-h"><span>KẾ HOẠCH W33</span></div>
+    <div class="card-b">
+      <div class="plan-item"><div class="plan-num">1</div><div class="plan-body">
+        <div><div class="plan-text">Vẽ lại quy trình Master-Slave → gửi Mr. Vũ</div>
+        <div class="plan-sub">VTI — Tối ưu HT · Chưa bắt đầu · cần hoàn tất W33</div></div>
+        <span class="tag t-block">HIGH</span></div></div>
+      <div class="plan-item"><div class="plan-num">2</div><div class="plan-body">
+        <div><div class="plan-text">Gửi nội dung Flash Sale Thất Tịch sau khi CEO confirm</div>
+        <div class="plan-sub">VTI · Deadline sự kiện 17–21/08 · phụ thuộc CEO</div></div>
+        <span class="tag t-block">HIGH</span></div></div>
+      <div class="plan-item"><div class="plan-num">3</div><div class="plan-body">
+        <div><div class="plan-text">Tiếp tục nâng cấp CRM Cửu Vân Long</div>
+        <div class="plan-sub">Cửu Vân Long · Carry-over</div></div>
+        <span class="tag t-ip">CARRY</span></div></div>
+      <div class="plan-item"><div class="plan-num">4</div><div class="plan-body">
+        <div><div class="plan-text">Tiếp tục fix &amp; hỗ trợ vận hành SH5 The Street</div>
+        <div class="plan-sub">The Street · Carry-over</div></div>
+        <span class="tag t-ip">CARRY</span></div></div>
+      <div class="plan-item"><div class="plan-num">5</div><div class="plan-body">
+        <div><div class="plan-text">Phản hồi vendor ticket #203369 (DR) &amp; theo dõi #205955/#206018 (Extend Table)</div>
+        <div class="plan-sub">UCS/rkeeper · đang chờ Dcorp</div></div>
+        <span class="tag t-vendor">VENDOR</span></div></div>
+      <div class="plan-item"><div class="plan-num">6</div><div class="plan-body">
+        <div><div class="plan-text">Reply/update status Weekly POS vào thứ Tư (Communication Agreement)</div>
+        <div class="plan-sub">VTI · Quy trình định kỳ mới</div></div>
+        <span class="tag t-ip">ĐỊNH KỲ</span></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ TAB 6: FLOW ============ -->
+<div id="tab-flow" class="tabc">
+  <div class="sec-t">Quy trình báo cáo tuần</div>
+  <div class="card"><div class="card-b">
+    <div class="item"><div class="dot d-gray"></div><div class="item-body">
+      <div class="item-name">Nguồn dữ liệu</div>
+      <div class="item-meta">ClickUp (MCP) · Bitrix (PostgreSQL, n8n sync 18:00 T2–T6) · Gmail (MCP)</div></div></div>
+    <div class="item"><div class="dot d-gray"></div><div class="item-body">
+      <div class="item-name">Quy tắc</div>
+      <div class="item-meta">Pull dữ liệu → xác nhận với HaiPM → chỉ build khi "đủ, làm đi" · Không tự suy diễn · GGG/Golden Gate loại khỏi báo cáo</div></div></div>
+    <div class="item"><div class="dot d-gray"></div><div class="item-body">
+      <div class="item-name">Lịch gửi</div>
+      <div class="item-meta">Thứ 6 trước 17:00 · Người nhận: CEO</div></div></div>
+    <div class="item"><div class="dot d-gray"></div><div class="item-body">
+      <div class="item-name">Output</div>
+      <div class="item-meta">HTML Dashboard 6 tab · Bảng báo cáo chuẩn · Text Bitrix copy-paste</div></div></div>
+  </div></div>
+
+  <div class="sec-t">Cảnh báo vận hành tuần này</div>
+  <div class="card"><div class="card-b">
+    <div class="item"><div class="dot d-amber"></div><div class="item-body">
+      <div class="item-name">Bitrix sync có thể chưa chạy tuần W32</div>
+      <div class="item-meta">DB mới cập nhật đến 30/07 · cần kiểm tra workflow n8n "HaiPM — Weekly Report Sync"</div></div>
+      <span class="tag t-warn" style="background:#fef3e2;color:#a85b06">CHECK</span></div>
+    <div class="item"><div class="dot d-blue"></div><div class="item-body">
+      <div class="item-name">Job báo cáo doanh thu tự động fail (06/08)</div>
+      <div class="item-meta">ConnectionError SQL 180.93.183.182:1433 · theo dõi kết nối DB</div></div>
+      <span class="tag t-wait">THEO DÕI</span></div>
+  </div></div>
+</div>
+
+</div>
+
+<div class="footer">
+  <div><b>Phạm Minh Hải</b> · Core Technology · Dcorp Technology Corporation</div>
+  <div>weekly_report_HaiPM v1 · W32 · Generated 08/08/2026</div>
+</div>
+
+<script>
+function sw(id,btn){
+  document.querySelectorAll('.tabc').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('tab-'+id).classList.add('active');
+  if(btn)btn.classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+</script>
+</body>
+</html>
