@@ -136,8 +136,6 @@ header {
 .btn:disabled { opacity:.45; cursor:not-allowed; }
 .btn-primary { background:var(--red); color:#fff; }
 .btn-primary:hover:not(:disabled) { background:#c0000f; }
-.btn-ghost { background:#f3f4f6; color:var(--gray); }
-.btn-ghost:hover:not(:disabled) { background:#e5e7eb; }
 
 /* ── FILTER CHIPS ── */
 .filter-row { display:flex; gap:6px; margin-bottom:1rem; flex-wrap:wrap; }
@@ -163,7 +161,6 @@ header {
 .file-card.tag-client { border-left-color:var(--green); }
 .file-card.tag-other  { border-left-color:var(--gray); }
 .fc-top { display:flex; justify-content:space-between; align-items:center; }
-.fc-actions { display:flex; gap:2px; align-items:center; }
 .tag {
   font-size:8px; font-weight:800; padding:2px 8px; border-radius:3px;
   text-transform:uppercase; letter-spacing:.5px; font-family:'DM Mono',monospace;
@@ -185,16 +182,6 @@ header {
   transition:all .12s;
 }
 .icon-btn:hover { background:#fee2e2; color:var(--red); }
-.icon-btn.edit:hover { background:#dbeafe; color:var(--blue); }
-
-/* ── STATUS BADGE (customer) ── */
-.status-badge {
-  font-size:8px; font-weight:800; padding:2px 7px; border-radius:3px;
-  text-transform:uppercase; letter-spacing:.5px; font-family:'DM Mono',monospace;
-  align-self:flex-start;
-}
-.sb-active { background:#dcfce7; color:#15803d; }
-.sb-paused { background:#fef3c7; color:#92400e; }
 
 /* ── TASK LIST ── */
 .task-list { display:flex; flex-direction:column; gap:8px; }
@@ -226,7 +213,6 @@ header {
 .task-ref:hover { color:var(--red); text-decoration:underline; }
 .task-ref.plain { color:var(--gray); cursor:default; }
 .task-ref.plain:hover { color:var(--gray); text-decoration:none; }
-.task-actions { display:flex; gap:2px; align-items:flex-start; }
 .prio-badge {
   font-size:8px; font-weight:800; padding:2px 7px; border-radius:3px;
   text-transform:uppercase; letter-spacing:.5px; font-family:'DM Mono',monospace;
@@ -247,37 +233,6 @@ header {
   background-size:200% 100%; animation:shimmer 1.2s infinite; border-radius:6px;
 }
 @keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
-
-/* ── MODAL ── */
-.modal-overlay {
-  position:fixed; inset:0; background:rgba(0,0,0,.5);
-  display:none; align-items:center; justify-content:center;
-  z-index:500; padding:1rem;
-}
-.modal-overlay.show { display:flex; }
-.modal {
-  background:#fff; border-radius:var(--radius); width:100%; max-width:440px;
-  box-shadow:0 10px 40px rgba(0,0,0,.3); overflow:hidden;
-  animation:modalpop .15s ease;
-}
-@keyframes modalpop { from{transform:scale(.96);opacity:0} to{transform:scale(1);opacity:1} }
-.modal-head {
-  background:var(--dark); color:#fff; padding:14px 18px;
-  display:flex; justify-content:space-between; align-items:center;
-  font-size:12px; font-weight:800; text-transform:uppercase; letter-spacing:1px;
-}
-.modal-head button { background:none; border:none; color:rgba(255,255,255,.6); font-size:16px; cursor:pointer; line-height:1; }
-.modal-head button:hover { color:#fff; }
-.modal-body { padding:18px; display:flex; flex-direction:column; gap:12px; max-height:70vh; overflow:auto; }
-.mfield label { display:block; font-size:9px; font-weight:800; color:var(--gray); text-transform:uppercase; letter-spacing:.5px; margin-bottom:4px; }
-.mfield input, .mfield select {
-  width:100%; height:36px; padding:0 10px;
-  border:1px solid #e2e5ee; border-radius:6px;
-  font-size:12px; font-family:'Montserrat',sans-serif;
-  color:var(--black); background:#fafafa; outline:none; transition:border-color .15s;
-}
-.mfield input:focus, .mfield select:focus { border-color:var(--red); }
-.modal-foot { padding:0 18px 18px; display:flex; gap:8px; justify-content:flex-end; }
 
 /* ── TOAST ── */
 .toast {
@@ -321,7 +276,7 @@ footer strong { color:rgba(255,255,255,.7); }
       <span class="conn-lbl" id="conn-label">Init...</span>
     </div>
     <span class="hbadge hbadge-date" id="badge-date">—</span>
-    <span class="hbadge hbadge-ver">mcc_haipm v1.3</span>
+    <span class="hbadge hbadge-ver">mcc_haipm v1.2</span>
   </div>
 </header>
 
@@ -329,7 +284,6 @@ footer strong { color:rgba(255,255,255,.7); }
 <div class="tab-bar">
   <button class="nav-tab active" onclick="switchTab('files',this)">📁 File Drive</button>
   <button class="nav-tab" onclick="switchTab('tasks',this)">✅ Task đang làm</button>
-  <button class="nav-tab" onclick="switchTab('customers',this)">👥 Khách hàng</button>
 </div>
 
 <!-- CONTENT -->
@@ -396,72 +350,13 @@ footer strong { color:rgba(255,255,255,.7); }
     <div id="task-list" class="task-list"></div>
   </div>
 
-  <!-- TAB: CUSTOMERS -->
-  <div id="tab-customers" class="tab-content">
-    <div class="stats-row">
-      <div class="stat-card">
-        <div class="stat-label">Tổng khách hàng</div>
-        <div class="stat-value" id="c-total">—</div>
-        <div class="stat-sub">Toàn bộ danh mục</div>
-      </div>
-      <div class="stat-card" style="border-top-color:var(--green)">
-        <div class="stat-label">Đang hợp tác</div>
-        <div class="stat-value" id="c-active">—</div>
-        <div class="stat-sub">Active</div>
-      </div>
-      <div class="stat-card" style="border-top-color:var(--amber)">
-        <div class="stat-label">Tạm dừng</div>
-        <div class="stat-value" id="c-paused">—</div>
-        <div class="stat-sub">Paused</div>
-      </div>
-    </div>
-    <div class="toolbar">
-      <input class="wide" id="c-name" placeholder="Tên khách hàng..." />
-      <input style="width:110px" id="c-code" placeholder="Mã KH..." />
-      <select id="c-segment">
-        <option value="chain">Chuỗi F&amp;B</option>
-        <option value="restaurant">Nhà hàng</option>
-        <option value="cafe">Cà phê</option>
-        <option value="other">Khác</option>
-      </select>
-      <input style="width:150px" id="c-contact" placeholder="Đầu mối liên hệ..." />
-      <select id="c-status">
-        <option value="active">Đang hợp tác</option>
-        <option value="paused">Tạm dừng</option>
-      </select>
-      <input style="width:140px" id="c-note" placeholder="Ghi chú..." />
-      <button class="btn btn-primary" id="btn-add-customer" onclick="addCustomer()">+ Thêm</button>
-    </div>
-    <div class="filter-row" id="customer-filter-row">
-      <span class="chip active" onclick="filterCustomers('all',this)">Tất cả</span>
-      <span class="chip" onclick="filterCustomers('active',this)">Đang hợp tác</span>
-      <span class="chip" onclick="filterCustomers('paused',this)">Tạm dừng</span>
-    </div>
-    <div id="customer-grid" class="file-grid"></div>
-  </div>
-
 </div>
 
 <!-- FOOTER -->
 <footer>
   <div><strong>Phạm Minh Hải</strong> · Trưởng phòng Core Technology</div>
-  <div>mcc_haipm v1.3 · Built on <strong id="footer-date">—</strong> · Dcorp Technology Corporation</div>
+  <div>mcc_haipm v1.2 · Built on <strong id="footer-date">—</strong> · Dcorp Technology Corporation</div>
 </footer>
-
-<!-- EDIT MODAL -->
-<div class="modal-overlay" id="modal-overlay">
-  <div class="modal">
-    <div class="modal-head">
-      <span id="modal-title">Sửa</span>
-      <button onclick="closeModal()" title="Đóng">✕</button>
-    </div>
-    <div class="modal-body" id="modal-body"></div>
-    <div class="modal-foot">
-      <button class="btn btn-ghost" onclick="closeModal()">Hủy</button>
-      <button class="btn btn-primary" id="modal-save" onclick="saveModal()">Lưu</button>
-    </div>
-  </div>
-</div>
 
 <div class="toast" id="toast"></div>
 
@@ -470,43 +365,15 @@ footer strong { color:rgba(255,255,255,.7); }
 const cfg = {
   url:   'https://n8n-edu.dcorp.com.vn/webhook/command-center',
   token: 'HCM-HAI-1982',
-  version: 'mcc_haipm v1.3'
+  version: 'mcc_haipm v1.2'
 };
 
 const TAG_LABEL  = { vti:'VTI', dcorp:'Dcorp', client:'Client', other:'Khác' };
 const TAG_CLS    = { vti:'tag-vti', dcorp:'tag-dcorp', client:'tag-client', other:'tag-other' };
 const PRIO_LABEL = { high:'Cao', mid:'Trung', low:'Thấp' };
 const PRIO_BCLS  = { high:'pb-high', mid:'pb-mid', low:'pb-low' };
-const SEG_LABEL  = { chain:'Chuỗi F&B', restaurant:'Nhà hàng', cafe:'Cà phê', other:'Khác' };
 
-// Field definitions cho modal sửa (dùng chung cho file / task / customer)
-const FIELD_DEFS = {
-  file: [
-    { k:'name', label:'Tên file / folder', type:'text' },
-    { k:'url',  label:'Link Google Drive', type:'text' },
-    { k:'tag',  label:'Nhóm', type:'select', opts:[['vti','VTI'],['dcorp','Dcorp'],['client','Client khác'],['other','Khác']] },
-    { k:'note', label:'Ghi chú', type:'text' }
-  ],
-  task: [
-    { k:'name',     label:'Tên task', type:'text' },
-    { k:'ref_code', label:'Mã TECH / ghi chú', type:'text' },
-    { k:'priority', label:'Ưu tiên', type:'select', opts:[['high','🔴 Cao'],['mid','🟡 Trung'],['low','🟢 Thấp']] }
-  ],
-  customer: [
-    { k:'name',    label:'Tên khách hàng', type:'text' },
-    { k:'code',    label:'Mã KH', type:'text' },
-    { k:'segment', label:'Phân khúc', type:'select', opts:[['chain','Chuỗi F&B'],['restaurant','Nhà hàng'],['cafe','Cà phê'],['other','Khác']] },
-    { k:'contact', label:'Đầu mối liên hệ', type:'text' },
-    { k:'status',  label:'Trạng thái', type:'select', opts:[['active','Đang hợp tác'],['paused','Tạm dừng']] },
-    { k:'note',    label:'Ghi chú', type:'text' }
-  ]
-};
-const UPDATE_ACTION = { file:'file_update', task:'task_update', customer:'customer_update' };
-const MODAL_TITLE   = { file:'Sửa File', task:'Sửa Task', customer:'Sửa Khách hàng' };
-
-let allFiles=[], allTasks=[], allCustomers=[];
-let fileFilter='all', taskFilter='all', customerFilter='all';
-let editType=null, editId=null;
+let allFiles=[], allTasks=[], fileFilter='all', taskFilter='all';
 
 // ── INIT ──────────────────────────────────────────────────────
 window.onload = () => {
@@ -572,8 +439,10 @@ function isUrl(s) {
 function shortUrl(s) {
   try {
     const u = new URL(s);
+    // Lấy phần path cuối, bỏ trailing slash
     const parts = u.pathname.replace(/\/+$/,'').split('/').filter(Boolean);
     const last = parts[parts.length-1] || u.hostname;
+    // Nếu là Bitrix task view → hiện task ID
     if (u.pathname.includes('task/view/')) return 'Task #' + last;
     return last.length > 24 ? last.slice(0,24)+'…' : last;
   } catch { return String(s).slice(0,28)+'…'; }
@@ -597,76 +466,17 @@ function showSkeleton(id, count, type) {
 async function loadAll() {
   showSkeleton('file-grid', 6, 'card');
   showSkeleton('task-list', 4, 'row');
-  showSkeleton('customer-grid', 4, 'card');
   try {
-    const [fr, tr, cr] = await Promise.all([
+    const [fr, tr] = await Promise.all([
       api({ action: 'file_list' }),
-      api({ action: 'task_list' }),
-      api({ action: 'customer_list' })
+      api({ action: 'task_list' })
     ]);
-    allFiles     = Array.isArray(fr.data) ? fr.data : (fr.data ? [fr.data] : []);
-    allTasks     = Array.isArray(tr.data) ? tr.data : (tr.data ? [tr.data] : []);
-    allCustomers = Array.isArray(cr.data) ? cr.data : (cr.data ? [cr.data] : []);
+    allFiles = Array.isArray(fr.data) ? fr.data : (fr.data ? [fr.data] : []);
+    allTasks = Array.isArray(tr.data) ? tr.data : (tr.data ? [tr.data] : []);
     renderFiles();
     renderTasks();
-    renderCustomers();
   } catch(_) {}
 }
-
-// ── GENERIC EDIT MODAL ────────────────────────────────────────
-function openModal(type, id) {
-  editType = type; editId = id;
-  const arr = type === 'file' ? allFiles : type === 'task' ? allTasks : allCustomers;
-  const rec = arr.find(x => x.id == id) || {};
-  document.getElementById('modal-title').textContent = MODAL_TITLE[type] || 'Sửa';
-  document.getElementById('modal-body').innerHTML = FIELD_DEFS[type].map(f => {
-    if (f.type === 'select') {
-      return `<div class="mfield"><label>${f.label}</label><select id="m-${f.k}">${
-        f.opts.map(o => `<option value="${o[0]}" ${rec[f.k]===o[0]?'selected':''}>${o[1]}</option>`).join('')
-      }</select></div>`;
-    }
-    return `<div class="mfield"><label>${f.label}</label><input id="m-${f.k}" value="${esc(rec[f.k]||'')}" /></div>`;
-  }).join('');
-  document.getElementById('modal-overlay').classList.add('show');
-  const first = document.getElementById('m-' + FIELD_DEFS[type][0].k);
-  if (first) setTimeout(() => first.focus(), 50);
-}
-
-function closeModal() {
-  document.getElementById('modal-overlay').classList.remove('show');
-  editType = null; editId = null;
-}
-
-async function saveModal() {
-  if (!editType) return;
-  const patch = {};
-  FIELD_DEFS[editType].forEach(f => {
-    patch[f.k] = document.getElementById('m-' + f.k).value.trim();
-  });
-  if (FIELD_DEFS[editType][0].k === 'name' && !patch.name) {
-    document.getElementById('m-name').focus(); return;
-  }
-  const btn = document.getElementById('modal-save');
-  btn.disabled = true;
-  try {
-    const res = await api({ action: UPDATE_ACTION[editType], id: editId, ...patch });
-    const u = Array.isArray(res.data) ? res.data[0] : res.data;
-    const arr = editType === 'file' ? allFiles : editType === 'task' ? allTasks : allCustomers;
-    const rec = arr.find(x => x.id == editId);
-    if (rec) Object.assign(rec, (u && u.id) ? u : patch);
-    if (editType === 'file') renderFiles();
-    else if (editType === 'task') renderTasks();
-    else renderCustomers();
-    closeModal();
-    showToast('Đã lưu ✓', 'ok');
-  } catch(_) {} finally { btn.disabled = false; }
-}
-
-// Đóng modal khi click nền / nhấn Esc
-document.getElementById('modal-overlay').addEventListener('click', e => {
-  if (e.target.id === 'modal-overlay') closeModal();
-});
-document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
 
 // ── FILES ─────────────────────────────────────────────────────
 async function addFile() {
@@ -715,10 +525,7 @@ function renderFiles() {
     <div class="file-card ${TAG_CLS[f.tag]||'tag-other'}">
       <div class="fc-top">
         <span class="tag ${TAG_CLS[f.tag]||'tag-other'}">${TAG_LABEL[f.tag]||f.tag}</span>
-        <span class="fc-actions">
-          <button class="icon-btn edit" onclick="openModal('file',${f.id})" title="Sửa">✎</button>
-          <button class="icon-btn" onclick="delFile(${f.id})" title="Xóa">✕</button>
-        </span>
+        <button class="icon-btn" onclick="delFile(${f.id})" title="Xóa">✕</button>
       </div>
       <div class="fc-name">${esc(f.name)}</div>
       ${f.note ? `<div class="fc-desc">${esc(f.note)}</div>` : ''}
@@ -810,83 +617,7 @@ function renderTasks() {
           : `<span class="task-ref plain" title="${esc(t.ref_code)}">${esc(t.ref_code)}</span>`
         }</div>` : ''}
       </div>
-      <span class="task-actions">
-        <button class="icon-btn edit" onclick="openModal('task',${t.id})" title="Sửa">✎</button>
-        <button class="icon-btn" onclick="delTask(${t.id})" title="Xóa">✕</button>
-      </span>
-    </div>
-  `).join('');
-}
-
-// ── CUSTOMERS ─────────────────────────────────────────────────
-async function addCustomer() {
-  const name    = document.getElementById('c-name').value.trim();
-  const code    = document.getElementById('c-code').value.trim();
-  const segment = document.getElementById('c-segment').value;
-  const contact = document.getElementById('c-contact').value.trim();
-  const status  = document.getElementById('c-status').value;
-  const note    = document.getElementById('c-note').value.trim();
-  if (!name) { document.getElementById('c-name').focus(); return; }
-  const btn = document.getElementById('btn-add-customer');
-  btn.disabled = true;
-  try {
-    const res = await api({ action:'customer_add', name, code, segment, contact, status, note });
-    const nc = Array.isArray(res.data) ? res.data[0] : res.data;
-    if (nc && nc.id) allCustomers.unshift(nc);
-    renderCustomers();
-    ['c-name','c-code','c-contact','c-note'].forEach(id => document.getElementById(id).value = '');
-    showToast('Đã thêm khách hàng ✓', 'ok');
-  } catch(_) {} finally { btn.disabled = false; }
-}
-
-async function delCustomer(id) {
-  if (!confirm('Xóa khách hàng này khỏi danh mục?')) return;
-  try {
-    await api({ action:'customer_delete', id });
-    allCustomers = allCustomers.filter(c => c.id != id);
-    renderCustomers();
-    showToast('Đã xóa', 'ok');
-  } catch(_) {}
-}
-
-function filterCustomers(val, el) {
-  customerFilter = val;
-  document.querySelectorAll('#customer-filter-row .chip').forEach(c => c.classList.remove('active'));
-  el.classList.add('active');
-  renderCustomers();
-}
-
-function renderCustomers() {
-  const total  = allCustomers.length;
-  const active = allCustomers.filter(c => c.status !== 'paused').length;
-  const paused = allCustomers.filter(c => c.status === 'paused').length;
-  document.getElementById('c-total').textContent  = total  || '0';
-  document.getElementById('c-active').textContent = active || '0';
-  document.getElementById('c-paused').textContent = paused || '0';
-
-  const grid = document.getElementById('customer-grid');
-  const list = customerFilter === 'all' ? allCustomers
-             : customerFilter === 'paused' ? allCustomers.filter(c => c.status === 'paused')
-             : allCustomers.filter(c => c.status !== 'paused');
-
-  if (!list.length) {
-    grid.innerHTML = `<div class="empty-state" style="grid-column:1/-1"><div class="empty-icon">👥</div>Chưa có khách hàng nào${customerFilter !== 'all' ? ' ở trạng thái này' : ''}.<br>Thêm ở thanh phía trên.</div>`;
-    return;
-  }
-
-  grid.innerHTML = list.map(c => `
-    <div class="file-card tag-client">
-      <div class="fc-top">
-        <span class="tag tag-client">${SEG_LABEL[c.segment] || c.segment || '—'}</span>
-        <span class="fc-actions">
-          <button class="icon-btn edit" onclick="openModal('customer',${c.id})" title="Sửa">✎</button>
-          <button class="icon-btn" onclick="delCustomer(${c.id})" title="Xóa">✕</button>
-        </span>
-      </div>
-      <div class="fc-name">${esc(c.name)}${c.code ? ` <span style="font-size:10px;color:var(--gray);font-family:'DM Mono',monospace">· ${esc(c.code)}</span>` : ''}</div>
-      ${c.contact ? `<div class="fc-desc">👤 ${esc(c.contact)}</div>` : ''}
-      ${c.note ? `<div class="fc-desc">${esc(c.note)}</div>` : ''}
-      <span class="status-badge ${c.status === 'paused' ? 'sb-paused' : 'sb-active'}">${c.status === 'paused' ? 'Tạm dừng' : 'Đang hợp tác'}</span>
+      <button class="icon-btn" onclick="delTask(${t.id})" title="Xóa">✕</button>
     </div>
   `).join('');
 }
@@ -897,9 +628,6 @@ function renderCustomers() {
 );
 ['t-name','t-ref'].forEach(id =>
   document.getElementById(id).addEventListener('keydown', e => { if(e.key==='Enter') addTask(); })
-);
-['c-name','c-code','c-contact','c-note'].forEach(id =>
-  document.getElementById(id).addEventListener('keydown', e => { if(e.key==='Enter') addCustomer(); })
 );
 </script>
 </body>
