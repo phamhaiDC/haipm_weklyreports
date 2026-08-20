@@ -321,7 +321,7 @@ footer strong { color:rgba(255,255,255,.7); }
       <span class="conn-lbl" id="conn-label">Init...</span>
     </div>
     <span class="hbadge hbadge-date" id="badge-date">—</span>
-    <span class="hbadge hbadge-ver">mcc_haipm v1.4</span>
+    <span class="hbadge hbadge-ver">mcc_haipm v1.5</span>
   </div>
 </header>
 
@@ -438,7 +438,7 @@ footer strong { color:rgba(255,255,255,.7); }
 <!-- FOOTER -->
 <footer>
   <div><strong>Phạm Minh Hải</strong> · Trưởng phòng Core Technology</div>
-  <div>mcc_haipm v1.4 · Built on <strong id="footer-date">—</strong> · Dcorp Technology Corporation</div>
+  <div>mcc_haipm v1.5 · Built on <strong id="footer-date">—</strong> · Dcorp Technology Corporation</div>
 </footer>
 
 <!-- EDIT MODAL -->
@@ -463,7 +463,7 @@ footer strong { color:rgba(255,255,255,.7); }
 const cfg = {
   url:   'https://n8n-edu.dcorp.com.vn/webhook/command-center',
   token: 'HCM-HAI-1982',
-  version: 'mcc_haipm v1.4'
+  version: 'mcc_haipm v1.5'
 };
 
 const TAG_LABEL  = { vti:'VTI', dcorp:'Dcorp', client:'Client', other:'Khác' };
@@ -598,6 +598,34 @@ function fillCustomerSelects() {
       allCustomers.map(c => `<option value="${c.id}">${esc(c.name)}</option>`).join('');
     ff.value = v || 'all';
   }
+}
+
+// Bảng màu tông nhẹ — mỗi client 1 màu ổn định theo id (bg nền / bd viền / tx chữ)
+const CLIENT_PALETTE = [
+  { bg:'#eff6ff', bd:'#60a5fa', tx:'#1d4ed8' },
+  { bg:'#ecfdf5', bd:'#34d399', tx:'#047857' },
+  { bg:'#fffbeb', bd:'#fbbf24', tx:'#b45309' },
+  { bg:'#fff1f2', bd:'#fb7185', tx:'#be123c' },
+  { bg:'#faf5ff', bd:'#c084fc', tx:'#7e22ce' },
+  { bg:'#ecfeff', bd:'#22d3ee', tx:'#0e7490' },
+  { bg:'#eef2ff', bd:'#818cf8', tx:'#4338ca' },
+  { bg:'#f0fdfa', bd:'#2dd4bf', tx:'#0f766e' },
+  { bg:'#fff7ed', bd:'#fb923c', tx:'#c2410c' },
+  { bg:'#fdf2f8', bd:'#f472b6', tx:'#be185d' },
+  { bg:'#f7fee7', bd:'#a3e635', tx:'#4d7c0f' },
+  { bg:'#f8fafc', bd:'#94a3b8', tx:'#475569' }
+];
+const NO_CLIENT_COLOR = { bg:'#fafafa', bd:'#e5e7eb', tx:'#9ca3af' };
+function customerColor(id) {
+  if (id === null || id === undefined || id === '') return null;
+  const n = Math.abs(parseInt(id, 10) || 0);
+  return CLIENT_PALETTE[n % CLIENT_PALETTE.length];
+}
+function custBadge(id) {
+  const cn = customerName(id);
+  if (!cn) return '';
+  const col = customerColor(id) || NO_CLIENT_COLOR;
+  return `<span class="prio-badge" style="background:${col.bg};color:${col.tx};border:1px solid ${col.bd}">👥 ${esc(cn)}</span>`;
 }
 
 // ── SKELETON ──────────────────────────────────────────────────
@@ -737,10 +765,15 @@ function renderFiles() {
   }
   grid.innerHTML = list.map(f => {
     const cn = customerName(f.customer_id);
+    const col = customerColor(f.customer_id);
+    const cardStyle = col ? `background:${col.bg};border-left-color:${col.bd}` : `border-left-color:${NO_CLIENT_COLOR.bd}`;
+    const badge = cn
+      ? `<span class="tag" style="background:rgba(255,255,255,.72);color:${col.tx}">👥 ${esc(cn)}</span>`
+      : `<span class="tag tag-other">— Chưa gắn KH —</span>`;
     return `
-    <div class="file-card ${cn ? 'tag-client' : 'tag-other'}">
+    <div class="file-card" style="${cardStyle}">
       <div class="fc-top">
-        <span class="tag ${cn ? 'tag-client' : 'tag-other'}">${cn ? '👥 ' + esc(cn) : '— Chưa gắn KH —'}</span>
+        ${badge}
         <span class="fc-actions">
           <button class="icon-btn edit" onclick="openModal('file',${f.id})" title="Sửa">✎</button>
           <button class="icon-btn" onclick="delFile(${f.id})" title="Xóa">✕</button>
@@ -831,7 +864,7 @@ function renderTasks() {
         <div class="task-name ${t.status==='done'?'done':''}">${esc(t.name)}</div>
         <div class="task-meta">
           <span class="prio-badge ${PRIO_BCLS[t.priority]||'pb-mid'}">${PRIO_LABEL[t.priority]||t.priority}</span>
-          ${customerName(t.customer_id) ? `<span class="prio-badge" style="background:#dcfce7;color:#15803d">👥 ${esc(customerName(t.customer_id))}</span>` : ''}
+          ${custBadge(t.customer_id)}
           ${t.added ? `<span class="task-date">+ ${t.added}</span>` : ''}
         </div>
         ${t.ref_code ? `<div class="task-ref-col">${isUrl(t.ref_code)
@@ -905,10 +938,12 @@ function renderCustomers() {
     return;
   }
 
-  grid.innerHTML = list.map(c => `
-    <div class="file-card tag-client">
+  grid.innerHTML = list.map(c => {
+    const col = customerColor(c.id) || NO_CLIENT_COLOR;
+    return `
+    <div class="file-card" style="background:${col.bg};border-left-color:${col.bd}">
       <div class="fc-top">
-        <span class="tag tag-client">${SEG_LABEL[c.segment] || c.segment || '—'}</span>
+        <span class="tag" style="background:rgba(255,255,255,.72);color:${col.tx}">${SEG_LABEL[c.segment] || c.segment || '—'}</span>
         <span class="fc-actions">
           <button class="icon-btn edit" onclick="openModal('customer',${c.id})" title="Sửa">✎</button>
           <button class="icon-btn" onclick="delCustomer(${c.id})" title="Xóa">✕</button>
@@ -918,8 +953,8 @@ function renderCustomers() {
       ${c.contact ? `<div class="fc-desc">👤 ${esc(c.contact)}</div>` : ''}
       ${c.note ? `<div class="fc-desc">${esc(c.note)}</div>` : ''}
       <span class="status-badge ${c.status === 'paused' ? 'sb-paused' : 'sb-active'}">${c.status === 'paused' ? 'Tạm dừng' : 'Đang hợp tác'}</span>
-    </div>
-  `).join('');
+    </div>`;
+  }).join('');
 }
 
 // ── ENTER SHORTCUTS ───────────────────────────────────────────
