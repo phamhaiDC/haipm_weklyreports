@@ -321,7 +321,7 @@ footer strong { color:rgba(255,255,255,.7); }
       <span class="conn-lbl" id="conn-label">Init...</span>
     </div>
     <span class="hbadge hbadge-date" id="badge-date">—</span>
-    <span class="hbadge hbadge-ver">mcc_haipm v1.3</span>
+    <span class="hbadge hbadge-ver">mcc_haipm v1.4</span>
   </div>
 </header>
 
@@ -340,21 +340,13 @@ footer strong { color:rgba(255,255,255,.7); }
     <div class="toolbar">
       <input class="wide" id="f-name" placeholder="Tên file / folder..." />
       <input class="wide" id="f-url" placeholder="Link Google Drive..." />
-      <input style="width:140px" id="f-note" placeholder="Ghi chú..." />
-      <select id="f-tag">
-        <option value="vti">VTI</option>
-        <option value="dcorp">Dcorp</option>
-        <option value="client">Client khác</option>
-        <option value="other">Khác</option>
-      </select>
+      <select id="f-customer" style="min-width:150px"><option value="">— Không gắn KH —</option></select>
+      <input style="width:130px" id="f-note" placeholder="Ghi chú..." />
       <button class="btn btn-primary" id="btn-add-file" onclick="addFile()">+ Thêm</button>
     </div>
-    <div class="filter-row" id="file-filter-row">
-      <span class="chip active" onclick="filterFiles('all',this)">Tất cả</span>
-      <span class="chip" onclick="filterFiles('vti',this)">VTI</span>
-      <span class="chip" onclick="filterFiles('dcorp',this)">Dcorp</span>
-      <span class="chip" onclick="filterFiles('client',this)">Client</span>
-      <span class="chip" onclick="filterFiles('other',this)">Khác</span>
+    <div class="toolbar" style="padding:8px 14px">
+      <span style="font-size:10px;font-weight:800;color:var(--gray);text-transform:uppercase;letter-spacing:.5px">Lọc theo KH</span>
+      <select id="f-cust-filter" style="min-width:200px" onchange="filterFilesByCustomer(this.value)"><option value="all">Tất cả khách hàng</option></select>
     </div>
     <div id="file-grid" class="file-grid"></div>
   </div>
@@ -386,6 +378,7 @@ footer strong { color:rgba(255,255,255,.7); }
         <option value="mid" selected>🟡 Trung</option>
         <option value="low">🟢 Thấp</option>
       </select>
+      <select id="t-customer" style="min-width:150px"><option value="">— Không gắn KH —</option></select>
       <button class="btn btn-primary" id="btn-add-task" onclick="addTask()">+ Thêm</button>
     </div>
     <div class="filter-row" id="task-filter-row">
@@ -445,7 +438,7 @@ footer strong { color:rgba(255,255,255,.7); }
 <!-- FOOTER -->
 <footer>
   <div><strong>Phạm Minh Hải</strong> · Trưởng phòng Core Technology</div>
-  <div>mcc_haipm v1.3 · Built on <strong id="footer-date">—</strong> · Dcorp Technology Corporation</div>
+  <div>mcc_haipm v1.4 · Built on <strong id="footer-date">—</strong> · Dcorp Technology Corporation</div>
 </footer>
 
 <!-- EDIT MODAL -->
@@ -470,7 +463,7 @@ footer strong { color:rgba(255,255,255,.7); }
 const cfg = {
   url:   'https://n8n-edu.dcorp.com.vn/webhook/command-center',
   token: 'HCM-HAI-1982',
-  version: 'mcc_haipm v1.3'
+  version: 'mcc_haipm v1.4'
 };
 
 const TAG_LABEL  = { vti:'VTI', dcorp:'Dcorp', client:'Client', other:'Khác' };
@@ -484,13 +477,14 @@ const FIELD_DEFS = {
   file: [
     { k:'name', label:'Tên file / folder', type:'text' },
     { k:'url',  label:'Link Google Drive', type:'text' },
-    { k:'tag',  label:'Nhóm', type:'select', opts:[['vti','VTI'],['dcorp','Dcorp'],['client','Client khác'],['other','Khác']] },
+    { k:'customer_id', label:'Khách hàng', type:'customer' },
     { k:'note', label:'Ghi chú', type:'text' }
   ],
   task: [
     { k:'name',     label:'Tên task', type:'text' },
     { k:'ref_code', label:'Mã TECH / ghi chú', type:'text' },
-    { k:'priority', label:'Ưu tiên', type:'select', opts:[['high','🔴 Cao'],['mid','🟡 Trung'],['low','🟢 Thấp']] }
+    { k:'priority', label:'Ưu tiên', type:'select', opts:[['high','🔴 Cao'],['mid','🟡 Trung'],['low','🟢 Thấp']] },
+    { k:'customer_id', label:'Khách hàng', type:'customer' }
   ],
   customer: [
     { k:'name',    label:'Tên khách hàng', type:'text' },
@@ -579,6 +573,33 @@ function shortUrl(s) {
   } catch { return String(s).slice(0,28)+'…'; }
 }
 
+// ── CUSTOMER HELPERS ──────────────────────────────────────────
+function customerName(id) {
+  if (id === null || id === undefined || id === '') return '';
+  const c = allCustomers.find(c => String(c.id) === String(id));
+  return c ? c.name : '';
+}
+function customerOptionsHtml(selected) {
+  let h = '<option value="">— Không gắn KH —</option>';
+  allCustomers.forEach(c => {
+    h += `<option value="${c.id}" ${String(selected)===String(c.id)?'selected':''}>${esc(c.name)}${c.code?' ('+esc(c.code)+')':''}</option>`;
+  });
+  return h;
+}
+function fillCustomerSelects() {
+  const fc = document.getElementById('f-customer');
+  const tc = document.getElementById('t-customer');
+  if (fc) { const v = fc.value; fc.innerHTML = customerOptionsHtml(v); }
+  if (tc) { const v = tc.value; tc.innerHTML = customerOptionsHtml(v); }
+  const ff = document.getElementById('f-cust-filter');
+  if (ff) {
+    const v = ff.value;
+    ff.innerHTML = '<option value="all">Tất cả khách hàng</option>' +
+      allCustomers.map(c => `<option value="${c.id}">${esc(c.name)}</option>`).join('');
+    ff.value = v || 'all';
+  }
+}
+
 // ── SKELETON ──────────────────────────────────────────────────
 function showSkeleton(id, count, type) {
   const el = document.getElementById(id);
@@ -607,6 +628,7 @@ async function loadAll() {
     allFiles     = Array.isArray(fr.data) ? fr.data : (fr.data ? [fr.data] : []);
     allTasks     = Array.isArray(tr.data) ? tr.data : (tr.data ? [tr.data] : []);
     allCustomers = Array.isArray(cr.data) ? cr.data : (cr.data ? [cr.data] : []);
+    fillCustomerSelects();
     renderFiles();
     renderTasks();
     renderCustomers();
@@ -620,6 +642,9 @@ function openModal(type, id) {
   const rec = arr.find(x => x.id == id) || {};
   document.getElementById('modal-title').textContent = MODAL_TITLE[type] || 'Sửa';
   document.getElementById('modal-body').innerHTML = FIELD_DEFS[type].map(f => {
+    if (f.type === 'customer') {
+      return `<div class="mfield"><label>${f.label}</label><select id="m-${f.k}">${customerOptionsHtml(rec[f.k])}</select></div>`;
+    }
     if (f.type === 'select') {
       return `<div class="mfield"><label>${f.label}</label><select id="m-${f.k}">${
         f.opts.map(o => `<option value="${o[0]}" ${rec[f.k]===o[0]?'selected':''}>${o[1]}</option>`).join('')
@@ -673,16 +698,17 @@ async function addFile() {
   const name = document.getElementById('f-name').value.trim();
   const url  = document.getElementById('f-url').value.trim();
   const note = document.getElementById('f-note').value.trim();
-  const tag  = document.getElementById('f-tag').value;
+  const customer_id = document.getElementById('f-customer').value || null;
   if (!name) { document.getElementById('f-name').focus(); return; }
   const btn = document.getElementById('btn-add-file');
   btn.disabled = true;
   try {
-    const res = await api({ action:'file_add', name, url, tag, note });
+    const res = await api({ action:'file_add', name, url, note, customer_id });
     const nf = Array.isArray(res.data) ? res.data[0] : res.data;
     if (nf && nf.id) allFiles.unshift(nf);
     renderFiles();
     ['f-name','f-url','f-note'].forEach(id => document.getElementById(id).value = '');
+    document.getElementById('f-customer').value = '';
     showToast('Đã thêm file ✓', 'ok');
   } catch(_) {} finally { btn.disabled = false; }
 }
@@ -697,24 +723,24 @@ async function delFile(id) {
   } catch(_) {}
 }
 
-function filterFiles(val, el) {
+function filterFilesByCustomer(val) {
   fileFilter = val;
-  document.querySelectorAll('#file-filter-row .chip').forEach(c => c.classList.remove('active'));
-  el.classList.add('active');
   renderFiles();
 }
 
 function renderFiles() {
   const grid = document.getElementById('file-grid');
-  const list = fileFilter === 'all' ? allFiles : allFiles.filter(f => f.tag === fileFilter);
+  const list = fileFilter === 'all' ? allFiles : allFiles.filter(f => String(f.customer_id) === String(fileFilter));
   if (!list.length) {
-    grid.innerHTML = `<div class="empty-state" style="grid-column:1/-1"><div class="empty-icon">📂</div>Chưa có file nào${fileFilter !== 'all' ? ' trong nhóm này' : ''}.<br>Thêm link Drive ở thanh phía trên.</div>`;
+    grid.innerHTML = `<div class="empty-state" style="grid-column:1/-1"><div class="empty-icon">📂</div>Chưa có file nào${fileFilter !== 'all' ? ' cho khách hàng này' : ''}.<br>Thêm link Drive ở thanh phía trên.</div>`;
     return;
   }
-  grid.innerHTML = list.map(f => `
-    <div class="file-card ${TAG_CLS[f.tag]||'tag-other'}">
+  grid.innerHTML = list.map(f => {
+    const cn = customerName(f.customer_id);
+    return `
+    <div class="file-card ${cn ? 'tag-client' : 'tag-other'}">
       <div class="fc-top">
-        <span class="tag ${TAG_CLS[f.tag]||'tag-other'}">${TAG_LABEL[f.tag]||f.tag}</span>
+        <span class="tag ${cn ? 'tag-client' : 'tag-other'}">${cn ? '👥 ' + esc(cn) : '— Chưa gắn KH —'}</span>
         <span class="fc-actions">
           <button class="icon-btn edit" onclick="openModal('file',${f.id})" title="Sửa">✎</button>
           <button class="icon-btn" onclick="delFile(${f.id})" title="Xóa">✕</button>
@@ -723,8 +749,8 @@ function renderFiles() {
       <div class="fc-name">${esc(f.name)}</div>
       ${f.note ? `<div class="fc-desc">${esc(f.note)}</div>` : ''}
       ${f.url ? `<a class="fc-link" href="${esc(f.url)}" target="_blank">↗ Mở Drive</a>` : '<span class="fc-desc" style="color:#ccc">Chưa có link</span>'}
-    </div>
-  `).join('');
+    </div>`;
+  }).join('');
 }
 
 // ── TASKS ─────────────────────────────────────────────────────
@@ -732,15 +758,17 @@ async function addTask() {
   const name     = document.getElementById('t-name').value.trim();
   const ref_code = document.getElementById('t-ref').value.trim();
   const priority = document.getElementById('t-priority').value;
+  const customer_id = document.getElementById('t-customer').value || null;
   if (!name) { document.getElementById('t-name').focus(); return; }
   const btn = document.getElementById('btn-add-task');
   btn.disabled = true;
   try {
-    const res = await api({ action:'task_add', name, ref_code, priority });
+    const res = await api({ action:'task_add', name, ref_code, priority, customer_id });
     const nt = Array.isArray(res.data) ? res.data[0] : res.data;
     if (nt && nt.id) allTasks.unshift(nt);
     renderTasks();
     ['t-name','t-ref'].forEach(id => document.getElementById(id).value = '');
+    document.getElementById('t-customer').value = '';
     showToast('Đã thêm task ✓', 'ok');
   } catch(_) {} finally { btn.disabled = false; }
 }
@@ -803,6 +831,7 @@ function renderTasks() {
         <div class="task-name ${t.status==='done'?'done':''}">${esc(t.name)}</div>
         <div class="task-meta">
           <span class="prio-badge ${PRIO_BCLS[t.priority]||'pb-mid'}">${PRIO_LABEL[t.priority]||t.priority}</span>
+          ${customerName(t.customer_id) ? `<span class="prio-badge" style="background:#dcfce7;color:#15803d">👥 ${esc(customerName(t.customer_id))}</span>` : ''}
           ${t.added ? `<span class="task-date">+ ${t.added}</span>` : ''}
         </div>
         ${t.ref_code ? `<div class="task-ref-col">${isUrl(t.ref_code)
@@ -868,6 +897,8 @@ function renderCustomers() {
   const list = customerFilter === 'all' ? allCustomers
              : customerFilter === 'paused' ? allCustomers.filter(c => c.status === 'paused')
              : allCustomers.filter(c => c.status !== 'paused');
+
+  fillCustomerSelects();
 
   if (!list.length) {
     grid.innerHTML = `<div class="empty-state" style="grid-column:1/-1"><div class="empty-icon">👥</div>Chưa có khách hàng nào${customerFilter !== 'all' ? ' ở trạng thái này' : ''}.<br>Thêm ở thanh phía trên.</div>`;
