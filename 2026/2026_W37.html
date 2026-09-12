@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Báo cáo tuần W37 — Core Technology</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800;900&family=DM+Mono:wght@400;500&display=swap');
+
+:root{
+  --red:#e30613; --black:#000; --white:#fff; --gray:#727171;
+  --bg:#f0f2f5; --dark:#1a1f2e; --tabs:#131722;
+  --amber:#d97706; --green:#16a34a; --blue:#2563eb;
+  --radius:10px; --shadow:0 1px 6px rgba(0,0,0,.07);
+}
+*{box-sizing:border-box;}
+body{margin:0;background:var(--bg);color:var(--black);font-family:'Montserrat',sans-serif;font-size:12px;}
+.mono{font-family:'DM Mono',monospace;}
+
+/* header */
+.header{position:sticky;top:0;z-index:100;background:var(--dark);color:#fff;
+  display:grid;grid-template-columns:auto 1fr auto;gap:16px;align-items:center;
+  padding:10px 20px;}
+.logo{height:38px;width:38px;border-radius:6px;background:var(--red);
+  display:flex;align-items:center;justify-content:center;font-weight:900;font-size:16px;}
+.header-center{text-align:center;}
+.header-title{font-size:12px;font-weight:800;letter-spacing:1px;text-transform:uppercase;}
+.header-sub{font-size:9px;color:#b7bdc9;margin-top:2px;}
+.header-right{text-align:right;display:flex;flex-direction:column;gap:3px;align-items:flex-end;}
+.badge{font-family:'DM Mono',monospace;font-size:9px;background:#232a3d;padding:3px 8px;border-radius:20px;color:#fff;}
+
+/* tabs */
+.tabs{position:sticky;top:58px;z-index:99;background:var(--tabs);display:flex;overflow-x:auto;}
+.nav-tab{background:none;border:none;color:#8b93a7;padding:11px 16px;font-family:'Montserrat',sans-serif;
+  font-size:10px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;cursor:pointer;white-space:nowrap;
+  border-bottom:2px solid transparent;}
+.nav-tab.active{color:var(--red);border-bottom:2px solid var(--red);}
+
+.wrap{max-width:1180px;margin:0 auto;padding:20px;}
+.tab-content{display:none;}
+.tab-content.active{display:block;}
+
+.section-title{font-size:9px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:var(--gray);
+  margin:22px 0 10px;}
+.section-title:first-child{margin-top:0;}
+
+/* stat cards */
+.stats{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;}
+.stats.four{grid-template-columns:repeat(4,1fr);}
+.stats.three{grid-template-columns:repeat(3,1fr);}
+.card{background:var(--white);border-radius:var(--radius);box-shadow:var(--shadow);padding:14px 14px 12px;
+  border-top:3px solid var(--gray);}
+.card.c-red{border-top-color:var(--red);} .card.c-amber{border-top-color:var(--amber);}
+.card.c-blue{border-top-color:var(--blue);} .card.c-green{border-top-color:var(--green);}
+.card-label{font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--gray);}
+.card-value{font-family:'DM Mono',monospace;font-weight:900;font-size:28px;margin-top:4px;}
+.card-sub{font-size:9px;color:var(--gray);margin-top:2px;}
+
+/* table */
+table{width:100%;border-collapse:collapse;background:var(--white);border-radius:var(--radius);overflow:hidden;
+  box-shadow:var(--shadow);}
+th{background:var(--dark);color:#fff;font-size:9px;text-transform:uppercase;letter-spacing:.5px;font-weight:700;
+  text-align:left;padding:9px 10px;}
+td{padding:9px 10px;font-size:11px;border-bottom:1px solid #eceef1;vertical-align:top;}
+tr:last-child td{border-bottom:none;}
+tr.group-head td{background:#f6f7f9;font-weight:800;font-size:9px;text-transform:uppercase;letter-spacing:.5px;
+  color:var(--gray);padding:6px 10px;}
+
+/* tags */
+.tag{display:inline-block;font-family:'DM Mono',monospace;font-size:8px;text-transform:uppercase;font-weight:800;
+  padding:2px 7px;border-radius:20px;white-space:nowrap;}
+.tag-done{background:#e5edff;color:var(--blue);}
+.tag-ip{background:#fef3e2;color:var(--amber);}
+.tag-block{background:#fde3e3;color:var(--red);}
+.tag-warn{background:#fff3cd;color:#946200;}
+.tag-new{background:#f0e5ff;color:#7c3aed;}
+.tag-ok{background:#e3f7ea;color:var(--green);}
+.badge-vendor{background:#fde3e3;color:var(--red);}
+.badge-noibo{background:#e5e6e8;color:var(--gray);}
+
+/* misc components */
+.hl-banner{display:flex;gap:12px;background:var(--white);border-radius:var(--radius);box-shadow:var(--shadow);
+  padding:12px 14px;margin-bottom:8px;border-left:3px solid var(--red);}
+.hl-title{font-weight:800;font-size:11px;margin-bottom:2px;}
+.hl-body{font-size:11px;color:#333;}
+
+.pre-box{background:var(--dark);color:#d7dbe4;font-family:'DM Mono',monospace;font-size:10.5px;line-height:1.6;
+  padding:14px;border-radius:var(--radius);white-space:pre-wrap;position:relative;}
+.copy-btn{position:absolute;top:10px;right:10px;background:var(--red);color:#fff;border:none;border-radius:6px;
+  padding:5px 10px;font-size:9px;font-weight:700;cursor:pointer;text-transform:uppercase;}
+
+.note{font-size:10.5px;color:var(--gray);margin-top:8px;}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+@media(max-width:760px){.stats,.stats.four,.stats.three{grid-template-columns:repeat(2,1fr);}
+  .two-col{grid-template-columns:1fr;} table{font-size:10px;}}
+
+.footer{background:var(--dark);color:#8b93a7;display:flex;justify-content:space-between;
+  padding:12px 20px;font-size:9px;font-family:'DM Mono',monospace;}
+.footer strong{color:#fff;}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="logo">D</div>
+  <div class="header-center">
+    <div class="header-title">Báo cáo tuần — Core Technology</div>
+    <div class="header-sub">Dcorp Technology Corporation · From: Phạm Minh Hải → To: CEO</div>
+  </div>
+  <div class="header-right">
+    <span class="badge">07 – 11/09/2026</span>
+    <span class="badge">TUẦN 37 / 2026</span>
+  </div>
+</div>
+
+<div class="tabs">
+  <button class="nav-tab active" onclick="switchTab('w37', this)">W37 Báo cáo tuần</button>
+  <button class="nav-tab" onclick="switchTab('email', this)">Email tuần W37</button>
+  <button class="nav-tab" onclick="switchTab('oldtask', this)">Task tồn lâu ngày</button>
+  <button class="nav-tab" onclick="switchTab('carryover', this)">Backlog &amp; Carry-over</button>
+  <button class="nav-tab" onclick="switchTab('plan', this)">Kế hoạch tuần tới</button>
+  <button class="nav-tab" onclick="switchTab('process', this)">Quy trình</button>
+</div>
+
+<div class="wrap">
+
+<!-- TAB 1: W37 -->
+<div class="tab-content active" id="tab-w37">
+
+  <div class="stats">
+    <div class="card c-blue"><div class="card-label">Tổng đầu việc</div><div class="card-value">18</div><div class="card-sub">ClickUp + Bitrix + vendor + việc ngoài task ID</div></div>
+    <div class="card c-green"><div class="card-label">Hoàn thành</div><div class="card-value">4</div><div class="card-sub">TECH-4272, SOW Inventory, RK7 SD #205650 &amp; #203758</div></div>
+    <div class="card c-amber"><div class="card-label">Đang xử lý</div><div class="card-value">11</div><div class="card-sub">ClickUp + việc nội bộ + vendor ticket mở</div></div>
+    <div class="card"><div class="card-label">Chờ / Pending</div><div class="card-value">2</div><div class="card-sub">RK7 SD #208003, #207994 — mới mở 11/9</div></div>
+    <div class="card c-red"><div class="card-label">Chưa bắt đầu</div><div class="card-value">1</div><div class="card-sub">Print service The Street</div></div>
+  </div>
+
+  <div class="section-title">Bảng công việc tuần 07–11/09</div>
+  <table>
+    <tr><th style="width:9%">MasterTask</th><th style="width:9%">Task ID</th><th style="width:34%">Kết quả thực hiện</th><th style="width:16%">Khó khăn</th><th style="width:20%">Đề xuất / Next</th><th style="width:12%">Trạng thái</th></tr>
+
+    <tr class="group-head"><td colspan="6">VTI</td></tr>
+    <tr><td>VTI</td><td class="mono">[Email]</td><td>RK7 SD #207669 — Cash Payment: Change Money Not Displayed. Vendor hỏi lại version, đã phản hồi, chưa có bản vá.</td><td><span class="tag badge-vendor">Vendor</span> mở từ 07/9, chưa chốt</td><td>Nhắc vendor nếu quá 1 tuần không có bản vá</td><td><span class="tag tag-ip">Đang xử lý</span></td></tr>
+    <tr><td>VTI</td><td class="mono">[Email]</td><td>RK7 SD #207670 — Hide Max Cash Servers/Stations Parameters. Đã trao đổi kỹ thuật 07–08/9.</td><td>Không</td><td>Chờ vendor xác nhận bản test</td><td><span class="tag tag-ip">Đang xử lý</span></td></tr>
+    <tr><td>VTI</td><td class="mono">[Email]</td><td>RK7 SD #208003 — KDS PRO: sai priority khi Bump dish từ SUM screen. Ticket mới mở 11/9.</td><td>Không</td><td>Theo dõi phản hồi vendor</td><td><span class="tag tag-warn">Chờ xử lý</span></td></tr>
+    <tr><td>VTI</td><td class="mono">[Email]</td><td>RK7 SD #207994 — KDS PRO: in sai khi partially bumped dish. Ticket mới mở 11/9.</td><td>Không</td><td>Theo dõi phản hồi vendor</td><td><span class="tag tag-warn">Chờ xử lý</span></td></tr>
+    <tr><td>VTI</td><td class="mono">[Email]</td><td>RK7 SD #205650 — KDS PRO: không in khi đổi status dish part. Vendor xác nhận hoàn thành 07/9.</td><td>Không</td><td>Đóng ticket</td><td><span class="tag tag-done">Hoàn thành</span></td></tr>
+    <tr><td>VTI</td><td class="mono">[Email]</td><td>RK7 SD #203758 — [BUG] RK7 Report Transit, RPC call bypass Report Central. Vendor xác nhận hoàn thành 09/9.</td><td>Không</td><td>Đóng ticket</td><td><span class="tag tag-done">Hoàn thành</span></td></tr>
+    <tr><td>VTI</td><td>—</td><td>Hỗ trợ dev API và quy trình xử lý order với Ecode</td><td>Không</td><td>Tiếp tục tuần tới</td><td><span class="tag tag-ip">Đang xử lý</span></td></tr>
+    <tr><td>VTI</td><td>—</td><td>Test phiên bản RK7 mới</td><td>Không</td><td>Tiếp tục</td><td><span class="tag tag-ip">Đang xử lý</span></td></tr>
+    <tr><td>VTI</td><td>—</td><td>Làm việc với VTI và SkyTechLab để thống nhất yêu cầu — họp 09/9, trao đổi tài liệu SOW / Verification Component Inventory</td><td>Không</td><td>Theo dõi phản hồi SkyLab</td><td><span class="tag tag-ip">Đang xử lý</span></td></tr>
+
+    <tr class="group-head"><td colspan="6">THE STREET</td></tr>
+    <tr><td>The Street</td><td class="mono">TECH-15505</td><td>Bổ sung tính năng KDS (yêu cầu 09/07)</td><td>Không</td><td>Tiếp tục</td><td><span class="tag tag-ip">Đang xử lý</span></td></tr>
+    <tr><td>The Street</td><td class="mono">TECH-16301</td><td>[BUG][SH5+IR] Conflict region ENG cho IR và VN cho SH5</td><td>Không</td><td>Tiếp tục xử lý</td><td><span class="tag tag-ip">Đang xử lý</span></td></tr>
+    <tr><td>The Street</td><td>—</td><td>Hoàn thành thiết kế SOW mô tả tài liệu cho Inventory The Street</td><td>Không</td><td>Gửi SkyLab / VTI review</td><td><span class="tag tag-done">Hoàn thành</span></td></tr>
+    <tr><td>The Street</td><td>—</td><td>Hỗ trợ dev API và setup kho The Street để dev</td><td>Không</td><td>Tiếp tục</td><td><span class="tag tag-ip">Đang xử lý</span></td></tr>
+    <tr><td>The Street</td><td>—</td><td>Post task liên quan KDS The Street (theo luồng email)</td><td>Không</td><td>Theo dõi</td><td><span class="tag tag-ip">Đang xử lý</span></td></tr>
+    <tr><td>The Street</td><td>—</td><td>Print service The Street</td><td><span class="tag badge-noibo">Nội bộ</span> chưa phân công, chưa có cập nhật</td><td>Xác định người phụ trách, chốt tiến độ</td><td><span class="tag tag-block">Chưa bắt đầu</span></td></tr>
+
+    <tr class="group-head"><td colspan="6">CVL</td></tr>
+    <tr><td>CVL</td><td class="mono">TECH-16476</td><td>Lỗi nhập tiền mặt không ra tiền thối</td><td>Không</td><td>Tiếp tục kiểm tra</td><td><span class="tag tag-ip">Đang xử lý</span></td></tr>
+
+    <tr class="group-head"><td colspan="6">NEWPEARL</td></tr>
+    <tr><td>NewPearl</td><td class="mono">TECH-4272</td><td>View bill trên Zalo và Bill trên POS khác nhau</td><td>Không</td><td>Đóng</td><td><span class="tag tag-done">Hoàn thành</span></td></tr>
+
+    <tr class="group-head"><td colspan="6">OTHER</td></tr>
+    <tr><td>Other</td><td>—</td><td>Làm việc với Bách về hệ thống promotion engine mới của công ty</td><td>Không</td><td>Tiếp tục</td><td><span class="tag tag-ip">Đang xử lý</span></td></tr>
+  </table>
+
+  <div class="section-title">Khó khăn / Blocker cần CEO biết</div>
+  <div class="hl-banner"><div><div class="hl-title">Print service The Street — <span class="tag badge-noibo">Nội bộ</span></div>
+  <div class="hl-body">Chưa có người phụ trách, chưa có cập nhật kể từ khi phát sinh. Cần chốt người phụ trách để không kéo dài thêm sang tuần sau.</div></div></div>
+  <div class="hl-banner"><div><div class="hl-title">RK7 SD #207669 — <span class="tag badge-vendor">Vendor</span></div>
+  <div class="hl-body">Ticket mở 5 ngày (07–11/9), qua lại nhiều lượt với vendor RK7, chưa có bản vá.</div></div></div>
+
+  <div class="section-title">Text Bitrix (copy nhanh)</div>
+  <div class="pre-box" id="bitrix-text"><button class="copy-btn" onclick="copyBitrix()">Copy</button>📋 HaiPM | W37 | 07–11.09.2026
+
+✅ Hoàn thành:
+- NewPearl: View bill Zalo vs POS khác nhau (TECH-4272)
+- Hoàn thành thiết kế SOW Inventory The Street
+- RK7 SD #205650, #203758: vendor xác nhận hoàn thành
+
+🔄 Đang xử lý:
+- TECH-16476: CVL — lỗi nhập tiền mặt không ra tiền thối
+- TECH-15505: The Street — bổ sung tính năng KDS
+- TECH-16301: The Street — conflict region ENG/VN (SH5+IR)
+- VTI: hỗ trợ dev API/order Ecode, test RK7 bản mới, làm việc với VTI + SkyTechLab
+- The Street: hỗ trợ dev API/setup kho, post task KDS
+- Promotion engine mới (làm việc với Bách)
+
+📧 Email / Vendor:
+- RK7 SD #207669: Cash Payment change money — chưa có bản vá, vendor còn hỏi lại
+- RK7 SD #207670: Hide Max Cash/Stations params — chờ vendor xác nhận
+- RK7 SD #208003, #207994: KDS PRO — ticket mới mở 11/9, chờ xử lý
+- Dcorp x VTI x SkyLab: họp 09/9, review tài liệu SOW/Verification/Component Inventory
+- Tài liệu RK7 Design Philosophy for CloudPOS (James Duong) — đang chờ review
+
+⏳ Chưa bắt đầu:
+- The Street: print service — chưa phân công, chưa có cập nhật
+
+🔴 Blocker:
+- Print service The Street: Nội bộ — chưa chốt người phụ trách
+- RK7 SD #207669: Vendor — mở 5 ngày chưa có hướng giải quyết
+
+📅 Kế hoạch W38:
+- Dọn ổ cứng VM SQL VTI (ổ C sắp đầy) — High
+- Xoá bớt dữ liệu Ecode Client VTI — Normal</div>
+</div>
+
+<!-- TAB 2: EMAIL -->
+<div class="tab-content" id="tab-email">
+  <div class="section-title">Cần action</div>
+  <table>
+    <tr><th style="width:22%">Ngày</th><th style="width:38%">Chủ đề</th><th>Ghi chú</th></tr>
+    <tr><td>07–09/9</td><td>[Dcorp x VTI x SkyLab] Meeting 09Sep2026</td><td>Trao đổi tài liệu SOW / Verification / Component Inventory, nhiều lượt qua lại giữa Dcorp và SkyLab</td></tr>
+    <tr><td>10/9</td><td>Document shared: RK7_Design_Philosophy_Reference_for_CloudPOS.md (James Duong)</td><td>Đang chờ review</td></tr>
+  </table>
+
+  <div class="section-title">Vendor ticket (sd@rkeeper.ru)</div>
+  <table>
+    <tr><th style="width:12%">Ticket</th><th style="width:38%">Chủ đề</th><th style="width:20%">Ngày</th><th>Trạng thái</th></tr>
+    <tr><td class="mono">#207669</td><td>RK7 — Cash Payment: Change Money Not Displayed</td><td>07–11/9 (nhiều lượt)</td><td><span class="tag tag-ip">Đang xử lý</span></td></tr>
+    <tr><td class="mono">#208003</td><td>KDS PRO — sai priority khi Bump dish từ SUM screen</td><td>11/9</td><td><span class="tag tag-warn">Mới mở</span></td></tr>
+    <tr><td class="mono">#207994</td><td>KDS PRO — in sai khi partially bumped dish</td><td>11/9</td><td><span class="tag tag-warn">Mới mở</span></td></tr>
+    <tr><td class="mono">#207670</td><td>Hide Max Cash Servers/Stations Parameters</td><td>07–08/9</td><td><span class="tag tag-ip">Đang xử lý</span></td></tr>
+    <tr><td class="mono">#205650</td><td>KDS PRO — không in khi đổi status dish part</td><td>07/9</td><td><span class="tag tag-done">Hoàn thành</span></td></tr>
+    <tr><td class="mono">#203758</td><td>[BUG] RK7 Report Transit — RPC call bypass Report Central</td><td>09/9</td><td><span class="tag tag-done">Hoàn thành</span></td></tr>
+  </table>
+
+  <div class="section-title">Thông tin</div>
+  <table>
+    <tr><th style="width:22%">Ngày</th><th>Nội dung</th></tr>
+    <tr><td>07/9</td><td>Canceled: Daily POS check with Dcorp</td></tr>
+    <tr><td>10/9</td><td>r_keeper newsletter tháng 8/2026</td></tr>
+  </table>
+  <div class="note">Bỏ qua (không đưa vào báo cáo): LinkedIn, marketing Google Cloud/Grafana/Artlist/Tilda/CloudAZ, Vietnam Airlines, Dropbox storage, Google security alert — tổng 39 thread, sau lọc còn 10 thread liên quan công việc ở trên.</div>
+</div>
+
+<!-- TAB 3: TASK TỒN LÂU NGÀY -->
+<div class="tab-content" id="tab-oldtask">
+  <div class="stats three">
+    <div class="card c-red"><div class="card-label">Chưa đổi &gt; 1 năm</div><div class="card-value">91</div><div class="card-sub">trong 143 task Bitrix đang mở (responsible = Hải)</div></div>
+    <div class="card c-amber"><div class="card-label">3 tháng – 1 năm</div><div class="card-value">39</div><div class="card-sub">cần rà lại còn hiệu lực hay không</div></div>
+    <div class="card c-green"><div class="card-label">Trong 3 tháng</div><div class="card-value">13</div><div class="card-sub">còn hoạt động thật</div></div>
+  </div>
+  <div class="note" style="margin-top:14px">Nguồn: bảng <span class="mono">weekly_report.tasks</span> (sync Bitrix 18:00 hàng ngày, điều kiện RESPONSIBLE_ID=8, REAL_STATUS=2). Bảng này chỉ giữ task đang mở — task đã đóng bị loại khỏi lần sync kế tiếp nên không có lịch sử "hoàn thành trong tuần" từ nguồn này.</div>
+
+  <div class="section-title">10 task cũ nhất chưa cập nhật</div>
+  <table>
+    <tr><th style="width:10%">MasterTask</th><th style="width:38%">Tên task</th><th style="width:14%">Deadline gốc</th><th style="width:14%">Đổi lần cuối</th><th>Số ngày chưa đổi</th></tr>
+    <tr><td>Other</td><td>[GGG] Nhập fastcode APHAN</td><td>06/11/2019</td><td>07/11/2019</td><td>2.500</td></tr>
+    <tr><td>Other</td><td>[GGG] Giao máy in GGG SO0966/0967</td><td>07/11/2019</td><td>08/11/2019</td><td>2.499</td></tr>
+    <tr><td>Vibe Code</td><td>[DCORP_INI] Di chuyển máy chấm công</td><td>08/11/2019</td><td>11/11/2019</td><td>2.497</td></tr>
+    <tr><td>Other</td><td>DVG Group – Project in Da Lat</td><td>08/11/2019</td><td>11/11/2019</td><td>2.496</td></tr>
+    <tr><td>Other</td><td>Bon Chon Chicken</td><td>08/11/2019</td><td>11/11/2019</td><td>2.496</td></tr>
+    <tr><td>Other</td><td>Boost Juice</td><td>08/11/2019</td><td>11/11/2019</td><td>2.496</td></tr>
+    <tr><td>AI Công ty</td><td>Email: Re: Report Mismatched</td><td>13/11/2019</td><td>14/11/2019</td><td>2.494</td></tr>
+    <tr><td>AI Công ty</td><td>Email: Re: Report Mismatched</td><td>13/11/2019</td><td>15/11/2019</td><td>2.493</td></tr>
+    <tr><td>AI Công ty</td><td>Email: Re: Report Mismatched</td><td>13/11/2019</td><td>19/11/2019</td><td>2.489</td></tr>
+    <tr><td>Other</td><td>[TNI-VK] Network HO to Korea Shop</td><td>21/11/2019</td><td>19/11/2019</td><td>2.489</td></tr>
+  </table>
+  <div class="note">64% (91/143) task đang "mở" trong Bitrix thực chất không có thao tác gì hơn 1 năm — nhiều khả năng là task cũ chưa được đóng đúng cách, không phải công việc thật đang tồn đọng. Đề xuất: rà và bulk-close trong Bitrix thay vì để trong danh sách theo dõi hàng tuần.</div>
+</div>
+
+<!-- TAB 4: BACKLOG & CARRY-OVER -->
+<div class="tab-content" id="tab-carryover">
+  <div class="section-title">Carry-over sang W38 (chưa xong trong W37)</div>
+  <table>
+    <tr><th style="width:12%">MasterTask</th><th style="width:38%">Task</th><th style="width:20%">Khó khăn</th><th>Trạng thái</th></tr>
+    <tr><td>The Street</td><td>Print service The Street</td><td><span class="tag badge-noibo">Nội bộ</span> chưa phân công</td><td><span class="tag tag-block">Chưa bắt đầu</span></td></tr>
+    <tr><td>VTI</td><td>RK7 SD #207669 — Cash Payment Change Money</td><td><span class="tag badge-vendor">Vendor</span></td><td><span class="tag tag-ip">Đang xử lý</span></td></tr>
+    <tr><td>VTI</td><td>RK7 SD #207670 — Hide Max Cash/Stations Params</td><td>Không</td><td><span class="tag tag-ip">Đang xử lý</span></td></tr>
+    <tr><td>VTI</td><td>RK7 SD #208003 — KDS PRO Bump priority</td><td>Không</td><td><span class="tag tag-warn">Chờ xử lý</span></td></tr>
+    <tr><td>VTI</td><td>RK7 SD #207994 — KDS PRO print bumped dish</td><td>Không</td><td><span class="tag tag-warn">Chờ xử lý</span></td></tr>
+  </table>
+
+  <div class="section-title">ClickUp — task active chưa xác nhận có hoạt động tuần này (đợi Hải review)</div>
+  <table>
+    <tr><th style="width:12%">Task ID</th><th style="width:50%">Tên task</th><th style="width:16%">Trạng thái</th><th>List</th></tr>
+    <tr><td class="mono">TECH-1563</td><td>Madame Lân — tư vấn phát triển chức năng Skymenu</td><td>in progress</td><td>Cài đặt thêm tính năng cho KH</td></tr>
+    <tr><td class="mono">TECH-3632</td><td>VTI — kiểm tra thông báo thanh toán online/visa</td><td>in progress</td><td>MH | VTI</td></tr>
+    <tr><td class="mono">TECH-3646</td><td>VTI — màn hình QMS tự động chuyển về trang chủ</td><td>in progress</td><td>MH | VTI</td></tr>
+    <tr><td class="mono">TECH-4051</td><td>VTI — script chặn huỷ hoá đơn sau khi xuất GTGT</td><td>in progress</td><td>MH | VTI</td></tr>
+    <tr><td class="mono">TECH-8798</td><td>Cantyna — view báo cáo Ingredient of Recipe SkyInventory</td><td>in progress</td><td>Xử lý issues của Tech</td></tr>
+    <tr><td class="mono">TECH-9128</td><td>Lasirena — phiếu xuất kho 1C đẩy DB trung gian FAST bị lệch</td><td>in progress</td><td>Xử lý issues của Tech</td></tr>
+    <tr><td class="mono">TECH-11143</td><td>[BUG] Lasirena — dữ liệu 1C sai khi đẩy FAST</td><td>in progress</td><td>BUG</td></tr>
+    <tr><td class="mono">TECH-8600</td><td>Cantyna — giải thích luồng Stock Count</td><td>in progress</td><td>Xử lý issues của Tech</td></tr>
+    <tr><td class="mono">TECH-15809</td><td>[KDS] Yêu cầu tính năng 24/07</td><td>in progress</td><td>The Street</td></tr>
+    <tr><td class="mono">TECH-16217</td><td>[SH5] Bổ sung tính năng SH5</td><td>in progress</td><td>The Street</td></tr>
+    <tr><td colspan="4" style="color:var(--gray);font-style:italic">+ 18 task khác ở trạng thái to do / pending, chưa đụng tới trong tuần (xem đầy đủ trong ClickUp, list "Xử lý issues của Tech" và "The Street").</td></tr>
+  </table>
+</div>
+
+<!-- TAB 5: KẾ HOẠCH TUẦN TỚI -->
+<div class="tab-content" id="tab-plan">
+  <div class="stats three">
+    <div class="card c-blue"><div class="card-label">Tổng kế hoạch</div><div class="card-value">2</div></div>
+    <div class="card c-red"><div class="card-label">High priority</div><div class="card-value">1</div></div>
+    <div class="card c-amber"><div class="card-label">Carry-over từ W37</div><div class="card-value">5</div></div>
+  </div>
+
+  <div class="section-title">Kế hoạch W38 (14–18/09/2026)</div>
+  <table>
+    <tr><th style="width:14%">MasterTask</th><th style="width:46%">Nội dung kế hoạch</th><th style="width:14%">Ưu tiên</th><th>Ghi chú</th></tr>
+    <tr><td>VTI — Tối ưu hệ thống</td><td>Dọn dẹp, phân bổ lại ổ cứng VM SQL VTI</td><td><span class="tag tag-block">High</span></td><td>Ổ C đang gần đầy, rủi ro ảnh hưởng hệ thống nếu không xử lý sớm</td></tr>
+    <tr><td>VTI</td><td>Xoá bớt dữ liệu Ecode Client của VTI</td><td><span class="tag tag-ok">Normal</span></td><td>—</td></tr>
+  </table>
+</div>
+
+<!-- TAB 6: QUY TRÌNH -->
+<div class="tab-content" id="tab-process">
+  <div class="section-title">Người dùng</div>
+  <table>
+    <tr><td style="width:220px">Tên</td><td>Phạm Minh Hải</td></tr>
+    <tr><td>Vị trí</td><td>Trưởng phòng Core Technology, Dcorp Vietnam</td></tr>
+    <tr><td>Báo cáo lên</td><td>CEO trực tiếp</td></tr>
+    <tr><td>Tuần làm việc</td><td>Thứ 2 → Thứ 6</td></tr>
+    <tr><td>Deadline gửi báo cáo</td><td>Thứ 6 trước 17:00</td></tr>
+  </table>
+
+  <div class="section-title">Nguồn dữ liệu</div>
+  <table>
+    <tr><th style="width:16%">Hệ thống</th><th style="width:24%">Vai trò</th><th>Cách lấy</th></tr>
+    <tr><td>ClickUp</td><td>Task kỹ thuật (TECH-xxxxx)</td><td>Claude MCP connector</td></tr>
+    <tr><td>Bitrix24</td><td>Task khách hàng, task nội bộ</td><td>n8n sync 18:00 → PostgreSQL (weekly_report.tasks)</td></tr>
+    <tr><td>Gmail</td><td>Email công việc tuần</td><td>Claude Gmail MCP connector</td></tr>
+    <tr><td>Google Drive</td><td>Backup JSON mỗi tuần</td><td>Folder Personal_working/WeeklyReport</td></tr>
+  </table>
+
+  <div class="section-title">5 bước làm báo cáo</div>
+  <table>
+    <tr><th style="width:8%">Bước</th><th>Nội dung</th></tr>
+    <tr><td>1</td><td>Pull dữ liệu tự động: ClickUp (MCP), Gmail (MCP), Bitrix (đã sync PostgreSQL)</td></tr>
+    <tr><td>2</td><td>Confirm danh sách với người dùng: task nào có hoạt động thật, email nào cần đưa vào, có việc nội bộ nào thiếu</td></tr>
+    <tr><td>3</td><td>Nhập bổ sung: công việc phát sinh không có task ID, kế hoạch tuần tới</td></tr>
+    <tr><td>4</td><td>Phân loại: MasterTask, trạng thái, Vendor/Nội bộ trong blocker</td></tr>
+    <tr><td>5</td><td>Tạo 3 output: bảng chuẩn, text Bitrix, HTML dashboard 6 tab</td></tr>
+  </table>
+  <div class="note">Ghi chú kỹ thuật: bảng weekly_report.tasks chỉ sync task Bitrix đang mở (REAL_STATUS=2). Task hoàn thành trong tuần không có lịch sử tự động — cần Hải xác nhận trực tiếp mỗi tuần.</div>
+</div>
+
+</div>
+
+<div class="footer">
+  <div><strong>Phạm Minh Hải</strong> · Core Technology</div>
+  <div>weekly_report_haipm v1 · Generated 12/09/2026</div>
+</div>
+
+<script>
+function switchTab(id, btn){
+  document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('tab-'+id).classList.add('active');
+  if(btn) btn.classList.add('active');
+}
+function copyBitrix(){
+  var el = document.getElementById('bitrix-text');
+  var text = el.innerText.replace('Copy','').trim();
+  if(navigator.clipboard){ navigator.clipboard.writeText(text); }
+  var btn = el.querySelector('.copy-btn');
+  var old = btn.textContent; btn.textContent='Copied'; setTimeout(function(){btn.textContent=old;},1200);
+}
+</script>
+
+</body>
+</html>
