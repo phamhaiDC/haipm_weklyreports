@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>HaiPM | Báo cáo tuần W39 | 21-25.09.2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F2F2F6;--surface:#FFFFFF;--surface-2:#F7F7FB;--border:rgba(0,0,0,.09);--border-strong:rgba(0,0,0,.18);
+  --text:#0C0C14;--body:#3C3C50;--muted:#6C6C80;
+  --accent:#C01A1F;--accent-text:#961418;--accent-soft:rgba(192,26,31,.08);
+  --head:#1C1C1E;--head-2:#111111;--head-text:#FFFFFF;--head-muted:#B8B8C4;
+  --g-bg:rgba(10,120,50,.09);--g-tx:#0A6E2E;
+  --a-bg:rgba(160,90,0,.10);--a-tx:#8A4F00;
+  --b-bg:rgba(20,70,180,.09);--b-tx:#1540A8;
+  --p-bg:rgba(100,40,170,.09);--p-tx:#5B2A9E;
+  --r-bg:rgba(192,26,31,.09);--r-tx:#961418;
+  --n-bg:rgba(0,0,0,.06);--n-tx:#505060;
+  box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#09090B;--surface:#111116;--surface-2:#18181F;--border:rgba(255,255,255,.09);--border-strong:rgba(255,255,255,.16);
+  --text:#EEEEF4;--body:#B4B4C4;--muted:#80808F;
+  --accent:#E31E24;--accent-text:#F05458;--accent-soft:rgba(227,30,36,.12);
+  --head:#0C0C10;--head-2:#000;--head-text:#FFFFFF;--head-muted:#9898AA;
+  --g-bg:rgba(34,197,94,.12);--g-tx:#3ACA6A;--a-bg:rgba(245,158,11,.13);--a-tx:#F5A623;
+  --b-bg:rgba(96,165,250,.12);--b-tx:#7DBEFA;--p-bg:rgba(167,139,250,.13);--p-tx:#B7A2F8;
+  --r-bg:rgba(227,30,36,.14);--r-tx:#F05458;--n-bg:rgba(255,255,255,.07);--n-tx:#A4A4B4;
+}}
+:root[data-theme="dark"]{
+  --bg:#09090B;--surface:#111116;--surface-2:#18181F;--border:rgba(255,255,255,.09);--border-strong:rgba(255,255,255,.16);
+  --text:#EEEEF4;--body:#B4B4C4;--muted:#80808F;
+  --accent:#E31E24;--accent-text:#F05458;--accent-soft:rgba(227,30,36,.12);
+  --head:#0C0C10;--head-2:#000;--head-text:#FFFFFF;--head-muted:#9898AA;
+  --g-bg:rgba(34,197,94,.12);--g-tx:#3ACA6A;--a-bg:rgba(245,158,11,.13);--a-tx:#F5A623;
+  --b-bg:rgba(96,165,250,.12);--b-tx:#7DBEFA;--p-bg:rgba(167,139,250,.13);--p-tx:#B7A2F8;
+  --r-bg:rgba(227,30,36,.14);--r-tx:#F05458;--n-bg:rgba(255,255,255,.07);--n-tx:#A4A4B4;
+}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:'Montserrat',system-ui,-apple-system,'Segoe UI',Arial,sans-serif;font-size:14px;line-height:1.5}
+a{color:var(--accent-text);text-decoration:none}a:hover{text-decoration:underline}
+.mono{font-family:'DM Mono',ui-monospace,Consolas,monospace}
+
+/* Header */
+header{position:sticky;top:env(safe-area-inset-top,0px);z-index:100;background:var(--head);color:var(--head-text);border-left:5px solid var(--accent)}
+.hd{display:grid;grid-template-columns:auto 1fr auto;gap:18px;align-items:center;padding:12px 22px;max-width:1280px;margin:0 auto}
+.logo{width:40px;height:40px;background:#EC1F26;color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;font-weight:900;font-size:10px;letter-spacing:.3px;line-height:1.05;border-radius:4px}
+.logo small{font-size:6px;font-weight:700;background:#fff;color:#EC1F26;padding:0 3px;margin-top:2px;border-radius:1px}
+.hd h1{margin:0;font-size:16px;font-weight:800}
+.hd .sub{font-size:12px;color:var(--head-muted)}
+.wk{text-align:right}
+.wk .n{font-family:'DM Mono',monospace;font-size:30px;font-weight:500;line-height:1}
+.wk .d{font-size:11px;color:var(--head-muted)}
+nav{background:var(--head-2);overflow-x:auto;white-space:nowrap}
+nav .in{max-width:1280px;margin:0 auto;padding:0 14px;display:flex}
+nav button{background:none;border:0;color:var(--head-muted);font:600 13px 'Montserrat',sans-serif;padding:12px 14px;border-bottom:2px solid transparent;cursor:pointer}
+nav button.active{color:#fff;border-bottom-color:var(--accent)}
+nav button:focus-visible{outline:2px solid #fff;outline-offset:-4px}
+
+main{max-width:1280px;margin:0 auto;padding:22px}
+.tab{display:none}.tab.active{display:block}
+h2{font-size:17px;font-weight:800;margin:26px 0 10px}
+h2:first-child{margin-top:0}
+p.note{color:var(--muted);font-size:12.5px;margin:4px 0 12px;max-width:80ch}
+
+.stats{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px}
+.stat{background:var(--surface);border:1px solid var(--border);border-top:3px solid var(--border-strong);padding:12px 14px;border-radius:6px}
+.stat .v{font-family:'DM Mono',monospace;font-size:30px;font-weight:500;line-height:1.1}
+.stat .l{font-size:12px;color:var(--muted);font-weight:600}
+.stat.t{border-top-color:var(--accent)}.stat.ok{border-top-color:var(--g-tx)}.stat.ip{border-top-color:var(--a-tx)}.stat.wt{border-top-color:var(--b-tx)}
+
+.tw{overflow-x:auto;background:var(--surface);border:1px solid var(--border);border-radius:6px}
+table{border-collapse:collapse;width:100%;min-width:760px;font-size:13px}
+th{text-align:left;font-size:12px;font-weight:700;color:var(--muted);background:var(--surface-2);padding:9px 12px;border-bottom:1px solid var(--border)}
+td{padding:10px 12px;border-bottom:1px solid var(--border);vertical-align:top;color:var(--body)}
+td:first-child{color:var(--text);font-weight:700}
+tr:last-child td{border-bottom:0}
+tr.grp td{background:var(--surface-2);font-weight:800;color:var(--text);font-size:12.5px}
+tr.hot td{background:var(--accent-soft)}
+
+.b{display:inline-block;font-size:11px;font-weight:700;padding:2px 7px;border-radius:3px;white-space:nowrap}
+.s-done{background:var(--g-bg);color:var(--g-tx)}.s-ip{background:var(--a-bg);color:var(--a-tx)}
+.s-wait{background:var(--b-bg);color:var(--b-tx)}.s-block{background:var(--r-bg);color:var(--r-tx)}.s-none{background:var(--n-bg);color:var(--n-tx)}
+.src-cu{background:var(--p-bg);color:var(--p-tx)}.src-bx{background:var(--b-bg);color:var(--b-tx)}
+.src-em{background:var(--g-bg);color:var(--g-tx)}.src-int{background:var(--n-bg);color:var(--n-tx)}.src-ven{background:var(--r-bg);color:var(--r-tx)}
+.id{font-family:'DM Mono',monospace;font-size:12px;font-weight:500}
+
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.box{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:14px 16px}
+.box h3{margin:0 0 8px;font-size:14px;font-weight:800}
+.box ul{margin:0;padding-left:18px;color:var(--body)}.box li{margin:4px 0}
+.box.red{border-left:4px solid var(--accent)}
+
+.bitrix{position:relative}
+.bitrix pre{margin:0;background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:16px;font-family:'DM Mono',monospace;font-size:12.5px;line-height:1.6;white-space:pre-wrap;color:var(--text);max-height:none}
+.copy{position:absolute;top:10px;right:10px;background:var(--accent);color:#fff;border:0;border-radius:4px;padding:7px 12px;font:700 12px 'Montserrat',sans-serif;cursor:pointer}
+.copy:focus-visible{outline:2px solid var(--text);outline-offset:2px}
+
+.steps{counter-reset:s;list-style:none;padding:0;margin:0}
+.steps li{counter-increment:s;background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:12px 14px 12px 52px;margin-bottom:8px;position:relative;color:var(--body)}
+.steps li::before{content:counter(s);position:absolute;left:14px;top:11px;width:26px;height:26px;border-radius:50%;background:var(--accent);color:#fff;font:500 13px 'DM Mono',monospace;display:flex;align-items:center;justify-content:center}
+.steps b{color:var(--text)}
+
+footer{max-width:1280px;margin:0 auto;padding:18px 22px 28px;color:var(--muted);font-size:12px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;border-top:1px solid var(--border)}
+
+@media (max-width:900px){.stats{grid-template-columns:repeat(2,minmax(0,1fr))}.cols{grid-template-columns:1fr}.hd{grid-template-columns:auto 1fr}.wk{grid-column:1/-1;text-align:left;display:flex;gap:10px;align-items:baseline}main{padding:14px}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<header>
+  <div class="hd">
+    <div class="logo" aria-label="D'CORP R-KEEPER">D'CORP<small>R-KEEPER</small></div>
+    <div>
+      <h1>Báo cáo tuần: Core Technology</h1>
+      <div class="sub">Phạm Minh Hải gửi Mr James (CEO) | Dcorp Technology Corporation</div>
+    </div>
+    <div class="wk"><div class="n">W39</div><div class="d">21-25/09/2026</div></div>
+  </div>
+  <nav><div class="in" role="tablist">
+    <button class="active" onclick="tab('report',this)" role="tab">W39 Báo cáo tuần</button>
+    <button onclick="tab('email',this)" role="tab">Email tuần W39</button>
+    <button onclick="tab('aged',this)" role="tab">Task tồn lâu ngày</button>
+    <button onclick="tab('backlog',this)" role="tab">Backlog và carry-over</button>
+    <button onclick="tab('plan',this)" role="tab">Kế hoạch W40</button>
+    <button onclick="tab('process',this)" role="tab">Quy trình</button>
+  </div></nav>
+</header>
+
+<main>
+<!-- TAB 1 -->
+<section class="tab active" id="tab-report">
+  <div class="stats">
+    <div class="stat t"><div class="v">12</div><div class="l">Tổng đầu việc</div></div>
+    <div class="stat ok"><div class="v">4</div><div class="l">Hoàn thành</div></div>
+    <div class="stat ip"><div class="v">4</div><div class="l">Đang xử lý</div></div>
+    <div class="stat wt"><div class="v">4</div><div class="l">Chờ / Pending</div></div>
+    <div class="stat"><div class="v">0</div><div class="l">Chưa bắt đầu</div></div>
+  </div>
+  <p class="note">Tuần này không có cập nhật trên Bitrix và ClickUp. Các đầu việc bên dưới lấy từ email, UCS Service Desk và công việc phát sinh do anh Hải xác nhận.</p>
+
+  <h2>Kết quả công việc</h2>
+  <div class="tw"><table>
+    <thead><tr><th>MasterTask</th><th>Task ID</th><th>Kết quả thực hiện</th><th>Khó khăn</th><th>Đề xuất / Next</th><th>Trạng thái</th></tr></thead>
+    <tbody>
+      <tr><td>Cửu Vân Long</td><td><span class="b src-int">Nội bộ</span></td><td>Khảo sát vận hành kho. Đã viết report gửi PM.</td><td>-</td><td>PM dùng report cho bước thiết kế giải pháp kho</td><td><span class="b s-done">Hoàn thành</span></td></tr>
+      <tr><td>SNA (Presales)</td><td><span class="b src-em">Email</span><br><span class="id">Căn tin trường SNA</span></td><td>Đi khảo sát tại trường ở Biên Hòa ngày 24/09. Gửi phản biện cho team khảo sát: lớp 1, 2, 3 chia suất theo set ăn; lớp lớn chia theo khu vực, chỉ quản lý phần ăn chính, giới hạn bằng phiếu lấy lần 1, 2, 3; không quản lý phần ăn phụ.</td><td>-</td><td>Team khảo sát cập nhật phương án theo góp ý</td><td><span class="b s-done">Hoàn thành</span></td></tr>
+      <tr><td>VTI - Tối ưu hệ thống</td><td><span class="b src-int">Nội bộ</span><br><span class="b src-ven">UCS #208407</span></td><td>HotSwitch: dựng lại các máy test để chạy quy trình. Tài liệu: <a href="https://docs.google.com/document/d/1ceC1IglA4_LrI5Rd0I2CBJuhZHUkawG6/edit" target="_blank" rel="noopener">Google Doc</a>. Ticket tư vấn kiến trúc HotSwitch đã gửi UCS 21/09, hãng chuyển team dev.</td><td><span class="b src-int">Nội bộ</span> Phần Zabbix chưa setup do Trường bận.</td><td>W40: hoàn tất setup Zabbix với Trường</td><td><span class="b s-ip">Đang xử lý</span></td></tr>
+      <tr><td>SH5</td><td><a class="id" href="https://intranet.dcorp.com.vn/company/personal/user/8/tasks/task/view/93978/" target="_blank" rel="noopener"><span class="b src-bx">Bitrix 93978</span></a></td><td>Localization SH5: đã làm lại được các chứng từ và tên phiếu chính.</td><td>-</td><td>W40: làm tiếp phần còn lại</td><td><span class="b s-ip">Đang xử lý</span></td></tr>
+      <tr><td>TIKI</td><td><a class="id" href="https://intranet.dcorp.com.vn/company/personal/user/8/tasks/task/view/94031/" target="_blank" rel="noopener"><span class="b src-bx">Bitrix 94031</span></a></td><td>Test và thông luồng hệ thống Ecode. Hoàn thành cả 3 loại ecode, đã bàn giao cho KT test tiếp.</td><td>-</td><td>W40: theo dõi kết quả KT test</td><td><span class="b s-wait">Chờ xác nhận</span></td></tr>
+      <tr><td>VTI (Sarica)</td><td><span class="b src-em">Email</span><br><span class="id">Sarica stand-up</span></td><td>Theo dõi daily stand-up ERP và POS 21-25/09. Ngày 25/09 chốt 3 CR phía Dcorp (PIC a.Tuấn): form kiểm kê theo ABC 5 ngày, miễn phí, mục tiêu 01/10; tự trừ bao bì cho đơn online 5 ngày, tính phí; chặn đóng ngày khi tồn âm 4 ngày, tính phí. Go-live 4 cửa hàng dự kiến 01/10.</td><td>-</td><td>W40: theo dõi go-live 01/10. Dcorp trực helpdesk 22h-24h</td><td><span class="b s-ip">Đang xử lý</span></td></tr>
+      <tr class="grp"><td colspan="6">UCS Service Desk</td></tr>
+      <tr><td>UCS</td><td><span class="b src-ven">#208602</span></td><td>RK7: PDS interface nhận CardNum dạng chuỗi. Tạo 24/09. Ngày 25/09 hãng gợi ý dùng tham số để tìm coupon theo email.</td><td>-</td><td>W40: test gợi ý của hãng</td><td><span class="b s-ip">Đang xử lý</span></td></tr>
+      <tr><td>UCS</td><td><span class="b src-ven">#207669</span></td><td>RK7 7.26.5.008: thanh toán tiền mặt có lúc không hiện tiền thối. UCS gửi nhắc 21/09 và 25/09 là ticket ở trạng thái chờ phản hồi.</td><td><span class="b src-ven">Vendor</span></td><td>W40: theo dõi phía hãng</td><td><span class="b s-wait">Chờ</span></td></tr>
+      <tr><td>UCS</td><td><span class="b src-ven">#208070</span></td><td>CRM V7: coupon type Good áp được nhiều lần trên cùng order. Ngày 22/09 hãng tái hiện được lỗi trên DB của Dcorp, đã chuyển team dev.</td><td><span class="b src-ven">Vendor</span></td><td>Chờ hãng sửa</td><td><span class="b s-wait">Chờ</span></td></tr>
+      <tr><td>UCS</td><td><span class="b src-ven">#206594</span></td><td>Extended Table: Service Print phải in đúng bàn nhân viên order. Ngày 21/09 hãng xếp vào sprint 19/10-02/11.</td><td><span class="b src-ven">Vendor</span></td><td>Theo dõi sau 02/11</td><td><span class="b s-wait">Chờ</span></td></tr>
+      <tr><td>UCS</td><td><span class="b src-ven">#204332</span></td><td>CRMV7: localization tính năng mới trên CRM 7.15.6.100. Hãng đóng ticket 25/09.</td><td>-</td><td>-</td><td><span class="b s-done">Hoàn thành</span></td></tr>
+      <tr><td>UCS</td><td><span class="b src-ven">#208331</span></td><td>rkNext cho showroom Việt Nam. Hãng chuyển trạng thái hoàn thành 21/09.</td><td>-</td><td>-</td><td><span class="b s-done">Hoàn thành</span></td></tr>
+    </tbody>
+  </table></div>
+
+  <h2>Blocker và khó khăn</h2>
+  <div class="cols">
+    <div class="box red">
+      <h3>HotSwitch: thiếu phần Zabbix</h3>
+      <ul>
+        <li><b>Issue:</b> máy test đã dựng, phần giám sát Zabbix chưa setup.</li>
+        <li><b>Impact:</b> chưa chạy trọn quy trình test chuyển đổi.</li>
+        <li><b>Status:</b> Nội bộ. Trường bận việc khác trong tuần.</li>
+        <li><b>Next action:</b> anh Hải push lại với Trường trong W40.</li>
+      </ul>
+    </div>
+    <div class="box red">
+      <h3>Sync Bitrix cho báo cáo tuần sót task mới</h3>
+      <ul>
+        <li><b>Issue:</b> task 93978 và 94031 không có trong <span class="mono">weekly_report.tasks</span>. Dữ liệu trong DB dừng ở 05/09.</li>
+        <li><b>Impact:</b> báo cáo tuần không lấy tự động được task Bitrix mới, phải nhập tay.</li>
+        <li><b>Status:</b> Nội bộ. Workflow n8n vẫn chạy hằng ngày nhưng không kéo được task tạo sau 05/09.</li>
+        <li><b>Next action:</b> kiểm tra workflow <span class="mono">HaiPM - Weekly Report Sync</span> trong W40.</li>
+      </ul>
+    </div>
+  </div>
+
+  <h2>Text Bitrix</h2>
+  <div class="bitrix">
+    <button class="copy" onclick="copyText('bxtext',this)">Sao chép</button>
+<pre id="bxtext">📋 HaiPM | W39 | 21–25.Sep.2026
+
+✅ Hoàn thành:
+- Cửu Vân Long: khảo sát vận hành kho, đã gửi report cho PM
+- SNA (căn tin trường học): khảo sát tại Biên Hòa 24/09, gửi phản biện cho team khảo sát. Lớp 1-3 chia theo set ăn; lớp lớn chia theo khu vực, chỉ quản lý phần ăn chính, giới hạn bằng phiếu lấy lần 1/2/3
+- UCS #204332 (CRMV7 Localization): hãng đã đóng
+- UCS #208331 (rkNext showroom VN): hãng đã hoàn thành
+
+🔄 Đang xử lý:
+- 93978: Localization SH5 → đã làm lại các chứng từ và tên phiếu chính, tiếp tục W40
+- 94031: Tiki Ecode → thông luồng xong 3 loại ecode, đã bàn giao KT test
+- HotSwitch: đã dựng lại máy test quy trình → còn phần Zabbix
+- Sarica (VTI): theo dõi daily stand-up. Đã chốt 3 CR (form kiểm kê ABC 5 ngày miễn phí, mục tiêu 01/10; trừ bao bì đơn online 5 ngày tính phí; chặn đóng ngày khi tồn âm 4 ngày tính phí)
+
+📧 Email / Vendor:
+- UCS #208407 HotSwitch: hãng đã chuyển team dev, chờ phản hồi
+- UCS #208602 PDS CardNum: hãng gợi ý tìm coupon theo email, cần test
+- UCS #207669 Cash không hiện tiền thối: theo dõi tiếp W40
+- UCS #208070 Coupon Good áp nhiều lần: hãng đã tái hiện lỗi, chuyển dev
+- UCS #206594 Extended Table Service Print: hãng xếp vào sprint 19/10-02/11
+
+⏳ Chưa bắt đầu:
+- Không có
+
+🔴 Blocker:
+- HotSwitch: chưa setup Zabbix do Trường bận (Nội bộ)
+- Sync Bitrix cho báo cáo tuần: task mới 93978, 94031 không vào DB (Nội bộ)
+
+📅 Kế hoạch W40:
+- Tiếp tục 93978 Localization SH5
+- 93251: tổng hợp các task cần UCS cải thiện cho HLC, book họp với Marijus
+- HotSwitch: hoàn tất setup Zabbix với Trường
+- UCS #207669, #208602: theo dõi và test gợi ý của hãng
+- 94031 Tiki: theo dõi kết quả KT test
+- Kiểm tra workflow n8n sync Bitrix</pre>
+  </div>
+</section>
+
+<!-- TAB 2 -->
+<section class="tab" id="tab-email">
+  <div class="stats">
+    <div class="stat t"><div class="v">4</div><div class="l">Cần action</div></div>
+    <div class="stat wt"><div class="v">7</div><div class="l">Vendor ticket</div></div>
+    <div class="stat ok"><div class="v">2</div><div class="l">Thông tin</div></div>
+    <div class="stat"><div class="v">19</div><div class="l">Bỏ qua</div></div>
+    <div class="stat ip"><div class="v">0</div><div class="l">Email đã gửi (Sent)</div></div>
+  </div>
+  <p class="note">Nguồn: inbox d.haipm@dcorp.com.vn, 21-25/09/2026. Hộp Sent của tài khoản này không có email trong tuần; email gửi từ rd.manager@ hoặc Outlook không nằm trong dữ liệu này.</p>
+
+  <h2>Cần action</h2>
+  <div class="tw"><table>
+    <thead><tr><th>Chủ đề</th><th>Người gửi / Ngày</th><th>Nội dung chính</th><th>Liên quan</th></tr></thead>
+    <tbody>
+      <tr><td>[DcorpxVTI] Weekly meeting W39</td><td>Phuong La (VTI), 24/09</td><td>Sarica mở rộng 4 cửa hàng (Saritown, 10 Nguyễn Cơ Thạch, Sala, Thiso) go-live 01/10. Kiosk/tablet ordering sẵn sàng UAT. Còn mở: S2S flow, Phase 2 ERP Integration. Anh Hải không dự buổi này.</td><td>VTI, PIC a.Tuấn</td></tr>
+      <tr><td>ERP &amp; POS Integration - Sarica</td><td>Phuong La (VTI), 21-25/09</td><td>Biên bản stand-up hằng ngày. Chốt 3 CR ngày 25/09. Dcorp nhận trực helpdesk go-live 22h-24h trong ngắn hạn. "Anh Hai" trong biên bản là Hai Le Nam (VTI).</td><td>VTI (Sarica)</td></tr>
+      <tr><td>[Dcorp x VTI] POS System Status Jun-Sep 2026</td><td>CEO James, 24/09</td><td>Tổng kết cải tiến hệ thống HLC gửi VTI: master data governance, pre-flight checklist, Dcorp 911, E-code load balancing, Master-Slave chờ VTI duyệt mua server, ticketing dashboard, SkyReport Mobile refresh 15 phút.</td><td>VTI</td></tr>
+      <tr><td>Đối tác giải pháp quản lý căn tin trường SNA</td><td>Huy (Dcorp), 23/09</td><td>Hẹn khảo sát tại trường ở Biên Hòa 14:00 ngày 24/09. Tịnh share folder "SNA" ngày 24/09.</td><td>SNA (Presales)</td></tr>
+    </tbody>
+  </table></div>
+
+  <h2>Vendor ticket: UCS (sd@rkeeper.ru)</h2>
+  <div class="tw"><table>
+    <thead><tr><th>Ticket</th><th>Chủ đề</th><th>Diễn biến trong tuần</th><th>Trạng thái</th></tr></thead>
+    <tbody>
+      <tr><td class="id">#208407</td><td>HotSwitch Architecture Consultation</td><td>Tạo 21/09. Hãng chuyển team dev cùng ngày.</td><td><span class="b s-wait">Chờ hãng</span></td></tr>
+      <tr><td class="id">#208602</td><td>PDS interface nhận CardNum dạng chuỗi</td><td>Tạo 24/09. Hãng comment 24/09 và 25/09; gợi ý dùng tham số tìm coupon theo email.</td><td><span class="b s-ip">Cần test</span></td></tr>
+      <tr class="hot"><td class="id">#207669</td><td>Cash payment không hiện tiền thối</td><td>Hãng nhắc 21/09 và 25/09: ticket chờ phản hồi quá 3 ngày.</td><td><span class="b s-wait">Theo dõi</span></td></tr>
+      <tr><td class="id">#208070</td><td>Coupon type Good áp nhiều lần</td><td>22/09: hãng tái hiện được lỗi, chuyển dev.</td><td><span class="b s-wait">Chờ hãng</span></td></tr>
+      <tr><td class="id">#206594</td><td>Extended Table Service Print</td><td>21/09: xếp vào sprint 19/10-02/11.</td><td><span class="b s-wait">Chờ hãng</span></td></tr>
+      <tr><td class="id">#204332</td><td>CRMV7 Localization 7.15.6.100</td><td>Đóng 25/09.</td><td><span class="b s-done">Đóng</span></td></tr>
+      <tr><td class="id">#208331</td><td>rkNext cho showroom VN</td><td>Hoàn thành 21/09.</td><td><span class="b s-done">Hoàn thành</span></td></tr>
+    </tbody>
+  </table></div>
+
+  <h2>Thông tin và bỏ qua</h2>
+  <div class="cols">
+    <div class="box"><h3>Thông tin</h3><ul>
+      <li>POS Daily Operations Report (tự động), báo cáo ngày 20-24/09</li>
+      <li>Google Drive: Tịnh share folder "SNA", 24/09</li>
+    </ul></div>
+    <div class="box"><h3>Bỏ qua (19)</h3><ul>
+      <li>Webinar, newsletter: Grafana (3), Google Cloud (6), Veeam, Cisco, Artlist, AWS event, r_keeper khuyến mãi</li>
+      <li>Khác: Pegasi, Quora, OpenAI privacy policy, nhắc lịch Yandex, recall email Sarica</li>
+    </ul></div>
+  </div>
+</section>
+
+<!-- TAB 3 -->
+<section class="tab" id="tab-aged">
+  <div class="stats">
+    <div class="stat t"><div class="v">143</div><div class="l">Task Bitrix đang mở</div></div>
+    <div class="stat"><div class="v">135</div><div class="l">Tồn trên 3 tháng</div></div>
+    <div class="stat"><div class="v">50</div><div class="l">Tạo năm 2019</div></div>
+    <div class="stat"><div class="v">39</div><div class="l">Tạo 2022-2024</div></div>
+    <div class="stat"><div class="v">46</div><div class="l">Tạo 2025-2026, trên 3 tháng</div></div>
+  </div>
+  <p class="note">Nguồn: bảng weekly_report.tasks (responsible_id = 8), tính tuổi đến 25/09/2026. Chưa gồm task tạo sau 05/09 do lỗi sync. Danh sách chi tiết bỏ qua các task GGG / Golden Gate.</p>
+
+  <h2>Phân loại theo tuổi và đề xuất</h2>
+  <div class="tw"><table>
+    <thead><tr><th>Nhóm</th><th>Số task</th><th>Đặc điểm</th><th>Đề xuất</th></tr></thead>
+    <tbody>
+      <tr><td>Tạo 11/2019</td><td class="mono">50</td><td>Task QSR, TNI-VK, demo khách hàng, memo khuyến mãi năm 2019. Hạn chót đều trong 2019-2020.</td><td>Đóng hàng loạt sau khi anh rà nhanh danh sách</td></tr>
+      <tr><td>Tạo 2022-2024</td><td class="mono">39</td><td>Nghiên cứu, tài liệu presales, yêu cầu La Sirena / 7 Bridge trên SkyInventory, đào tạo nội bộ.</td><td>Đóng các việc đã hết ngữ cảnh; chuyển yêu cầu khách hàng còn hiệu lực sang ClickUp</td></tr>
+      <tr><td>Tạo 2025</td><td class="mono">16</td><td>AI nội bộ, chuẩn bị làm việc với UCS / Marijus, Zabbix training, yêu cầu KDS Eternal.</td><td>Rà từng task, gộp vào task 93251 nếu liên quan UCS</td></tr>
+      <tr><td>Tạo 2026, trên 3 tháng</td><td class="mono">30</td><td>VTI hạ tầng VNG, E-Code KB, AI Công ty, Vibe Code.</td><td>Xem bảng chi tiết bên dưới, gán lại deadline</td></tr>
+      <tr><td>Dưới hoặc bằng 3 tháng</td><td class="mono">8</td><td>Gồm 93251, 93253, 93254 (90 ngày), The Street, CVL, Sasin, RK7 Cashstation.</td><td>Theo dõi trong backlog</td></tr>
+    </tbody>
+  </table></div>
+
+  <h2>Chi tiết task tạo năm 2026, tồn trên 3 tháng</h2>
+  <div class="tw"><table>
+    <thead><tr><th>ID</th><th>Tiêu đề</th><th>MasterTask</th><th>Ngày tạo</th><th>Tuổi (ngày)</th></tr></thead>
+    <tbody>
+      <tr><td class="id">91725</td><td>INT | Master Task: Digital Transformation, Dcorp - Kliment</td><td>Other</td><td class="mono">13/01/2026</td><td class="mono">255</td></tr>
+      <tr><td class="id">91922</td><td>Thảo luận tích hợp Mini ERP với phần mềm kế toán Amis</td><td>Other</td><td class="mono">01/02/2026</td><td class="mono">236</td></tr>
+      <tr><td class="id">92146</td><td>Tổng hợp tài liệu chuẩn bị show cho BIR</td><td>VTI Philippine</td><td class="mono">02/03/2026</td><td class="mono">207</td></tr>
+      <tr><td class="id">92340</td><td>Rà soát script khách hàng lớn (tối ưu bằng AI)</td><td>VTI - Tối ưu hệ thống</td><td class="mono">16/03/2026</td><td class="mono">193</td></tr>
+      <tr><td class="id">92488</td><td>Xây dựng app chấm công và tính lương Dcorp</td><td>Vibe Code</td><td class="mono">01/04/2026</td><td class="mono">177</td></tr>
+      <tr><td class="id">92518</td><td>Nghiên cứu OpenSearch cho centralized logs</td><td>AI Công ty</td><td class="mono">05/04/2026</td><td class="mono">173</td></tr>
+      <tr><td class="id">92519</td><td>Tối ưu Zalo OA/Group + AI/Automation cho CC</td><td>VTI - Tối ưu hệ thống</td><td class="mono">05/04/2026</td><td class="mono">173</td></tr>
+      <tr><td class="id">92521</td><td>Hướng dẫn sử dụng Gemini cho Dcorp</td><td>VTI - Tối ưu hệ thống</td><td class="mono">06/04/2026</td><td class="mono">172</td></tr>
+      <tr><td class="id">92522</td><td>Hướng dẫn sử dụng tài khoản Google Business</td><td>VTI - Tối ưu hệ thống</td><td class="mono">06/04/2026</td><td class="mono">172</td></tr>
+      <tr><td class="id">92524</td><td>Hoàn thiện và triển khai ostLauncher (bản Dcorp)</td><td>AI Công ty</td><td class="mono">06/04/2026</td><td class="mono">172</td></tr>
+      <tr><td class="id">92540</td><td>Tìm hiểu Gemini trong Google Workspace đã mua</td><td>Other</td><td class="mono">06/04/2026</td><td class="mono">172</td></tr>
+      <tr><td class="id">92572</td><td>Nghiên cứu ứng dụng AI của Google trong công việc văn phòng</td><td>AI Công ty</td><td class="mono">09/04/2026</td><td class="mono">169</td></tr>
+      <tr><td class="id">92580</td><td>VTI: tối ưu hạ tầng VMW trên VNG Cloud (main task)</td><td>VTI - Tối ưu hệ thống</td><td class="mono">10/04/2026</td><td class="mono">168</td></tr>
+      <tr><td class="id">92688</td><td>VTI: thống kê và mô tả lại toàn bộ hạ tầng, software</td><td>VTI</td><td class="mono">22/04/2026</td><td class="mono">156</td></tr>
+      <tr><td class="id">92766</td><td>Chuyển database Postgres lên service của VNG</td><td>Other</td><td class="mono">04/05/2026</td><td class="mono">144</td></tr>
+      <tr><td class="id">92831</td><td>Cập nhật trạng thái triển khai SO từ Bitrix sang ERP</td><td>AI Công ty</td><td class="mono">10/05/2026</td><td class="mono">138</td></tr>
+      <tr><td class="id">92881</td><td>VTI: KDS không get license được</td><td>VTI</td><td class="mono">14/05/2026</td><td class="mono">134</td></tr>
+      <tr><td class="id">92906</td><td>Khảo sát sử dụng thiết bị và bản quyền phần mềm 2026</td><td>Other</td><td class="mono">18/05/2026</td><td class="mono">130</td></tr>
+      <tr><td class="id">92940</td><td>Rà soát danh sách phần mềm/app toàn công ty</td><td>Other</td><td class="mono">21/05/2026</td><td class="mono">127</td></tr>
+      <tr><td class="id">92948</td><td>VTI: raise issue mất đồng bộ store về ref</td><td>AI Công ty</td><td class="mono">22/05/2026</td><td class="mono">126</td></tr>
+      <tr><td class="id">92949</td><td>VTI: test giải pháp 1,5 triệu Ecode event tháng 06</td><td>VTI</td><td class="mono">22/05/2026</td><td class="mono">126</td></tr>
+      <tr><td class="id">92970</td><td>Cập nhật Bitrix24 API lấy thông tin Deal</td><td>Other</td><td class="mono">25/05/2026</td><td class="mono">123</td></tr>
+      <tr><td class="id">93016</td><td>Tổng hợp sự cố E-Code VTI, build KB</td><td>VTI</td><td class="mono">30/05/2026</td><td class="mono">118</td></tr>
+      <tr><td class="id">93046</td><td>Xây dựng KB UCS Software for AI</td><td>AI Công ty</td><td class="mono">02/06/2026</td><td class="mono">115</td></tr>
+      <tr><td class="id">93072</td><td>Tổng hợp với VTI các service không còn sử dụng</td><td>VTI</td><td class="mono">04/06/2026</td><td class="mono">113</td></tr>
+      <tr><td class="id">93073</td><td>VTI: review hạ tầng VNG và lên cấu hình sizing</td><td>VTI</td><td class="mono">04/06/2026</td><td class="mono">113</td></tr>
+      <tr><td class="id">93087</td><td>The Street: rà soát tính năng kho đưa vào hợp đồng</td><td>Other</td><td class="mono">06/06/2026</td><td class="mono">111</td></tr>
+      <tr><td class="id">93200</td><td>Thống kê API theo yêu cầu team hạ tầng VTI</td><td>VTI</td><td class="mono">22/06/2026</td><td class="mono">95</td></tr>
+      <tr><td class="id">93218</td><td>Master task: test tính năng phần mềm của hãng</td><td>Other</td><td class="mono">23/06/2026</td><td class="mono">94</td></tr>
+      <tr><td class="id">93227</td><td>VTI: viết lại script, kịch bản promotion campaign</td><td>AI Công ty</td><td class="mono">24/06/2026</td><td class="mono">93</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<!-- TAB 4 -->
+<section class="tab" id="tab-backlog">
+  <h2>Carry-over từ W39</h2>
+  <div class="tw"><table>
+    <thead><tr><th>Đầu việc</th><th>Nguồn</th><th>Tình trạng cuối W39</th><th>Chờ ai</th><th>Đưa vào</th></tr></thead>
+    <tbody>
+      <tr><td>HotSwitch: setup Zabbix</td><td><span class="b src-int">Nội bộ</span></td><td>Máy test đã dựng, thiếu Zabbix</td><td>Trường (nội bộ)</td><td>W40</td></tr>
+      <tr><td>Localization SH5</td><td><span class="b src-bx">Bitrix 93978</span></td><td>Xong chứng từ và tên phiếu chính</td><td>-</td><td>W40</td></tr>
+      <tr><td>Tiki Ecode</td><td><span class="b src-bx">Bitrix 94031</span></td><td>Đã bàn giao KT test</td><td>KT</td><td>W40</td></tr>
+      <tr><td>Sarica: 3 CR và go-live 01/10</td><td><span class="b src-em">Email</span></td><td>CR đã chốt effort</td><td>a.Tuấn (PIC Dcorp)</td><td>W40</td></tr>
+      <tr><td>UCS #207669</td><td><span class="b src-ven">Vendor</span></td><td>Hãng nhắc chờ phản hồi 21/09, 25/09</td><td>Theo dõi phía hãng</td><td>W40</td></tr>
+      <tr><td>UCS #208602</td><td><span class="b src-ven">Vendor</span></td><td>Có gợi ý của hãng, chưa test</td><td>Dcorp test</td><td>W40</td></tr>
+      <tr><td>UCS #208407, #208070</td><td><span class="b src-ven">Vendor</span></td><td>Đã chuyển team dev của hãng</td><td>UCS</td><td>Theo dõi</td></tr>
+      <tr><td>UCS #206594</td><td><span class="b src-ven">Vendor</span></td><td>Sprint 19/10-02/11</td><td>UCS</td><td>Theo dõi sau 02/11</td></tr>
+    </tbody>
+  </table></div>
+
+  <h2>ClickUp đang mở, không có cập nhật trong W39</h2>
+  <p class="note">Tô nền: không có cập nhật trên 2 tuần tính đến 25/09. Đã loại task GG / Golden Gate.</p>
+  <div class="tw"><table>
+    <thead><tr><th>Task</th><th>Nội dung</th><th>Trạng thái ClickUp</th><th>Cập nhật cuối</th></tr></thead>
+    <tbody>
+      <tr><td><a class="id" href="https://app.clickup.com/t/z908825c2u" target="_blank" rel="noopener">TECH-16301</a></td><td>The Street: bug conflict region ENG (IR) và VN (SH5)</td><td><span class="b s-ip">In progress</span></td><td class="mono">23/09/2026</td></tr>
+      <tr class="hot"><td><a class="id" href="https://app.clickup.com/t/z908827hzu" target="_blank" rel="noopener">TECH-16580</a></td><td>The Street KDS: màn hình SUM ưu tiên session cũ khi bump món</td><td><span class="b s-none">Not started</span></td><td class="mono">11/09/2026</td></tr>
+      <tr class="hot"><td><a class="id" href="https://app.clickup.com/t/z908827efj" target="_blank" rel="noopener">TECH-16563</a></td><td>The Street KDS: hiển thị tên phục vụ trên phiếu in</td><td><span class="b s-none">Not started</span></td><td class="mono">10/09/2026</td></tr>
+      <tr class="hot"><td><a class="id" href="https://app.clickup.com/t/z908825c44" target="_blank" rel="noopener">TECH-16302</a></td><td>The Street KDS: hiển thị lại món đã phục vụ</td><td><span class="b s-none">Not started</span></td><td class="mono">08/09/2026</td></tr>
+      <tr class="hot"><td><a class="id" href="https://app.clickup.com/t/86ey7q5xh" target="_blank" rel="noopener">TECH-15505</a></td><td>The Street: bổ sung tính năng KDS 09/07/2026</td><td><span class="b s-ip">In progress</span></td><td class="mono">07/09/2026</td></tr>
+      <tr class="hot"><td><a class="id" href="https://app.clickup.com/t/z908826e32" target="_blank" rel="noopener">TECH-16476</a></td><td>CVL: nhập tiền mặt không ra tiền thối</td><td><span class="b s-ip">In progress</span></td><td class="mono">07/09/2026</td></tr>
+      <tr class="hot"><td><a class="id" href="https://app.clickup.com/t/z908824f72" target="_blank" rel="noopener">TECH-16217</a></td><td>The Street: bổ sung tính năng SH5</td><td><span class="b s-ip">In progress</span></td><td class="mono">20/08/2026</td></tr>
+      <tr class="hot"><td><a class="id" href="https://app.clickup.com/t/86eyd8qfw" target="_blank" rel="noopener">TECH-15809</a></td><td>KDS: yêu cầu tính năng ngày 24/07/2026</td><td><span class="b s-ip">In progress</span></td><td class="mono">31/07/2026</td></tr>
+      <tr class="hot"><td><a class="id" href="https://app.clickup.com/t/86exp9wfn" target="_blank" rel="noopener">TECH-14048</a></td><td>GAKU KDS: tự đếm thời gian chế biến khi chuyển trạng thái</td><td><span class="b s-none">To do</span></td><td class="mono">08/06/2026</td></tr>
+      <tr class="hot"><td><a class="id" href="https://app.clickup.com/t/86exaugc9" target="_blank" rel="noopener">TECH-13045</a></td><td>VTI: chặn ra bill khi nhập Ecode và thanh toán sai tiền tệ</td><td><span class="b s-none">To do</span></td><td class="mono">28/05/2026</td></tr>
+      <tr class="hot"><td><a class="id" href="https://app.clickup.com/t/86ew3kbr8" target="_blank" rel="noopener">TECH-11143</a></td><td>Lasirena: dữ liệu 1C sai khi đẩy qua DB trung gian FAST</td><td><span class="b s-ip">In progress</span></td><td class="mono">14/01/2026</td></tr>
+      <tr class="hot"><td><a class="id" href="https://app.clickup.com/t/86evum38w" target="_blank" rel="noopener">TECH-10515</a></td><td>New Pearl: chặn cập nhật tích điểm sau tạm tính</td><td><span class="b s-none">To do</span></td><td class="mono">12/12/2025</td></tr>
+      <tr class="hot"><td><a class="id" href="https://app.clickup.com/t/86ev7qmqt" target="_blank" rel="noopener">TECH-9128</a></td><td>Lasirena: phiếu xuất kho 1C đẩy qua FAST bị lệch</td><td><span class="b s-ip">In progress</span></td><td class="mono">11/12/2025</td></tr>
+      <tr class="hot"><td><a class="id" href="https://app.clickup.com/t/86evqv14f" target="_blank" rel="noopener">TECH-10376</a></td><td>Global X: điều chỉnh mẫu in tạm tính</td><td><span class="b s-wait">Pending</span></td><td class="mono">06/12/2025</td></tr>
+      <tr class="hot"><td><a class="id" href="https://app.clickup.com/t/86euu7rhw" target="_blank" rel="noopener">TECH-8277</a></td><td>The Coffee Bean: lỗi thanh toán khi dùng Ecode Coupon</td><td><span class="b s-none">To do</span></td><td class="mono">11/09/2025</td></tr>
+    </tbody>
+  </table></div>
+  <p class="note">TECH-16476 (CVL) và UCS #207669 cùng mô tả hiện tượng không hiện tiền thối khi thanh toán tiền mặt. Chưa xác minh hai việc có cùng nguyên nhân.</p>
+</section>
+
+<!-- TAB 5 -->
+<section class="tab" id="tab-plan">
+  <div class="stats" style="grid-template-columns:repeat(3,minmax(0,1fr))">
+    <div class="stat t"><div class="v">7</div><div class="l">Tổng kế hoạch</div></div>
+    <div class="stat"><div class="v">2</div><div class="l">High priority</div></div>
+    <div class="stat ip"><div class="v">5</div><div class="l">Carry-over từ W39</div></div>
+  </div>
+  <h2>Kế hoạch W40 (28/09-02/10/2026)</h2>
+  <div class="tw"><table>
+    <thead><tr><th>MasterTask</th><th>Nội dung kế hoạch</th><th>Ưu tiên</th><th>Ghi chú</th></tr></thead>
+    <tbody>
+      <tr><td>VTI</td><td>Bitrix <a class="id" href="https://intranet.dcorp.com.vn/company/personal/user/8/tasks/task/view/93251/" target="_blank" rel="noopener">93251</a>: tổng hợp các task cần UCS cải thiện cho HLC, book họp với Marijus</td><td><span class="b s-block">High</span></td><td>Mới trong tuần. Gom các ticket UCS đang mở vào danh sách họp</td></tr>
+      <tr><td>VTI - Tối ưu hệ thống</td><td>HotSwitch: hoàn tất setup Zabbix, chạy trọn quy trình test</td><td><span class="b s-block">High</span></td><td>Carry-over. Phụ thuộc Trường</td></tr>
+      <tr><td>SH5</td><td>Bitrix 93978: tiếp tục localization SH5</td><td><span class="b s-ip">Normal</span></td><td>Carry-over</td></tr>
+      <tr><td>UCS</td><td>#207669: theo dõi phía hãng. #208602: test gợi ý tìm coupon theo email</td><td><span class="b s-ip">Normal</span></td><td>Carry-over</td></tr>
+      <tr><td>TIKI</td><td>Bitrix 94031: theo dõi kết quả KT test Ecode</td><td><span class="b s-ip">Normal</span></td><td>Carry-over</td></tr>
+      <tr><td>Other</td><td>Kiểm tra workflow n8n sync Bitrix cho báo cáo tuần</td><td><span class="b s-none">Low</span></td><td>Mới. Để W40 lấy task tự động</td></tr>
+      <tr><td>VTI (Sarica)</td><td>Theo dõi go-live 4 cửa hàng ngày 01/10</td><td><span class="b s-ip">Normal</span></td><td>PIC a.Tuấn. Dcorp trực helpdesk 22h-24h</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<!-- TAB 6 -->
+<section class="tab" id="tab-process">
+  <h2>Quy trình làm báo cáo tuần</h2>
+  <ol class="steps">
+    <li><b>Pull dữ liệu.</b> ClickUp qua MCP (assignee 89477225), Bitrix qua PostgreSQL <span class="mono">weekly_report.tasks</span> (responsible_id = 8), Gmail inbox theo khoảng ngày của tuần.</li>
+    <li><b>Xác nhận danh sách.</b> Anh Hải chọn task có hoạt động thật, email cần đưa vào, việc nội bộ không có task ID.</li>
+    <li><b>Bổ sung việc phát sinh và kế hoạch tuần tới.</b> Nhập theo mẫu: MasterTask, việc đã làm, kết quả, khó khăn.</li>
+    <li><b>Phân loại.</b> Gán MasterTask, trạng thái, tách Vendor và Nội bộ trong blocker, ghi lý do với task chưa bắt đầu.</li>
+    <li><b>Xuất 3 output.</b> HTML dashboard 6 tab, bảng báo cáo chuẩn, text Bitrix. Chỉ build sau khi anh Hải xác nhận "đủ".</li>
+  </ol>
+
+  <h2>Lịch</h2>
+  <div class="cols">
+    <div class="box"><h3>Gửi báo cáo</h3><ul><li>Thứ 6 trước 17:00, gửi CEO James.</li><li>n8n sync Bitrix chạy 18:00 thứ 2 đến thứ 6.</li></ul></div>
+    <div class="box"><h3>Lưu ý kỹ thuật</h3><ul>
+      <li>Nhãn tuần trong Bitrix DB đi trước 1 tuần (DB ghi W40 cho tuần W39).</li>
+      <li>Sync Bitrix hiện không kéo task tạo sau 05/09. Cần sửa trước W40.</li>
+      <li>Sort theo updated_at của ClickUp search không ổn định, phải lọc lại theo ngày.</li>
+      <li>Hộp Sent của d.haipm@ không phản ánh email gửi từ rd.manager@ hoặc Outlook.</li>
+    </ul></div>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div><strong>Phạm Minh Hải</strong> | Trưởng phòng Core Technology</div>
+  <div class="mono">weekly_report_HaiPM v1 | Tạo ngày 27/09/2026</div>
+</footer>
+
+<script>
+function tab(id,btn){
+  document.querySelectorAll('.tab').forEach(function(t){t.classList.remove('active')});
+  document.querySelectorAll('nav button').forEach(function(b){b.classList.remove('active')});
+  document.getElementById('tab-'+id).classList.add('active');
+  if(btn)btn.classList.add('active');
+  window.scrollTo(0,0);
+}
+function copyText(id,btn){
+  var el=document.getElementById(id);var txt=el.innerText;
+  function done(){var o=btn.textContent;btn.textContent='Đã sao chép';setTimeout(function(){btn.textContent=o},1500)}
+  function fallback(){try{var r=document.createRange();r.selectNodeContents(el);var s=window.getSelection();s.removeAllRanges();s.addRange(r);document.execCommand('copy');done()}catch(e){btn.textContent='Bôi đen để copy'}}
+  try{if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(txt).then(done,fallback)}else{fallback()}}catch(e){fallback()}
+}
+</script>
+</body>
+</html>
