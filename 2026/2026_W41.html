@@ -1,0 +1,428 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>HaiPM W41/2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800;900&family=DM+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: dark brand header, sticky tab bar, one content column (max 1180px) with tables that scroll inside their own box */
+:root{
+  --bg:#eef0f4; --card:#ffffff; --fg:#14171f; --muted:#5f6470; --line:#dfe2e8; --soft:#f6f7f9;
+  --red:#e30613; --hdr:#1a1f2e; --tabs:#131722; --hdr-fg:#f3f4f7; --hdr-muted:#9aa1b2;
+  --ok:#15803d; --ok-bg:#e7f6ec; --ip:#1d4ed8; --ip-bg:#e8eefc; --wait:#b45309; --wait-bg:#fdf1e1;
+  --ns:#525866; --ns-bg:#eceef2; --late:#b91c1c; --late-bg:#fde8e8; --vio:#6d28d9; --vio-bg:#efe9fc;
+  --f-body:'Montserrat',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --f-mono:'DM Mono',ui-monospace,'SFMono-Regular',Menlo,monospace;
+  --r:10px;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0e1117; --card:#171b24; --fg:#e7e9ee; --muted:#9aa0ad; --line:#2a303c; --soft:#1d222c;
+  --ok:#4ade80; --ok-bg:#12301d; --ip:#8fb0ff; --ip-bg:#18264a; --wait:#f5b25a; --wait-bg:#3a2a12;
+  --ns:#b4b9c4; --ns-bg:#262b35; --late:#f87171; --late-bg:#3b1517; --vio:#c4a8ff; --vio-bg:#2a1f45;
+  --hdr:#141824; --tabs:#0b0e14; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0e1117; --card:#171b24; --fg:#e7e9ee; --muted:#9aa0ad; --line:#2a303c; --soft:#1d222c;
+  --ok:#4ade80; --ok-bg:#12301d; --ip:#8fb0ff; --ip-bg:#18264a; --wait:#f5b25a; --wait-bg:#3a2a12;
+  --ns:#b4b9c4; --ns-bg:#262b35; --late:#f87171; --late-bg:#3b1517; --vio:#c4a8ff; --vio-bg:#2a1f45;
+  --hdr:#141824; --tabs:#0b0e14; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font-family:var(--f-body);font-size:13px;line-height:1.55}
+header{background:var(--hdr);color:var(--hdr-fg);padding-block:18px;padding-inline:20px;border-bottom:3px solid var(--red)}
+.hwrap{max-width:1180px;margin:0 auto;display:flex;flex-wrap:wrap;gap:14px 24px;align-items:center;justify-content:space-between}
+.brand{display:flex;gap:14px;align-items:center;min-width:0}
+.mark{width:42px;height:42px;border-radius:7px;background:var(--red);display:grid;place-items:center;font-weight:900;font-size:13px;letter-spacing:.5px;color:#fff;flex:none}
+.htitle{font-weight:900;font-size:17px;letter-spacing:.3px;text-wrap:balance}
+.hsub{font-size:11px;color:var(--hdr-muted)}
+.hmeta{display:flex;gap:8px;flex-wrap:wrap}
+.chip{font-family:var(--f-mono);font-size:11px;padding:4px 10px;border-radius:999px;border:1px solid #3a4152;color:var(--hdr-fg)}
+.chip.red{background:var(--red);border-color:var(--red);color:#fff;font-weight:500}
+nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:10;background:var(--tabs);padding-inline:12px;overflow-x:auto}
+.tabs{max-width:1180px;margin:0 auto;display:flex;gap:2px}
+.tab{background:none;border:0;color:#a9afbd;font:700 12px var(--f-body);padding:13px 14px;border-bottom:2px solid transparent;cursor:pointer;white-space:nowrap}
+.tab:hover{color:#fff}
+.tab[aria-selected="true"]{color:#fff;border-bottom-color:var(--red)}
+.tab:focus-visible{outline:2px solid var(--red);outline-offset:-2px}
+main{max-width:1180px;margin:0 auto;padding-block:22px 40px;padding-inline:16px}
+section.panel{display:flex;flex-direction:column;gap:18px}
+.eyebrow{font-size:10px;font-weight:800;letter-spacing:1.4px;text-transform:uppercase;color:var(--muted)}
+h2{font-size:15px;font-weight:800;margin:0;text-wrap:balance}
+.box{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:16px;min-width:0}
+.boxhead{display:flex;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:12px}
+.stats{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:14px;border-top:3px solid var(--c)}
+.stat .n{font-family:var(--f-mono);font-weight:500;font-size:30px;line-height:1.1;font-variant-numeric:tabular-nums}
+.stat .l{font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted)}
+.stat .s{font-size:11px;color:var(--muted);margin-top:4px}
+@media (max-width:820px){.stats{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.tw{overflow-x:auto;border:1px solid var(--line);border-radius:8px}
+table{border-collapse:collapse;width:100%;min-width:760px;font-size:12px}
+th{background:var(--soft);text-align:left;font-size:10px;font-weight:800;letter-spacing:.8px;text-transform:uppercase;color:var(--muted);padding:9px 10px;border-bottom:1px solid var(--line);white-space:nowrap}
+td{padding:10px;border-bottom:1px solid var(--line);vertical-align:top}
+tr:last-child td{border-bottom:0}
+td.mt{font-weight:800;white-space:nowrap}
+.id{font-family:var(--f-mono);font-size:11px;display:inline-block;padding:1px 6px;border-radius:4px;margin:0 3px 3px 0;white-space:nowrap;text-decoration:none}
+.id.bx{background:var(--ip-bg);color:var(--ip)}
+.id.cu{background:var(--vio-bg);color:var(--vio)}
+.id.ucs{background:var(--late-bg);color:var(--late)}
+.id.int{background:var(--ns-bg);color:var(--ns)}
+.id.em{background:var(--ok-bg);color:var(--ok)}
+a.id:hover{text-decoration:underline}
+.pill{display:inline-block;font-size:10px;font-weight:800;letter-spacing:.5px;text-transform:uppercase;padding:3px 8px;border-radius:999px;white-space:nowrap}
+.p-ok{background:var(--ok-bg);color:var(--ok)} .p-ip{background:var(--ip-bg);color:var(--ip)}
+.p-wait{background:var(--wait-bg);color:var(--wait)} .p-ns{background:var(--ns-bg);color:var(--ns)}
+.p-late{background:var(--late-bg);color:var(--late)}
+.src{font-size:10px;font-weight:700;padding:2px 6px;border-radius:4px;white-space:nowrap}
+.src.v{background:var(--late-bg);color:var(--late)} .src.n{background:var(--ns-bg);color:var(--ns)}
+.muted{color:var(--muted)}
+.note{font-size:12px;color:var(--muted)}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+@media (max-width:820px){.two{grid-template-columns:1fr}}
+.list{display:flex;flex-direction:column;gap:0;margin:0;padding:0;list-style:none}
+.list li{display:flex;gap:10px;padding:9px 0;border-bottom:1px solid var(--line);align-items:flex-start}
+.list li:last-child{border-bottom:0}
+.dot{width:8px;height:8px;border-radius:50%;margin-top:6px;flex:none;background:var(--c)}
+.li-b{min-width:0;flex:1}
+.li-t{font-weight:700}
+.li-m{font-size:11px;color:var(--muted)}
+.flag{border-left:3px solid var(--late);background:var(--late-bg);padding:10px 12px;border-radius:0 8px 8px 0;font-size:12px}
+.flag.amber{border-left-color:var(--wait);background:var(--wait-bg)}
+pre.bx{white-space:pre-wrap;word-break:break-word;font-family:var(--f-mono);font-size:12px;line-height:1.6;background:var(--soft);border:1px solid var(--line);border-radius:8px;padding:14px;margin:0}
+.btn{font:700 11px var(--f-body);background:var(--red);color:#fff;border:0;border-radius:6px;padding:8px 12px;cursor:pointer}
+.btn:focus-visible{outline:2px solid var(--fg);outline-offset:2px}
+.bars{display:flex;flex-direction:column;gap:8px}
+.bar{display:grid;grid-template-columns:90px 1fr 34px;gap:10px;align-items:center;font-size:12px}
+.track{height:10px;background:var(--soft);border-radius:5px;overflow:hidden;border:1px solid var(--line)}
+.fill{height:100%;background:var(--c)}
+.bar .v{font-family:var(--f-mono);text-align:right;font-variant-numeric:tabular-nums}
+ol.steps{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:8px}
+footer{max-width:1180px;margin:0 auto;padding-block:0 30px;padding-inline:16px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;font-size:11px;color:var(--muted)}
+footer .mono{font-family:var(--f-mono)}
+@media (prefers-reduced-motion:no-preference){.panel{animation:fade .18s ease}}
+@keyframes fade{from{opacity:.4}to{opacity:1}}
+</style>
+
+<header>
+  <div class="hwrap">
+    <div class="brand">
+      <div class="mark" aria-hidden="true">D'C</div>
+      <div style="min-width:0">
+        <div class="htitle">WEEKLY REPORT · CORE TECHNOLOGY</div>
+        <div class="hsub">Dcorp Technology Corporation · From: Phạm Minh Hải → To: CEO James Duong</div>
+      </div>
+    </div>
+    <div class="hmeta">
+      <span class="chip red">W41 · 2026</span>
+      <span class="chip">05/10 – 09/10/2026</span>
+      <span class="chip">ClickUp · Bitrix · Gmail</span>
+    </div>
+  </div>
+</header>
+
+<nav aria-label="Các tab báo cáo">
+  <div class="tabs" role="tablist">
+    <button class="tab" role="tab" id="t-week" aria-controls="p-week" aria-selected="true">W41 Báo cáo tuần</button>
+    <button class="tab" role="tab" id="t-mail" aria-controls="p-mail" aria-selected="false">Email tuần W41</button>
+    <button class="tab" role="tab" id="t-aged" aria-controls="p-aged" aria-selected="false">Task tồn lâu ngày</button>
+    <button class="tab" role="tab" id="t-back" aria-controls="p-back" aria-selected="false">Backlog &amp; Carry-over</button>
+    <button class="tab" role="tab" id="t-plan" aria-controls="p-plan" aria-selected="false">Kế hoạch W42</button>
+    <button class="tab" role="tab" id="t-flow" aria-controls="p-flow" aria-selected="false">Quy trình</button>
+  </div>
+</nav>
+
+<main>
+<!-- TAB 1 -->
+<section class="panel" id="p-week" role="tabpanel" aria-labelledby="t-week">
+  <div class="stats">
+    <div class="stat" style="--c:var(--fg)"><div class="l">Tổng đầu việc</div><div class="n">14</div><div class="s">Task hệ thống + việc nội bộ</div></div>
+    <div class="stat" style="--c:var(--ok)"><div class="l">Hoàn thành</div><div class="n">7</div><div class="s">2 Bitrix · 5 nội bộ</div></div>
+    <div class="stat" style="--c:var(--ip)"><div class="l">Đang xử lý</div><div class="n">3</div><div class="s">1 task quá hạn (#93978)</div></div>
+    <div class="stat" style="--c:var(--wait)"><div class="l">Chờ / Pending</div><div class="n">2</div><div class="s">UCS #209225 · Dev CVL</div></div>
+    <div class="stat" style="--c:var(--ns)"><div class="l">Chưa bắt đầu</div><div class="n">2</div><div class="s">Script Philippine · Marijus</div></div>
+  </div>
+
+  <div class="box">
+    <div class="boxhead"><h2>Kết quả thực hiện W41</h2><span class="note">Blocker tuần này: không có</span></div>
+    <div class="tw"><table>
+      <thead><tr><th>MasterTask</th><th>Task ID</th><th>Kết quả thực hiện</th><th>Khó khăn</th><th>Đề xuất / Next</th><th>Trạng thái</th></tr></thead>
+      <tbody>
+      <tr><td class="mt">The Street</td><td><a class="id bx" href="https://intranet.dcorp.com.vn/company/personal/user/8/tasks/task/view/94118/" target="_blank" rel="noopener">BX 94118</a><a class="id cu" href="https://app.clickup.com/t/z908827hzu" target="_blank" rel="noopener">TECH-16580</a><span class="id ucs">UCS 208003</span></td><td>Màn hình SUM bump đúng thứ tự order. Đã test trên KDS server 1.9.16 + client 3.0.1, đóng task 09/10.</td><td class="muted">—</td><td>W42: cập nhật TECH-16580 trên ClickUp sang complete</td><td><span class="pill p-ok">Hoàn thành</span></td></tr>
+      <tr><td class="mt">The Street</td><td><a class="id bx" href="https://intranet.dcorp.com.vn/company/personal/user/8/tasks/task/view/94123/" target="_blank" rel="noopener">BX 94123</a><span class="id ucs">UCS 209211</span></td><td>Có tài khoản Weblate, dịch xong toàn bộ KDS Pro sang tiếng Việt (07/10).</td><td class="muted">—</td><td class="muted">—</td><td><span class="pill p-ok">Hoàn thành</span></td></tr>
+      <tr><td class="mt">The Street</td><td><a class="id bx" href="https://intranet.dcorp.com.vn/company/personal/user/8/tasks/task/view/94115/" target="_blank" rel="noopener">BX 94115</a><a class="id cu" href="https://app.clickup.com/t/z908825c44" target="_blank" rel="noopener">TECH-16302</a></td><td>KDS hiển thị lại món đã phục vụ: dùng Đóng ca KDS để ẩn các session cũ. Tech (Tâm) test chức năng chạy đúng.</td><td><span class="src n">Nội bộ</span> Chưa xác nhận còn bug hiện lại hay không</td><td>W42: theo dõi tại site, chốt đóng task</td><td><span class="pill p-ip">Đang xử lý</span></td></tr>
+      <tr><td class="mt">The Street</td><td><a class="id bx" href="https://intranet.dcorp.com.vn/company/personal/user/8/tasks/task/view/94117/" target="_blank" rel="noopener">BX 94117</a><a class="id cu" href="https://app.clickup.com/t/z90882a42r" target="_blank" rel="noopener">TECH-16900</a><span class="id ucs">UCS 209225</span></td><td>KDS hiển thị lại toàn bộ món khi tách bàn: tạo ticket UCS 05/10, đã trả lời câu hỏi của UCS.</td><td><span class="src v">Vendor</span> UCS đang phân tích, không block</td><td>W42: theo dõi phản hồi UCS</td><td><span class="pill p-wait">Chờ vendor</span></td></tr>
+      <tr><td class="mt">Other</td><td><a class="id bx" href="https://intranet.dcorp.com.vn/company/personal/user/8/tasks/task/view/94144/" target="_blank" rel="noopener">BX 94144</a></td><td>Dựng xong mô hình Demo lite, gửi a.James ảnh setup 09/10. Đã có: cảnh báo vượt số lượng đơn hàng hoặc tổng doanh thu; chặn kích hoạt Cashstation/MiddleServer.</td><td class="muted">—</td><td>Bổ sung chặn số lần đóng ca trong ngày. Deadline 24/10</td><td><span class="pill p-ip">Đang xử lý</span></td></tr>
+      <tr><td class="mt">Other</td><td><a class="id bx" href="https://intranet.dcorp.com.vn/company/personal/user/8/tasks/task/view/93978/" target="_blank" rel="noopener">BX 93978</a><span class="id ucs">UCS 208803</span></td><td>Localization SH5: UCS đã mở rộng quyền tài khoản (09/10). Đang phân quyền lại để localization các hệ thống POS còn lại.</td><td><span class="src n">Nội bộ</span> Quá hạn từ 26/09</td><td>W42: hoàn tất phân quyền, tiếp tục dịch</td><td><span class="pill p-late">Đang xử lý · quá hạn</span></td></tr>
+      <tr><td class="mt">Cửu Vân Long</td><td><span class="id int">Nội bộ</span></td><td>Họp và tư vấn giải pháp kho.</td><td class="muted">—</td><td class="muted">—</td><td><span class="pill p-ok">Hoàn thành</span></td></tr>
+      <tr><td class="mt">Cửu Vân Long</td><td><span class="id int">Nội bộ</span></td><td>Tư vấn dev dùng XML API LockOrder có LockGUID để fix lỗi của CVL.</td><td><span class="src n">Nội bộ</span> Chờ dev phản hồi</td><td>W42: nhận kết quả từ dev</td><td><span class="pill p-wait">Chờ xác nhận</span></td></tr>
+      <tr><td class="mt">Vibe Code</td><td><span class="id int">Nội bộ</span></td><td>Hoàn thành test function trên SkyPromotion.</td><td class="muted">—</td><td>W42: test tiếp SkyPromotion</td><td><span class="pill p-ok">Hoàn thành</span></td></tr>
+      <tr><td class="mt">Vibe Code</td><td><span class="id int">Nội bộ</span></td><td>Build được bản dev (viber dev) để service tự thực hiện.</td><td class="muted">—</td><td>W42: đưa service dùng</td><td><span class="pill p-ok">Hoàn thành</span></td></tr>
+      <tr><td class="mt">Vibe Code</td><td><span class="id int">Nội bộ</span></td><td>Test thành công tool tự dev copy dữ liệu giữa 2 ref (utils.dcorp.com.vn).</td><td class="muted">—</td><td class="muted">—</td><td><span class="pill p-ok">Hoàn thành</span></td></tr>
+      <tr><td class="mt">Other</td><td><span class="id int">Nội bộ</span></td><td>Hỗ trợ API SH5 cho team Dev.</td><td class="muted">—</td><td class="muted">—</td><td><span class="pill p-ok">Hoàn thành</span></td></tr>
+      <tr><td class="mt">VTI Philippine</td><td><span class="id int">Nội bộ</span></td><td>Script cho hệ thống Philippine: chưa thực hiện trong tuần.</td><td class="muted">Lý do: cần bổ sung</td><td>W42: thực hiện</td><td><span class="pill p-ns">Chưa bắt đầu</span></td></tr>
+      <tr><td class="mt">Other</td><td><span class="id int">Nội bộ</span></td><td>Họp với Marijus (UCS): chưa có kế hoạch họp.</td><td class="muted">Chưa chốt lịch</td><td>W42: lên lịch họp tiếp</td><td><span class="pill p-ns">Chưa bắt đầu</span></td></tr>
+      </tbody>
+    </table></div>
+  </div>
+
+  <div class="two">
+    <div class="box">
+      <div class="boxhead"><h2>Blocker</h2></div>
+      <p style="margin:0">Không có blocker trong tuần. Ticket UCS #209225 đang chờ vendor phân tích, không chặn tiến độ.</p>
+    </div>
+    <div class="box">
+      <div class="boxhead"><h2>Cần đồng bộ dữ liệu</h2></div>
+      <div class="flag amber">TECH-16580 trên ClickUp vẫn ở "not started" trong khi Bitrix #94118 đã đóng 09/10.</div>
+    </div>
+  </div>
+
+  <div class="box">
+    <div class="boxhead"><h2>Text Bitrix</h2><button class="btn" id="copyBx" type="button">Copy text</button></div>
+    <pre class="bx" id="bxText">📋 HaiPM | W41 | 05–09.Oct.2026
+
+✅ Hoàn thành:
+- The Street KDS #94118: màn hình SUM bump đúng thứ tự order, đã test KDS server 1.9.16 + client 3.0.1 (UCS #208003)
+- KDS Pro localization tiếng Việt #94123: dịch xong toàn bộ (UCS #209211)
+- SkyPromotion: hoàn thành test function
+- Build bản dev (viber dev) để service tự thực hiện
+- Tool copy dữ liệu giữa 2 ref (utils.dcorp.com.vn): test thành công
+- Cửu Vân Long: họp, tư vấn giải pháp kho
+- Hỗ trợ API SH5 cho team Dev
+
+🔄 Đang xử lý:
+- #94144: Demo lite đã có cảnh báo vượt số đơn/doanh thu, chặn kích hoạt Cashstation/MiddleServer → còn chặn số lần đóng ca trong ngày, deadline 24/10
+- #93978: Localization SH5 và các hệ thống POS còn lại → đang phân quyền lại, quá hạn từ 26/09
+- #94115 / TECH-16302: KDS hiển thị lại món đã phục vụ → dùng Đóng ca KDS ẩn session cũ, đang theo dõi
+- Cửu Vân Long: tư vấn dev dùng XML API LockOrder có LockGUID → chờ phản hồi
+
+📧 Email / Vendor:
+- UCS #209225 (KDS Pro giữ trạng thái khi chuyển bàn, #94117): đã trả lời UCS, chờ kết quả phân tích
+- UCS #208803 (SH Pro localization): UCS đã mở rộng quyền, đang kiểm tra
+- UCS #208003, #209211: hoàn thành
+- UCS #209194, #207670, #208070: có comment mới, đang theo dõi
+
+⏳ Chưa bắt đầu:
+- Script hệ thống Philippine — [lý do cần bổ sung]
+- Họp với Marijus — chưa có lịch
+
+🔴 Blocker:
+- Không có
+
+📅 Kế hoạch W42:
+- Script hệ thống Philippine
+- Test SkyPromotion
+- Họp tiếp với Marijus
+- Đưa bản viber dev cho service tự thực hiện
+- Hoàn tất phân quyền localization (#93978), Demo lite chặn đóng ca (#94144)</pre>
+  </div>
+</section>
+
+<!-- TAB 2 -->
+<section class="panel" id="p-mail" role="tabpanel" aria-labelledby="t-mail" hidden>
+  <div class="stats">
+    <div class="stat" style="--c:var(--fg)"><div class="l">Thread inbox</div><div class="n">52</div><div class="s">05–09/10, đã bỏ LinkedIn</div></div>
+    <div class="stat" style="--c:var(--ok)"><div class="l">Cần action / dự án</div><div class="n">4</div><div class="s">SNA, VTI weekly, TIKI, Torikizoku</div></div>
+    <div class="stat" style="--c:var(--vio)"><div class="l">Vendor ticket</div><div class="n">7</div><div class="s">sd@rkeeper.ru</div></div>
+    <div class="stat" style="--c:var(--ip)"><div class="l">Thông tin</div><div class="n">3</div><div class="s">Báo cáo tự động, drive share</div></div>
+    <div class="stat" style="--c:var(--ns)"><div class="l">Bỏ qua</div><div class="n">10</div><div class="s">Marketing, newsletter</div></div>
+  </div>
+
+  <div class="box">
+    <div class="boxhead"><h2>Vendor ticket UCS</h2><span class="note">Gửi tới rd.manager@dcorp.com.vn</span></div>
+    <div class="tw"><table>
+      <thead><tr><th>Ticket</th><th>Chủ đề</th><th>Diễn biến W41</th><th>Liên kết task</th><th>Trạng thái</th></tr></thead>
+      <tbody>
+      <tr><td><span class="id ucs">#208003</span></td><td>KDS Pro: SUM screen sai ưu tiên khi Bump</td><td>UCS báo đã fix ở 1.9.16 (09/10)</td><td><span class="id bx">BX 94118</span></td><td><span class="pill p-ok">Hoàn thành</span></td></tr>
+      <tr><td><span class="id ucs">#209211</span></td><td>KDS Pro localization</td><td>Mở 05/10, hoàn thành 09/10</td><td><span class="id bx">BX 94123</span></td><td><span class="pill p-ok">Hoàn thành</span></td></tr>
+      <tr><td><span class="id ucs">#209225</span></td><td>KDS Pro giữ trạng thái KDS khi chuyển bàn</td><td>Mở 05/10. UCS hỏi client test (09/10), Dcorp đã trả lời</td><td><span class="id bx">BX 94117</span></td><td><span class="pill p-wait">Chờ UCS</span></td></tr>
+      <tr><td><span class="id ucs">#208803</span></td><td>SH Pro localization chưa đủ (6.12.1001.89)</td><td>UCS mở rộng quyền tài khoản 09/10</td><td><span class="id bx">BX 93978</span></td><td><span class="pill p-ip">Đang kiểm tra</span></td></tr>
+      <tr><td><span class="id ucs">#209194</span></td><td>[FR] KDS Pro External Screen</td><td>Mở 05/10, có 2 comment</td><td class="muted">—</td><td><span class="pill p-ip">Đang theo dõi</span></td></tr>
+      <tr><td><span class="id ucs">#207670</span></td><td>RK7: ẩn tham số Max Cash Servers / Stations</td><td>Comment mới 09/10</td><td class="muted">—</td><td><span class="pill p-ip">Đang theo dõi</span></td></tr>
+      <tr><td><span class="id ucs">#208070</span></td><td>CRM V7: coupon Good áp nhiều lần trên 1 order</td><td>Comment mới 05/10</td><td class="muted">—</td><td><span class="pill p-ip">Đang theo dõi</span></td></tr>
+      </tbody>
+    </table></div>
+  </div>
+
+  <div class="two">
+    <div class="box">
+      <div class="boxhead"><h2>Cần action / dự án</h2></div>
+      <ul class="list">
+        <li><span class="dot" style="--c:var(--ok)"></span><div class="li-b"><div class="li-t">SNA – giải pháp căn tin (presales)</div><div class="li-m">Họp 06/10 chốt luồng quét thẻ chip → in vé → bếp scan barcode. Trường tự lo phần cứng, Dcorp báo giá phần mềm riêng. Họp chốt giải pháp, báo giá 07/10. Owner: Tính, Huy</div></div></li>
+        <li><span class="dot" style="--c:var(--ok)"></span><div class="li-b"><div class="li-t">[DcorpxVTI] Weekly meeting W41</div><div class="li-m">Họp 08/10. ECODE upgrade v2 dự kiến triển khai đầu 12/2026</div></div></li>
+        <li><span class="dot" style="--c:var(--ok)"></span><div class="li-b"><div class="li-t">TIKI – E-Code Phase 1 weekly sync</div><div class="li-m">Lịch họp cập nhật, chuỗi họp kết thúc 07/10</div></div></li>
+        <li><span class="dot" style="--c:var(--ok)"></span><div class="li-b"><div class="li-t">KDS Torikizoku – phân tích yêu cầu v0.1</div><div class="li-m">a.James share tài liệu 05/10</div></div></li>
+      </ul>
+    </div>
+    <div class="box">
+      <div class="boxhead"><h2>Thông tin và bỏ qua</h2></div>
+      <ul class="list">
+        <li><span class="dot" style="--c:var(--ip)"></span><div class="li-b"><div class="li-t">POS Daily Operations Report</div><div class="li-m">Gửi tự động hằng ngày</div></div></li>
+        <li><span class="dot" style="--c:var(--ip)"></span><div class="li-b"><div class="li-t">r_keeper: cập nhật sản phẩm tháng 9</div><div class="li-m">Newsletter goodnews@rkeeper.ru</div></div></li>
+        <li><span class="dot" style="--c:var(--ns)"></span><div class="li-b"><div class="li-t">Bỏ qua</div><div class="li-m">Tilda, Figma, Manus, Artlist, Grafana, Google Cloud, Veeam, Evernote</div></div></li>
+        <li><span class="dot" style="--c:var(--ns)"></span><div class="li-b"><div class="li-t">Không đưa vào báo cáo theo yêu cầu</div><div class="li-m">Sarica ERP-POS, lỗi daily report, cảnh báo GitHub</div></div></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- TAB 3 -->
+<section class="panel" id="p-aged" role="tabpanel" aria-labelledby="t-aged" hidden>
+  <div class="two">
+    <div class="box">
+      <div class="boxhead"><h2>Task Bitrix mở &gt; 3 tháng theo năm tạo</h2><span class="note">Đã loại GGG / Golden Gate</span></div>
+      <div class="bars">
+        <div class="bar"><span>2022</span><div class="track"><div class="fill" style="width:58%;--c:var(--late)"></div></div><span class="v">15</span></div>
+        <div class="bar"><span>2023</span><div class="track"><div class="fill" style="width:46%;--c:var(--late)"></div></div><span class="v">12</span></div>
+        <div class="bar"><span>2024</span><div class="track"><div class="fill" style="width:31%;--c:var(--wait)"></div></div><span class="v">8</span></div>
+        <div class="bar"><span>2025</span><div class="track"><div class="fill" style="width:42%;--c:var(--wait)"></div></div><span class="v">11</span></div>
+        <div class="bar"><span>01–06/2026</span><div class="track"><div class="fill" style="width:100%;--c:var(--ip)"></div></div><span class="v">26</span></div>
+      </div>
+      <p class="note" style="margin-block:12px 0">Tổng 72 task, trạng thái "Chờ thực hiện", không có thay đổi trong W41. Nguồn: weekly_report.tasks, sync 10/10 09:33.</p>
+    </div>
+    <div class="box">
+      <div class="boxhead"><h2>Đề xuất xử lý</h2></div>
+      <ul class="list">
+        <li><span class="dot" style="--c:var(--late)"></span><div class="li-b"><div class="li-t">27 task tạo năm 2022–2023</div><div class="li-m">Rà nhanh và đóng hàng loạt các task không còn hiệu lực (Toast Report, FoodBooking, demo Cambodia...)</div></div></li>
+        <li><span class="dot" style="--c:var(--wait)"></span><div class="li-b"><div class="li-t">19 task tạo năm 2024–2025</div><div class="li-m">Gộp vào master task Q4 hoặc chuyển người phụ trách</div></div></li>
+        <li><span class="dot" style="--c:var(--ip)"></span><div class="li-b"><div class="li-t">26 task 01–06/2026</div><div class="li-m">Gắn lại deadline, ưu tiên nhóm VTI và AI Công ty</div></div></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="box">
+    <div class="boxhead"><h2>ClickUp mở &gt; 3 tháng không cập nhật</h2></div>
+    <div class="tw"><table>
+      <thead><tr><th>Task</th><th>Nội dung</th><th>Trạng thái</th><th>Cập nhật cuối</th><th>Đề xuất</th></tr></thead>
+      <tbody>
+      <tr><td><a class="id cu" href="https://app.clickup.com/t/86euu7rhw" target="_blank" rel="noopener">TECH-8277</a></td><td>The Coffee Bean: lỗi thanh toán khi dùng Ecode Coupon</td><td><span class="pill p-ns">To do</span></td><td class="muted">11/09/2025</td><td>Xác nhận còn hiệu lực, nếu không thì đóng</td></tr>
+      <tr><td><a class="id cu" href="https://app.clickup.com/t/86evqv14f" target="_blank" rel="noopener">TECH-10376</a></td><td>Global X: điều chỉnh mẫu in tạm tính</td><td><span class="pill p-wait">Pending</span></td><td class="muted">06/12/2025</td><td>Hỏi lại KH, đóng nếu không phản hồi</td></tr>
+      <tr><td><a class="id cu" href="https://app.clickup.com/t/86ev7qmqt" target="_blank" rel="noopener">TECH-9128</a></td><td>La Sirena: phiếu xuất kho 1C đẩy qua DB trung gian FAST bị lệch</td><td><span class="pill p-ip">In progress</span></td><td class="muted">11/12/2025</td><td>Gộp với TECH-11143</td></tr>
+      <tr><td><a class="id cu" href="https://app.clickup.com/t/86evum38w" target="_blank" rel="noopener">TECH-10515</a></td><td>New Pearl: chặn cập nhật tích điểm sau tạm tính</td><td><span class="pill p-ns">To do</span></td><td class="muted">12/12/2025</td><td>Chuyển người phụ trách</td></tr>
+      <tr><td><a class="id cu" href="https://app.clickup.com/t/86ew3kbr8" target="_blank" rel="noopener">TECH-11143</a></td><td>[BUG] La Sirena: dữ liệu 1C sai khi đẩy qua FAST</td><td><span class="pill p-ip">In progress</span></td><td class="muted">14/01/2026</td><td>Chốt hướng xử lý hoặc đóng</td></tr>
+      <tr><td><a class="id cu" href="https://app.clickup.com/t/86exaugc9" target="_blank" rel="noopener">TECH-13045</a></td><td>VTI: chặn ra bill khi nhập Ecode và thanh toán sai tiền tệ</td><td><span class="pill p-ns">To do</span></td><td class="muted">28/05/2026</td><td>Gắn vào ECODE upgrade v2 (12/2026)</td></tr>
+      <tr><td><a class="id cu" href="https://app.clickup.com/t/86exp9wfn" target="_blank" rel="noopener">TECH-14048</a></td><td>GAKU: KDS tự động đếm thời gian chế biến</td><td><span class="pill p-ns">To do</span></td><td class="muted">08/06/2026</td><td>Xác nhận nhu cầu với KH</td></tr>
+      </tbody>
+    </table></div>
+  </div>
+</section>
+
+<!-- TAB 4 -->
+<section class="panel" id="p-back" role="tabpanel" aria-labelledby="t-back" hidden>
+  <div class="flag"><strong>Treo &gt; 2 tuần:</strong> #93978 Chuẩn hoá Localization SH5 (James giao) quá hạn từ 26/09/2026, 14 ngày tính đến 10/10. Cần gia hạn chính thức hoặc chốt ngày hoàn thành mới.</div>
+
+  <div class="box">
+    <div class="boxhead"><h2>Carry-over sang W42</h2></div>
+    <div class="tw"><table>
+      <thead><tr><th>Task</th><th>Nội dung</th><th>Loại</th><th>Đang chờ</th><th>Đề xuất</th></tr></thead>
+      <tbody>
+      <tr><td><span class="id bx">BX 93978</span></td><td>Localization SH5 và các hệ thống POS còn lại</td><td><span class="pill p-late">Quá hạn</span></td><td>Nội bộ: hoàn tất phân quyền</td><td>W42</td></tr>
+      <tr><td><span class="id bx">BX 94144</span></td><td>Demo lite: chặn số lần đóng ca trong ngày</td><td><span class="pill p-ip">Đang xử lý</span></td><td class="muted">—</td><td>Trước 24/10</td></tr>
+      <tr><td><span class="id bx">BX 94115</span></td><td>KDS hiển thị lại món đã phục vụ</td><td><span class="pill p-ip">Đang xử lý</span></td><td>Theo dõi tại site The Street</td><td>W42</td></tr>
+      <tr><td><span class="id bx">BX 94117</span></td><td>KDS hiển thị lại toàn bộ món khi tách bàn</td><td><span class="pill p-wait">Chờ vendor</span></td><td>UCS #209225, đã trả lời câu hỏi</td><td>W42</td></tr>
+      <tr><td><span class="id int">Nội bộ</span></td><td>CVL: XML API LockOrder có LockGUID</td><td><span class="pill p-wait">Chờ người khác</span></td><td>Team Dev phản hồi</td><td>W42</td></tr>
+      <tr><td><span class="id int">Nội bộ</span></td><td>Script hệ thống Philippine</td><td><span class="pill p-ns">Chưa bắt đầu</span></td><td>Lý do: cần bổ sung</td><td>W42</td></tr>
+      <tr><td><span class="id int">Nội bộ</span></td><td>Họp Marijus</td><td><span class="pill p-ns">Chưa bắt đầu</span></td><td>Chưa có lịch</td><td>W42</td></tr>
+      </tbody>
+    </table></div>
+  </div>
+
+  <div class="two">
+    <div class="box">
+      <div class="boxhead"><h2>Hoàn thành W41</h2></div>
+      <ul class="list">
+        <li><span class="dot" style="--c:var(--ok)"></span><div class="li-b"><div class="li-t">#94118 SUM bump đúng thứ tự</div><div class="li-m">09/10 · KDS 1.9.16</div></div></li>
+        <li><span class="dot" style="--c:var(--ok)"></span><div class="li-b"><div class="li-t">#94123 KDS Pro tiếng Việt</div><div class="li-m">07/10</div></div></li>
+        <li><span class="dot" style="--c:var(--ok)"></span><div class="li-b"><div class="li-t">5 việc nội bộ</div><div class="li-m">SkyPromotion test, viber dev, tool copy ref, tư vấn kho CVL, API SH5</div></div></li>
+      </ul>
+    </div>
+    <div class="box">
+      <div class="boxhead"><h2>ClickUp The Street không cập nhật W41</h2></div>
+      <ul class="list">
+        <li><span class="dot" style="--c:var(--ns)"></span><div class="li-b"><div class="li-t">TECH-16301 · TECH-16217 · TECH-15505 · TECH-15809</div><div class="li-m">In progress, Urgent</div></div></li>
+        <li><span class="dot" style="--c:var(--ns)"></span><div class="li-b"><div class="li-t">TECH-16563</div><div class="li-m">[CR][KDS] tên phục vụ trên phiếu in · Not started</div></div></li>
+        <li><span class="dot" style="--c:var(--ns)"></span><div class="li-b"><div class="li-t">TECH-16476 (CVL)</div><div class="li-m">Lỗi nhập tiền mặt không ra tiền thối · In progress</div></div></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- TAB 5 -->
+<section class="panel" id="p-plan" role="tabpanel" aria-labelledby="t-plan" hidden>
+  <div class="stats" style="grid-template-columns:repeat(3,minmax(0,1fr))">
+    <div class="stat" style="--c:var(--fg)"><div class="l">Tổng kế hoạch</div><div class="n">9</div><div class="s">W42 · 12–16/10/2026</div></div>
+    <div class="stat" style="--c:var(--red)"><div class="l">High priority</div><div class="n">3</div><div class="s">Philippine, SkyPromotion, #93978</div></div>
+    <div class="stat" style="--c:var(--wait)"><div class="l">Carry-over</div><div class="n">7</div><div class="s">Từ W41</div></div>
+  </div>
+  <div class="box">
+    <div class="boxhead"><h2>Kế hoạch W42</h2></div>
+    <div class="tw"><table>
+      <thead><tr><th>MasterTask</th><th>Nội dung kế hoạch</th><th>Ưu tiên</th><th>Ghi chú</th></tr></thead>
+      <tbody>
+      <tr><td class="mt">VTI Philippine</td><td>Thực hiện script cho hệ thống Philippine</td><td><span class="pill p-late">High</span></td><td>Carry-over W41</td></tr>
+      <tr><td class="mt">Vibe Code</td><td>Test SkyPromotion</td><td><span class="pill p-late">High</span></td><td>Tiếp nối test function W41</td></tr>
+      <tr><td class="mt">Other</td><td>Hoàn tất phân quyền và localization POS (#93978)</td><td><span class="pill p-late">High</span></td><td>Quá hạn từ 26/09</td></tr>
+      <tr><td class="mt">Other</td><td>Họp tiếp với Marijus</td><td><span class="pill p-wait">Normal</span></td><td>Cần chốt lịch</td></tr>
+      <tr><td class="mt">Vibe Code</td><td>Đưa bản viber dev cho service tự thực hiện</td><td><span class="pill p-wait">Normal</span></td><td>Bản dev đã build W41</td></tr>
+      <tr><td class="mt">Other</td><td>Demo lite: chặn số lần đóng ca trong ngày (#94144)</td><td><span class="pill p-wait">Normal</span></td><td>Deadline 24/10</td></tr>
+      <tr><td class="mt">The Street</td><td>Theo dõi UCS #209225 và chốt #94115</td><td><span class="pill p-wait">Normal</span></td><td>Không block</td></tr>
+      <tr><td class="mt">Cửu Vân Long</td><td>Nhận phản hồi dev về LockOrder / LockGUID</td><td><span class="pill p-wait">Normal</span></td><td>Chờ dev</td></tr>
+      <tr><td class="mt">The Street</td><td>Cập nhật TECH-16580 trên ClickUp sang complete</td><td><span class="pill p-ns">Low</span></td><td>Đồng bộ với Bitrix #94118</td></tr>
+      </tbody>
+    </table></div>
+  </div>
+</section>
+
+<!-- TAB 6 -->
+<section class="panel" id="p-flow" role="tabpanel" aria-labelledby="t-flow" hidden>
+  <div class="two">
+    <div class="box">
+      <div class="boxhead"><h2>Quy trình làm báo cáo</h2></div>
+      <ol class="steps">
+        <li><strong>Pull dữ liệu:</strong> ClickUp (assignee 89477225, lọc dateUpdated theo UTC+7), Bitrix (task con trong master task), Gmail inbox của tuần.</li>
+        <li><strong>Xác nhận danh sách:</strong> task có hoạt động thật, email cần đưa vào, việc nội bộ không có task ID.</li>
+        <li><strong>Bổ sung:</strong> công việc ngoài, kế hoạch tuần tới, việc chưa làm và lý do.</li>
+        <li><strong>Phân loại:</strong> MasterTask, trạng thái, tách Vendor và Nội bộ trong khó khăn.</li>
+        <li><strong>Xuất 3 output:</strong> dashboard 6 tab, bảng báo cáo, text Bitrix.</li>
+      </ol>
+    </div>
+    <div class="box">
+      <div class="boxhead"><h2>Lịch gửi và lưu ý dữ liệu</h2></div>
+      <ul class="list">
+        <li><span class="dot" style="--c:var(--red)"></span><div class="li-b"><div class="li-t">Deadline gửi báo cáo</div><div class="li-m">Thứ 6 trước 17:00</div></div></li>
+        <li><span class="dot" style="--c:var(--ip)"></span><div class="li-b"><div class="li-t">n8n sync Bitrix</div><div class="li-m">18:00 Thứ 2–6. Chỉ lấy REAL_STATUS=2: task con mới và task đã đóng chưa có trong DB, cần đọc trực tiếp Bitrix</div></div></li>
+        <li><span class="dot" style="--c:var(--wait)"></span><div class="li-b"><div class="li-t">Nhãn tuần trong DB</div><div class="li-m">week_last_active lệch +1 so với ISO (DB ghi W42 cho tuần W41)</div></div></li>
+        <li><span class="dot" style="--c:var(--ns)"></span><div class="li-b"><div class="li-t">Loại trừ cố định</div><div class="li-m">GGG / Golden Gate</div></div></li>
+      </ul>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer>
+  <span><strong>Phạm Minh Hải</strong> · Trưởng phòng Core Technology</span>
+  <span class="mono">weekly_report_HaiPM W41 · Generated 10/10/2026</span>
+</footer>
+
+<script>
+(function(){
+  var tabs=[].slice.call(document.querySelectorAll('.tab'));
+  function show(id){
+    tabs.forEach(function(t){
+      var on=t.id===id; t.setAttribute('aria-selected',on?'true':'false');
+      document.getElementById(t.getAttribute('aria-controls')).hidden=!on;
+    });
+    try{localStorage.setItem('w41tab',id)}catch(e){}
+  }
+  tabs.forEach(function(t){t.addEventListener('click',function(){show(t.id)})});
+  var map={week:'t-week',mail:'t-mail',aged:'t-aged',backlog:'t-back',plan:'t-plan',flow:'t-flow'};
+  var h=(location.hash||'').slice(1), saved=null;
+  try{saved=localStorage.getItem('w41tab')}catch(e){}
+  if(map[h]) show(map[h]); else if(saved && document.getElementById(saved)) show(saved);
+  var btn=document.getElementById('copyBx'), pre=document.getElementById('bxText');
+  btn.addEventListener('click',function(){
+    var txt=pre.textContent;
+    function sel(){var r=document.createRange();r.selectNodeContents(pre);var s=getSelection();s.removeAllRanges();s.addRange(r);btn.textContent='Đã chọn, nhấn Ctrl/Cmd+C';}
+    if(navigator.clipboard&&navigator.clipboard.writeText){
+      navigator.clipboard.writeText(txt).then(function(){btn.textContent='Đã copy';setTimeout(function(){btn.textContent='Copy text'},1800)},sel);
+    } else sel();
+  });
+})();
+</script>
+
+</body></html>
