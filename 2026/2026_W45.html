@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="vi" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HaiPM | W45 | 02–06.Nov.2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800&family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root,[data-theme="dark"]{--bg-page:#09090B;--surface-1:#111116;--surface-2:#18181F;--surface-3:#1E1E27;--border-subtle:rgba(255,255,255,0.05);--border-default:rgba(255,255,255,0.09);--border-strong:rgba(255,255,255,0.16);--text-primary:#EEEEF4;--text-body:#9898AA;--text-muted:#606070;--accent:#E31E24;--accent-text:#F05458;--accent-soft:rgba(227,30,36,0.12);--accent-border:rgba(227,30,36,0.28);--badge-red-bg:rgba(227,30,36,0.14);--badge-red-tx:#F05458;--badge-amber-bg:rgba(245,158,11,0.12);--badge-amber-tx:#F5A623;--badge-green-bg:rgba(34,197,94,0.10);--badge-green-tx:#3ACA6A;--badge-blue-bg:rgba(96,165,250,0.10);--badge-blue-tx:#7DBEFA;--badge-gray-bg:rgba(255,255,255,0.07);--badge-gray-tx:#9898AA;--badge-purple-bg:rgba(167,139,250,0.12);--badge-purple-tx:#B9A6FB}
+[data-theme="light"]{--bg-page:#F2F2F6;--surface-1:#FFFFFF;--surface-2:#F7F7FB;--surface-3:#EDEDF3;--border-subtle:rgba(0,0,0,0.05);--border-default:rgba(0,0,0,0.09);--border-strong:rgba(0,0,0,0.18);--text-primary:#0C0C14;--text-body:#3C3C50;--text-muted:#6C6C80;--accent:#C01A1F;--accent-text:#961418;--accent-soft:rgba(192,26,31,0.08);--accent-border:rgba(192,26,31,0.22);--badge-red-bg:rgba(192,26,31,0.09);--badge-red-tx:#961418;--badge-amber-bg:rgba(160,90,0,0.09);--badge-amber-tx:#8A4F00;--badge-green-bg:rgba(10,120,50,0.09);--badge-green-tx:#0A6E2E;--badge-blue-bg:rgba(20,70,180,0.09);--badge-blue-tx:#1540A8;--badge-gray-bg:rgba(0,0,0,0.06);--badge-gray-tx:#505060;--badge-purple-bg:rgba(100,60,200,0.09);--badge-purple-tx:#4B2CA8}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg-page);color:var(--text-body);font-family:'Outfit',sans-serif;font-size:14px;line-height:1.55}
+header{position:relative;background:var(--surface-1);border-bottom:1px solid var(--border-default);border-left:4px solid var(--accent);padding:22px 32px 18px}
+h1{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:34px;color:var(--text-primary);letter-spacing:.5px}
+h1 span{color:var(--accent-text)}
+.sub{color:var(--text-muted);font-size:13px;margin-top:2px}
+.theme-btn{position:absolute;top:22px;right:32px;background:var(--surface-3);color:var(--text-primary);border:1px solid var(--border-strong);border-radius:5px;padding:6px 12px;font-family:inherit;cursor:pointer;font-size:12px}
+nav{display:flex;gap:2px;background:var(--surface-1);padding:0 32px;border-bottom:1px solid var(--border-default);overflow-x:auto}
+nav button{background:none;border:none;border-bottom:2px solid transparent;color:var(--text-body);padding:12px 16px;font-family:'Outfit',sans-serif;font-size:14px;font-weight:500;cursor:pointer;white-space:nowrap}
+nav button.active{color:var(--text-primary);border-bottom-color:var(--accent)}
+main{padding:24px 32px 48px;max-width:1440px}
+.tab{display:none}.tab.active{display:block}
+h2{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:22px;color:var(--text-primary);margin:26px 0 12px;letter-spacing:.3px}
+h2:first-child{margin-top:0}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;margin-bottom:8px}
+.stat{background:var(--surface-1);border:1px solid var(--border-default);border-radius:8px;padding:16px 18px}
+.stat .n{font-family:'Barlow Condensed',sans-serif;font-size:40px;font-weight:800;color:var(--text-primary);line-height:1}
+.stat .l{font-size:12px;color:var(--text-muted);margin-top:6px;text-transform:uppercase;letter-spacing:.6px}
+.stat.red{border-color:var(--accent-border)}.stat.red .n{color:var(--accent-text)}
+.tbl-wrap{overflow-x:auto;background:var(--surface-1);border:1px solid var(--border-default);border-radius:8px}
+table{width:100%;border-collapse:collapse;font-size:13.5px}
+th{text-align:left;font-weight:600;color:var(--text-muted);font-size:11.5px;text-transform:uppercase;letter-spacing:.6px;padding:11px 14px;background:var(--surface-2);border-bottom:1px solid var(--border-default);white-space:nowrap}
+td{padding:11px 14px;border-bottom:1px solid var(--border-subtle);vertical-align:top;color:var(--text-body)}
+tr:last-child td{border-bottom:none}
+td.mt{color:var(--text-primary);font-weight:600;white-space:nowrap}
+tr.hl td{background:var(--accent-soft)}
+a{color:var(--badge-blue-tx);text-decoration:none}a:hover{text-decoration:underline}
+.b{display:inline-block;font-size:11px;font-weight:600;padding:2px 8px;border-radius:4px;margin:1px 2px 1px 0;white-space:nowrap;font-family:'JetBrains Mono',monospace}
+.b-cu{background:var(--badge-purple-bg);color:var(--badge-purple-tx)}
+.b-bx{background:var(--badge-blue-bg);color:var(--badge-blue-tx)}
+.b-em{background:var(--badge-green-bg);color:var(--badge-green-tx)}
+.b-int{background:var(--badge-gray-bg);color:var(--badge-gray-tx)}
+.b-vd{background:var(--badge-red-bg);color:var(--badge-red-tx)}
+.s{display:inline-block;font-size:11.5px;font-weight:600;padding:3px 9px;border-radius:4px;white-space:nowrap}
+.s-done{background:var(--badge-green-bg);color:var(--badge-green-tx)}
+.s-prog{background:var(--badge-blue-bg);color:var(--badge-blue-tx)}
+.s-wait{background:var(--badge-amber-bg);color:var(--badge-amber-tx)}
+.s-new{background:var(--badge-gray-bg);color:var(--badge-gray-tx)}
+.s-block{background:var(--badge-red-bg);color:var(--badge-red-tx)}
+.p-high{color:var(--accent-text);font-weight:600}.p-norm{color:var(--text-body)}.p-low{color:var(--text-muted)}
+.card{background:var(--surface-1);border:1px solid var(--border-default);border-radius:8px;padding:16px 20px}
+.card.blocker{border-left:3px solid var(--accent)}
+.card p+p{margin-top:6px}
+.card strong{color:var(--text-primary)}
+pre{font-family:'JetBrains Mono',monospace;font-size:12.5px;background:var(--surface-2);border:1px solid var(--border-default);border-radius:8px;padding:16px 18px;white-space:pre-wrap;color:var(--text-primary);line-height:1.6}
+.copy{background:var(--accent);color:#fff;border:none;border-radius:5px;padding:7px 14px;font-family:inherit;font-weight:600;cursor:pointer;margin-bottom:10px;font-size:13px}
+.note{font-size:12.5px;color:var(--text-muted);margin-top:8px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:900px){.grid2{grid-template-columns:1fr}main,header,nav{padding-left:16px;padding-right:16px}}
+ol.flow{padding-left:20px}ol.flow li{margin:6px 0}ol.flow li strong{color:var(--text-primary)}
+</style>
+</head>
+<body>
+<header>
+  <h1>HaiPM <span>|</span> W45 <span>|</span> 02–06.Nov.2026</h1>
+  <div class="sub">Phạm Minh Hải · Trưởng phòng Core Technology · Dcorp Vietnam · Nguồn: ClickUp, Bitrix (sync 06/11 21:53), Gmail, nội bộ</div>
+  <button class="theme-btn" onclick="toggleTheme()">Light / Dark</button>
+</header>
+<nav id="nav">
+  <button class="active" data-t="t1">W45 Báo cáo tuần</button>
+  <button data-t="t2">Email tuần W45</button>
+  <button data-t="t3">Task tồn lâu ngày</button>
+  <button data-t="t4">Backlog &amp; Carry-over</button>
+  <button data-t="t5">Kế hoạch tuần tới</button>
+  <button data-t="t6">Quy trình</button>
+</nav>
+<main>
+
+<!-- TAB 1 -->
+<section class="tab active" id="t1">
+  <div class="stats">
+    <div class="stat"><div class="n">10</div><div class="l">Tổng đầu việc</div></div>
+    <div class="stat"><div class="n">3</div><div class="l">Hoàn thành / Đóng</div></div>
+    <div class="stat"><div class="n">5</div><div class="l">Đang xử lý</div></div>
+    <div class="stat"><div class="n">1</div><div class="l">Chờ / Pending</div></div>
+    <div class="stat"><div class="n">1</div><div class="l">Chưa bắt đầu</div></div>
+  </div>
+
+  <h2>Chi tiết công việc</h2>
+  <div class="tbl-wrap"><table>
+    <thead><tr><th>MasterTask</th><th>Task ID</th><th>Kết quả thực hiện</th><th>Khó khăn</th><th>Đề xuất / Next</th><th>Trạng thái</th></tr></thead>
+    <tbody>
+    <tr><td class="mt">The Street</td>
+      <td><a class="b b-cu" href="https://app.clickup.com/t/z908827efj">TECH-16563</a><a class="b b-cu" href="https://app.clickup.com/t/z908825c44">TECH-16302</a><a class="b b-cu" href="https://app.clickup.com/t/z90882a42r">TECH-16900</a><a class="b b-cu" href="https://app.clickup.com/t/86eyd8qfw">TECH-15809</a><a class="b b-cu" href="https://app.clickup.com/t/86ey7q5xh">TECH-15505</a></td>
+      <td>Hoàn thành nhóm task KDS liên quan việc giữ trạng thái món khi chuyển bản. UCS đã đóng ticket #209225 (KDS Pro keeping KDS state) ngày 05/11. Đóng task trên ClickUp ngày 05/11.</td>
+      <td>—</td>
+      <td>W46: đóng các task Bitrix tương ứng (94113, 94115, 94117)</td>
+      <td><span class="s s-done">Hoàn thành</span></td></tr>
+    <tr><td class="mt">The Street</td>
+      <td><a class="b b-cu" href="https://app.clickup.com/t/z908824f72">TECH-16217</a><a class="b b-cu" href="https://app.clickup.com/t/z908825c2u">TECH-16301</a></td>
+      <td>Các task liên quan inventory (SH5, IR): không thực hiện vì dự án không dùng luồng này. Đã đóng trên ClickUp.</td>
+      <td>—</td>
+      <td>—</td>
+      <td><span class="s s-done">Đóng (không làm)</span></td></tr>
+    <tr class="hl"><td class="mt">The Street</td>
+      <td><a class="b b-cu" href="https://app.clickup.com/t/z908827hzu">TECH-16580</a><a class="b b-bx" href="https://intranet.dcorp.com.vn/company/personal/user/8/tasks/task/view/94118/">94118</a><span class="b b-vd">UCS #209830</span></td>
+      <td>Màn hình SUM bump sai thứ tự (ưu tiên session cũ). Đã gửi thông tin cho Marijus (UCS) nhờ hỗ trợ.</td>
+      <td><span class="b b-vd">Vendor</span> Chờ UCS phản hồi</td>
+      <td>W46: theo dõi phản hồi Marijus. Task ClickUp đã đóng nhưng lỗi chưa xử lý xong, giữ task Bitrix 94118 để theo dõi</td>
+      <td><span class="s s-wait">Chờ vendor</span></td></tr>
+    <tr><td class="mt">SOL – Texas Roadhouse</td>
+      <td><span class="b b-em">[Email] SOL-TXRH báo giá POS</span></td>
+      <td>SOL đã ký hợp đồng. Bên kỹ thuật đã quay video và gửi khách. SOL chốt cấu hình POS SAM4S 15" i5-1235U, không dùng MobiPOS.</td>
+      <td>—</td>
+      <td>Mốc theo SOL: setup máy 10–17/11, đào tạo front-end 23–25/11, sẵn sàng 01/12, khai trương 22/12</td>
+      <td><span class="s s-done">Hoàn thành</span></td></tr>
+    <tr><td class="mt">VTI</td>
+      <td><span class="b b-em">[Email] ERP &amp; POS Integration – Sarica</span></td>
+      <td>Theo dõi daily stand-up ngày 02, 03, 05, 06/11 (04/11 hủy). Nội dung: kiểm kê cuối tháng, vấn đề tạo UOM mới, kế hoạch roll-out và cutover, đối chiếu master data nhà cung cấp.</td>
+      <td><span class="b b-int">Tích hợp</span> POS không tự xác định tỷ lệ quy đổi khi tạo UOM mới</td>
+      <td>W46: theo dõi đối chiếu master data NCC (03/11–20/11) và cutover plan</td>
+      <td><span class="s s-prog">Đang xử lý</span></td></tr>
+    <tr><td class="mt">Vendor UCS</td>
+      <td><span class="b b-vd">#210751</span><span class="b b-vd">#205623</span><span class="b b-vd">#210416</span><span class="b b-vd">#206594</span><span class="b b-vd">#203251</span></td>
+      <td>Đã phản hồi các ticket đang mở. UCS trả lời chi tiết về refsdata.bak và backup DBSync (#203251). 4 ticket đóng: #193221 (sửa trong 7.28.3), #202944, #204347, #209225.</td>
+      <td><span class="b b-vd">Vendor</span> #206594 Extended Table: UCS hẹn 16–30/11</td>
+      <td>Theo dõi tiếp các ticket còn mở</td>
+      <td><span class="s s-prog">Đang xử lý</span></td></tr>
+    <tr><td class="mt">Pizza 4P's</td>
+      <td><a class="b b-bx" href="https://intranet.dcorp.com.vn/company/personal/user/8/tasks/task/view/94494/">94494</a></td>
+      <td>Nhận request mới: giảm giá theo bill và theo order.</td>
+      <td>—</td>
+      <td>W46: xử lý trước hạn 10/11</td>
+      <td><span class="s s-new">Chưa bắt đầu</span><div class="note">Task tạo ngày 06/11</div></td></tr>
+    <tr><td class="mt">Other – Dev / Inventory</td>
+      <td><span class="b b-int">Nội bộ</span></td>
+      <td>Hỗ trợ team Dev. Thảo luận với Dev về tính năng Kế hoạch sản xuất trên Inventory.</td>
+      <td>—</td>
+      <td>Tiếp tục làm việc với Dev</td>
+      <td><span class="s s-prog">Đang xử lý</span></td></tr>
+    <tr><td class="mt">SkyCRM</td>
+      <td><span class="b b-int">Nội bộ</span></td>
+      <td>Lập kế hoạch go-live SkyCRM V7.3.</td>
+      <td>—</td>
+      <td>W46: chốt ngày go-live</td>
+      <td><span class="s s-prog">Đang xử lý</span></td></tr>
+    <tr><td class="mt">Vibe Code</td>
+      <td><span class="b b-int">Nội bộ</span></td>
+      <td>utils.dcorp.com: phát triển hệ thống quản lý master data trên web. Đã xong sơ đồ sử dụng.</td>
+      <td>—</td>
+      <td>W46: bắt đầu build theo sơ đồ</td>
+      <td><span class="s s-prog">Đang xử lý</span></td></tr>
+    </tbody>
+  </table></div>
+
+  <h2>Blocker</h2>
+  <div class="grid2">
+    <div class="card blocker">
+      <p><span class="b b-vd">Vendor</span> <strong>The Street: màn SUM bump sai thứ tự</strong></p>
+      <p><strong>Issue:</strong> KDS SUM ưu tiên session cũ khi bump món.</p>
+      <p><strong>Impact:</strong> Bếp nhà hàng The Street nhìn sai thứ tự món cần làm.</p>
+      <p><strong>Status:</strong> Đã gửi thông tin cho Marijus (UCS), đang chờ phản hồi.</p>
+      <p><strong>Next Action:</strong> Theo dõi trong W46, nhắc lại nếu chưa có phản hồi.</p>
+    </div>
+    <div class="card">
+      <p><span class="b b-int">Nội bộ</span> <strong>Dữ liệu task chưa khớp</strong></p>
+      <p>Task KDS The Street đã đóng trên ClickUp, nhưng trên Bitrix 94113, 94115, 94117 vẫn ở trạng thái "Chờ thực hiện". Cần đóng trong W46 để báo cáo tồn đọng không bị tính sai.</p>
+    </div>
+  </div>
+
+  <h2>Text Bitrix</h2>
+  <button class="copy" onclick="copyText('bxtext',this)">Copy text</button>
+  <pre id="bxtext">📋 HaiPM | W45 | 02–06.Nov.2026
+
+✅ Hoàn thành:
+- The Street: hoàn thành các task KDS giữ trạng thái món khi chuyển bản (TECH-16563, 16302, 16900, 15809, 15505). Các task inventory SH5/IR (TECH-16217, 16301) đóng, không thực hiện vì không cần luồng này
+- SOL – Texas Roadhouse: đã ký hợp đồng, kỹ thuật đã quay video và gửi khách. SOL chốt POS i5-1235U, không dùng MobiPOS
+
+🔄 Đang xử lý:
+- VTI Sarica (ERP & POS Integration): theo dõi daily, đối chiếu master data NCC đến 20/11, chuẩn bị cutover → đang xử lý
+- SkyCRM V7.3: lập kế hoạch go-live → đang xử lý
+- utils.dcorp.com (master data trên web): xong sơ đồ sử dụng → chuẩn bị build
+- Dev / Inventory: hỗ trợ dev, thảo luận tính năng Kế hoạch sản xuất → đang xử lý
+
+📧 Email / Vendor:
+- UCS #210751, #205623, #210416, #206594: đã phản hồi, đang theo dõi
+- UCS #203251 (refsdata.bak / DBSync): UCS đã trả lời chi tiết
+- UCS đóng 4 ticket: #193221 (sửa trong 7.28.3), #202944, #204347, #209225
+- The Street bump SUM sai thứ tự: đã gửi Marijus (UCS), chờ phản hồi
+
+⏳ Chưa bắt đầu:
+- Bitrix 94494 Pizza 4P's discount bill/order — task mới tạo 06/11, hạn 10/11
+
+🔴 Blocker:
+- The Street TECH-16580 / 94118 bump SUM sai thứ tự: Vendor (UCS)
+
+📅 Kế hoạch W46:
+- SOL: setup máy 10–17/11
+- SkyCRM V7.3: chốt ngày go-live
+- Pizza 4P's 94494: xử lý trước 10/11
+- The Street: theo dõi UCS về bump SUM, đóng task Bitrix 94113/94115/94117
+- utils.dcorp.com: bắt đầu build
+- VTI Sarica: theo dõi đối chiếu master data đến 20/11</pre>
+</section>
+
+<!-- TAB 2 -->
+<section class="tab" id="t2">
+  <div class="stats">
+    <div class="stat"><div class="n">3</div><div class="l">Cần action</div></div>
+    <div class="stat red"><div class="n">11</div><div class="l">Vendor ticket</div></div>
+    <div class="stat"><div class="n">3</div><div class="l">Thông tin</div></div>
+    <div class="stat"><div class="n">~15</div><div class="l">Bỏ qua</div></div>
+  </div>
+
+  <h2>Cần action</h2>
+  <div class="tbl-wrap"><table>
+    <thead><tr><th>Chủ đề</th><th>Người gửi</th><th>Ngày</th><th>Nội dung</th><th>Liên kết báo cáo</th></tr></thead>
+    <tbody>
+    <tr><td class="mt">[SOL-TXRH] Báo giá hardware + software POS</td><td>SOL (Trương Ngọc Vinh), Dcorp (Bảo Tran)</td><td>03/11</td><td>Dcorp gửi dự toán và hợp đồng nháp. SOL phản hồi: nâng cấu hình POS lên i5-1235U, bỏ MobiPOS, mốc ký HĐ 10/11, setup 10–17/11, training 23–25/11, sẵn sàng 01/12, khai trương 22/12.</td><td>SOL – Texas Roadhouse (đã ký HĐ)</td></tr>
+    <tr><td class="mt">ERP &amp; POS Integration – Sarica</td><td>VTI (phuong.latieu)</td><td>02, 03, 05, 06/11</td><td>Ghi chú daily: kiểm kê cuối tháng, vấn đề tạo UOM mới, roll-out plan và cutover, đối chiếu master data nhà cung cấp. Ngày 04/11 hủy họp.</td><td>VTI Sarica</td></tr>
+    <tr><td class="mt">[DcorpxVTI] Weekly meeting for POS project</td><td>Yandex Calendar</td><td>05/11</td><td>Họp tuần POS project với VTI.</td><td>VTI</td></tr>
+    </tbody>
+  </table></div>
+
+  <h2>Vendor ticket (sd@rkeeper.ru)</h2>
+  <div class="tbl-wrap"><table>
+    <thead><tr><th>Ticket</th><th>Chủ đề</th><th>Cập nhật cuối</th><th>Trạng thái</th></tr></thead>
+    <tbody>
+    <tr><td><span class="b b-vd">#210751</span></td><td>RK7 Consultant: LOCALPRICES, đồng bộ giữa Report Servers và SetRefData</td><td>06/11</td><td><span class="s s-prog">Đã phản hồi</span></td></tr>
+    <tr><td><span class="b b-vd">#205623</span></td><td>[CR] KDSPro: bộ lọc phân loại trên màn hình head-chef / expediter</td><td>06/11</td><td><span class="s s-prog">Đã phản hồi</span></td></tr>
+    <tr><td><span class="b b-vd">#210416</span></td><td>CashStation/MidServer 7.26.5.008: chuyển món sang order mới bị lỗi SaveAllOrders, mất món</td><td>06/11</td><td><span class="s s-prog">Đã phản hồi</span></td></tr>
+    <tr><td><span class="b b-vd">#206594</span></td><td>Extended Table: Service Print in đúng Extended Table nơi phục vụ đặt món</td><td>04/11</td><td><span class="s s-wait">UCS hẹn 16–30/11</span></td></tr>
+    <tr><td><span class="b b-vd">#203251</span></td><td>refsdata.bak và cơ chế backup DBSync cho Report Server / Middle Server</td><td>05/11</td><td><span class="s s-prog">UCS đã trả lời</span></td></tr>
+    <tr><td><span class="b b-vd">#209830</span></td><td>KDSPRO: mở lại task SUM bump không theo thứ tự</td><td>02/11</td><td><span class="s s-wait">Liên quan The Street</span></td></tr>
+    <tr><td><span class="b b-vd">#209960</span></td><td>[INV] RK7 7.25.5</td><td>02/11</td><td><span class="s s-prog">Theo dõi</span></td></tr>
+    <tr><td><span class="b b-vd">#209225</span></td><td>KDS Pro keeping KDS state</td><td>05/11</td><td><span class="s s-done">Đã đóng</span></td></tr>
+    <tr><td><span class="b b-vd">#204347</span></td><td>RK7: tìm hiểu cơ chế sync</td><td>05/11</td><td><span class="s s-done">Đã đóng</span></td></tr>
+    <tr><td><span class="b b-vd">#202944</span></td><td>FC_HTTP: giá trị SUM không đúng</td><td>03/11</td><td><span class="s s-done">Đã đóng</span></td></tr>
+    <tr><td><span class="b b-vd">#193221</span></td><td>rkdataflow: log onlineDataSender</td><td>02/11</td><td><span class="s s-done">Đóng, sửa trong 7.28.3</span></td></tr>
+    </tbody>
+  </table></div>
+
+  <h2>Thông tin</h2>
+  <div class="card">
+    <p>POS Daily Operations Report (tự động, hằng ngày) · Weblate digest StoreHousePro (chuỗi cần dịch tiếng Việt) · Đăng ký webinar r_keeper Analytics ngày 10/11.</p>
+  </div>
+  <h2>Bỏ qua</h2>
+  <div class="card"><p>Medium daily digest, Google Cloud, Grafana (sales), Gamma, Vietnam Airlines, thông báo pháp lý Google Workspace, cảnh báo đăng nhập thiết bị mới.</p></div>
+</section>
+
+<!-- TAB 3 -->
+<section class="tab" id="t3">
+  <div class="stats">
+    <div class="stat red"><div class="n">71</div><div class="l">Trên 3 năm (2019–2023)</div></div>
+    <div class="stat red"><div class="n">26</div><div class="l">1–3 năm</div></div>
+    <div class="stat"><div class="n">23</div><div class="l">6–12 tháng</div></div>
+    <div class="stat"><div class="n">22</div><div class="l">3–6 tháng</div></div>
+    <div class="stat"><div class="n">14</div><div class="l">Dưới 3 tháng</div></div>
+  </div>
+  <p class="note">Tổng 156 task Bitrix đang mở (RESPONSIBLE_ID=8). Tính theo ngày tạo, mốc 06/11/2026.</p>
+
+  <h2>Đề xuất xử lý theo nhóm</h2>
+  <div class="tbl-wrap"><table>
+    <thead><tr><th>Nhóm tuổi</th><th>Đặc điểm</th><th>Đề xuất</th></tr></thead>
+    <tbody>
+    <tr class="hl"><td class="mt">Trên 3 năm (71)</td><td>Chủ yếu task 11/2019 (QSR, GGG, Cocotte, TNI-VK, memo khuyến mãi) và 2022–2023 (presales, nghiên cứu, La Sirena SkyInventory)</td><td>Đóng hàng loạt. Task nào còn giá trị thì tạo task mới trong master task hiện tại</td></tr>
+    <tr class="hl"><td class="mt">1–3 năm (26)</td><td>Ví dụ: 62335 Quản lý license trên các App, 76681 Monitor GSF, 82651 VTI chuẩn hóa ngôn ngữ SH5, 86163 Golden Gate gửi doanh thu tòa nhà, 90210 Maintask AI cho Dcorp</td><td>Rà từng task: đóng hoặc gộp vào master task Q4</td></tr>
+    <tr><td class="mt">6–12 tháng (23)</td><td>Ví dụ: 91199 / 91202 GGG POS đứng in hóa đơn, 92518 OpenSearch, 92524 ostLauncher, 92580 VTI tối ưu VNG Cloud, 92766 chuyển Postgres lên VNG</td><td>Xác nhận còn làm hay không, gán deadline mới</td></tr>
+    <tr><td class="mt">3–6 tháng (22)</td><td>Ví dụ: 93087 The Street rà soát tính năng kho, 93274 The Street NAT port, 93251 tổng hợp task cần UCS cải thiện cho HLC, 93254 thống kê script Discount Usage VTI</td><td>Đưa vào kế hoạch W46–W48 hoặc đóng nếu đã xử lý ngoài hệ thống</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<!-- TAB 4 -->
+<section class="tab" id="t4">
+  <h2>Carry-over sang W46 (từ công việc tuần này)</h2>
+  <div class="tbl-wrap"><table>
+    <thead><tr><th>MasterTask</th><th>Task</th><th>Lý do chưa xong</th><th>Đề xuất</th></tr></thead>
+    <tbody>
+    <tr><td class="mt">The Street</td><td>Bump SUM sai thứ tự (TECH-16580 / 94118)</td><td><span class="b b-vd">Vendor</span> Chờ Marijus (UCS)</td><td>W46 theo dõi</td></tr>
+    <tr><td class="mt">Pizza 4P's</td><td>94494 Discount bill và order</td><td>Task mới tạo 06/11</td><td>W46, trước 10/11</td></tr>
+    <tr><td class="mt">SkyCRM</td><td>Go-live V7.3</td><td>Đang lập kế hoạch</td><td>W46 chốt ngày</td></tr>
+    <tr><td class="mt">Vibe Code</td><td>utils.dcorp.com master data</td><td>Mới xong sơ đồ</td><td>W46 build</td></tr>
+    <tr><td class="mt">VTI</td><td>Sarica ERP &amp; POS Integration</td><td>Dự án đang chạy, đối chiếu master data đến 20/11</td><td>W46–W47</td></tr>
+    <tr><td class="mt">Vendor UCS</td><td>#206594 Extended Table</td><td><span class="b b-vd">Vendor</span> UCS hẹn 16–30/11</td><td>W47–W48</td></tr>
+    </tbody>
+  </table></div>
+
+  <h2>Task Bitrix quá hạn, không có cập nhật trong W45</h2>
+  <div class="tbl-wrap"><table>
+    <thead><tr><th>ID</th><th>Task</th><th>MasterTask</th><th>Deadline</th><th>Ghi chú</th></tr></thead>
+    <tbody>
+    <tr><td><a class="b b-bx" href="https://intranet.dcorp.com.vn/company/personal/user/8/tasks/task/view/94389/">94389</a></td><td>VTI: điều chỉnh script kết hợp giảm giá</td><td>VTI</td><td>30/10</td><td>Quá hạn 1 tuần</td></tr>
+    <tr><td><a class="b b-bx" href="https://intranet.dcorp.com.vn/company/personal/user/8/tasks/task/view/94248/">94248</a></td><td>Review hệ thống server và ứng dụng GoldSunFood</td><td>Other</td><td>04/11</td><td>Vừa quá hạn</td></tr>
+    <tr class="hl"><td><a class="b b-bx" href="https://intranet.dcorp.com.vn/company/personal/user/8/tasks/task/view/94300/">94300</a></td><td>Goldsun Food: app Replus báo lỗi XML document (0,0)</td><td>Other</td><td>23/10</td><td>Treo trên 2 tuần</td></tr>
+    <tr class="hl"><td><a class="b b-bx" href="https://intranet.dcorp.com.vn/company/personal/user/8/tasks/task/view/94239/">94239</a></td><td>Pizza 4P's: script cho 2 request tính năng RkPOS</td><td>Other</td><td>19/10</td><td>Treo trên 2 tuần</td></tr>
+    <tr class="hl"><td><a class="b b-bx" href="https://intranet.dcorp.com.vn/company/personal/user/8/tasks/task/view/94204/">94204</a></td><td>Test POS trên HĐH mã nguồn mở (Linux)</td><td>Other</td><td>30/10</td><td>Quá hạn 1 tuần</td></tr>
+    <tr class="hl"><td><a class="b b-bx" href="https://intranet.dcorp.com.vn/company/personal/user/8/tasks/task/view/94184/">94184</a></td><td>Tìm hiểu yêu cầu POS thị trường India / Cambodia / Japan</td><td>Other</td><td>29/10</td><td>Quá hạn 1 tuần</td></tr>
+    <tr><td><span class="b b-cu">TECH-16476</span></td><td>CVL: nhập tiền mặt không ra tiền thối</td><td>Other</td><td>—</td><td>ClickUp in progress, cập nhật cuối 21/10</td></tr>
+    <tr><td><span class="b b-cu">TECH-13045</span></td><td>VTI: chặn ra bill khi nhập Ecode và thanh toán sai tiền tệ</td><td>VTI</td><td>—</td><td>ClickUp to do</td></tr>
+    </tbody>
+  </table></div>
+
+  <h2>Hoàn thành trong W45</h2>
+  <div class="tbl-wrap"><table>
+    <thead><tr><th>Nguồn</th><th>Nội dung</th><th>Ngày</th></tr></thead>
+    <tbody>
+    <tr><td><span class="b b-cu">ClickUp</span></td><td>7 task The Street (5 task KDS + 2 task SH5/IR không thực hiện)</td><td>05/11</td></tr>
+    <tr><td><span class="b b-em">Email</span></td><td>SOL – Texas Roadhouse ký hợp đồng</td><td>W45</td></tr>
+    <tr><td><span class="b b-vd">UCS</span></td><td>Đóng ticket #193221, #202944, #204347, #209225</td><td>02–05/11</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<!-- TAB 5 -->
+<section class="tab" id="t5">
+  <div class="stats">
+    <div class="stat"><div class="n">6</div><div class="l">Tổng kế hoạch</div></div>
+    <div class="stat red"><div class="n">3</div><div class="l">High priority</div></div>
+    <div class="stat"><div class="n">5</div><div class="l">Carry-over từ W45</div></div>
+  </div>
+  <h2>Kế hoạch W46 (09–13/11/2026)</h2>
+  <div class="tbl-wrap"><table>
+    <thead><tr><th>MasterTask</th><th>Nội dung kế hoạch</th><th>Ưu tiên</th><th>Ghi chú</th></tr></thead>
+    <tbody>
+    <tr><td class="mt">SOL – Texas Roadhouse</td><td>Setup máy tại văn phòng SOL</td><td class="p-high">High</td><td>10–17/11, sau đó chuyển thiết bị sang LM81</td></tr>
+    <tr><td class="mt">SkyCRM</td><td>Chốt ngày go-live SkyCRM V7.3</td><td class="p-high">High</td><td>Carry-over</td></tr>
+    <tr><td class="mt">Pizza 4P's</td><td>Xử lý request discount bill và order (94494)</td><td class="p-high">High</td><td>Hạn 10/11</td></tr>
+    <tr><td class="mt">The Street</td><td>Theo dõi UCS về bump SUM. Đóng task Bitrix 94113 / 94115 / 94117</td><td class="p-norm">Normal</td><td>Chờ Marijus</td></tr>
+    <tr><td class="mt">Vibe Code</td><td>utils.dcorp.com: bắt đầu build hệ thống master data</td><td class="p-norm">Normal</td><td>Đã có sơ đồ sử dụng</td></tr>
+    <tr><td class="mt">VTI</td><td>Sarica: theo dõi đối chiếu master data NCC và cutover plan</td><td class="p-norm">Normal</td><td>Đến 20/11</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<!-- TAB 6 -->
+<section class="tab" id="t6">
+  <h2>Workflow làm báo cáo tuần</h2>
+  <div class="card"><ol class="flow">
+    <li><strong>Pull dữ liệu:</strong> ClickUp (MCP, assignee 89477225), Gmail (inbox trong tuần), Bitrix (n8n sync 18:00 vào weekly_report.tasks).</li>
+    <li><strong>Xác nhận danh sách:</strong> task có hoạt động thật, email cần đưa vào, việc nội bộ không có ID.</li>
+    <li><strong>Bổ sung:</strong> công việc phát sinh và kế hoạch tuần tới.</li>
+    <li><strong>Phân loại:</strong> MasterTask, trạng thái, Vendor hay Nội bộ trong blocker, lý do cho task chưa bắt đầu.</li>
+    <li><strong>Xuất 3 output:</strong> dashboard HTML 6 tab, bảng báo cáo, text Bitrix.</li>
+  </ol></div>
+  <h2>Lịch</h2>
+  <div class="tbl-wrap"><table>
+    <thead><tr><th>Mốc</th><th>Việc</th></tr></thead>
+    <tbody>
+    <tr><td class="mt">Thứ 2–6, 18:00</td><td>n8n "HaiPM — Weekly Report Sync" (TTJolyrkLgaTNyW6) đồng bộ Bitrix</td></tr>
+    <tr><td class="mt">Thứ 6 sáng</td><td>Pull dữ liệu, xác nhận danh sách</td></tr>
+    <tr><td class="mt">Thứ 6, trước 17:00</td><td>Gửi báo cáo CEO, post text lên Bitrix</td></tr>
+    </tbody>
+  </table></div>
+  <h2>Ghi chú vận hành W45</h2>
+  <div class="card">
+    <p>Lượt sync Bitrix ngày 05/11 và 06/11 lúc 18:00 không ghi vào DB. Đã chạy sync lại thủ công lúc 21:53 ngày 06/11. Cần kiểm tra log execution của workflow n8n.</p>
+    <p>DB weekly_report chỉ lưu task Bitrix đang mở, nên chưa thống kê được task Bitrix đóng trong tuần.</p>
+  </div>
+</section>
+</main>
+<script>
+document.querySelectorAll('#nav button').forEach(b=>b.addEventListener('click',()=>{document.querySelectorAll('#nav button').forEach(x=>x.classList.remove('active'));document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));b.classList.add('active');document.getElementById(b.dataset.t).classList.add('active');}));
+function toggleTheme(){const h=document.documentElement;h.dataset.theme=h.dataset.theme==='dark'?'light':'dark';}
+function copyText(id,btn){const t=document.getElementById(id).innerText;navigator.clipboard.writeText(t).then(()=>{btn.textContent='Đã copy';setTimeout(()=>btn.textContent='Copy text',1500)});}
+</script>
+</body>
+</html>
